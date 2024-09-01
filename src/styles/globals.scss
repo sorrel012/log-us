@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+$color-brown: #A38970;
+$color-gray: #CDCAC5;
+$color-beige: #EFECE7;
+$color-light-blue: #6E7F91;
+$color-light-blue-opacity: rgba(110, 127, 145, 0.8);
+$color-dark-blue: #394C60;
+
 @font-face {
   font-family: 'SUIT-Regular';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
@@ -71,3 +78,30 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'SUIT-Regular', sans-serif;
   }
 }
+
+/* 페이징 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $color-gray
+    }
+  }
+
+
+  .active {
+    background-color: $color-dark-blue;
+    color: white;
+    border-radius: 50%;
+  }
+}
+
