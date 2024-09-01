@@ -8,7 +8,7 @@ export default function BlogLayout({
     return (
         <div className="flex">
             <Sidebar />
-            {children}
+            <div className="ml-[20%] w-[80%]">{children}</div>
         </div>
     );
 }

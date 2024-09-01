@@ -10,7 +10,7 @@ const visitors = [
 export default function Visitor() {
     return (
         <section className="font-default mt-4 px-2">
-            <div className="mb-2 font-bold">오늘 다녀갔어요</div>
+            <div className="mb-3 font-bold">오늘 다녀갔어요</div>
             <ul className="shadow-custom rounded-md p-2 text-sm leading-5">
                 {visitors.map((visitor, index) => (
                     <li key={index} className="flex items-center">

@@ -13,8 +13,8 @@ const series = [
 export default function Series() {
     return (
         <section className="font-default p-2">
-            <div className="mb-2 font-bold">시리즈</div>
-            <ul className="text-sm leading-6">
+            <div className="mb-3 font-bold">시리즈</div>
+            <ul className="text-sm leading-6 lg:leading-7">
                 {series.map((item, index) => (
                     <li key={index} className="truncate">
                         <Link
