@@ -1,13 +1,13 @@
-import MainHeader from '@/components/header/mainHeader';
+import BlogHeader from '@/components/header/blogHeader';
 
-export default function MainLayout({
+export default function BlogLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <div>
-            <MainHeader />
+            <BlogHeader />
             {children}
         </div>
     );
