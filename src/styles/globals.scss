@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+$color-brown: #A38970;
+$color-gray: #CDCAC5;
+$color-beige: #EFECE7;
+$color-light-blue: #6E7F91;
+$color-light-blue-opacity: rgba(110, 127, 145, 0.8);
+$color-dark-blue: #394C60;
+
 @font-face {
   font-family: 'SUIT-Regular';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
@@ -71,3 +78,69 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'SUIT-Regular', sans-serif;
   }
 }
+
+/* 팝업 */
+@mixin button {
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .container {
+    background-color: white;
+    padding: 25px 20px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    height: 135px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    font-family: "SUIT-Regular", sans-serif;
+    margin-top: 10px;
+  }
+
+  .button {
+    text-align: end;
+    font-family: "SUIT-Regular", sans-serif;
+  }
+
+  .confirm {
+    @include button;
+    background-color: $color-beige;
+    margin-right: 10px;
+
+    &:hover {
+      background-color: #d3d2ce;
+    }
+  }
+
+  .close {
+    @include button;
+    background-color: $color-dark-blue;
+    color: white;
+
+    &:hover {
+      background-color: $color-light-blue;
+    }
+  }
+}
+
