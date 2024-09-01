@@ -1,6 +1,6 @@
 'use client';
 
-import PanelModule from '@/components/manage/PanelModule';
+import PanelModule from '@/components/sidebar/PanelModule';
 import { usePathname } from 'next/navigation';
 
 const basePath = '/manage';

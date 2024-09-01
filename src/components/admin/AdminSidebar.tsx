@@ -1,4 +1,4 @@
-import PanelModule from '@/components/manage/PanelModule';
+import PanelModule from '@/components/sidebar/PanelModule';
 
 const basePath = '/admin';
 const statistics = [
