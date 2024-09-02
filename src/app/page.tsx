@@ -1,3 +1,11 @@
+'use client';
+
+import Search from '@/components/search/Search';
+
 export default function Home() {
-    return <div>프로젝트 세팅</div>;
+    return (
+        <div>
+            <Search />
+        </div>
+    );
 }
