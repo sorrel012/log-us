@@ -156,6 +156,49 @@ h1, h2, h3, h4, h5, h6 {
 /* 그림자*/
 .shadow-custom {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+/* 페이징 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+.pagination button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  cursor: not-allowed;
+  color: #CDCAC5;
+}
+.pagination .active {
+  background-color: #394C60;
+  color: white;
+  border-radius: 50%;
+}
+
+/* 페이징 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+.pagination button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  cursor: not-allowed;
+  color: #CDCAC5;
+}
+.pagination .active {
+  background-color: #394C60;
+  color: white;
+  border-radius: 50%;
 }
 
 /*# sourceMappingURL=globals.css.map */

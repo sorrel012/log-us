@@ -89,7 +89,6 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(194, 194, 194, 0.75);
 }
 
-
 /* 폰트 */
 .font {
   &-default {
@@ -166,3 +165,29 @@ h1, h2, h3, h4, h5, h6 {
 .shadow-custom {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
+/* 페이징 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  button {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $color-gray
+    }
+  }
+
+  .active {
+    background-color: $color-dark-blue;
+    color: white;
+    border-radius: 50%;
+  }
+}
+
