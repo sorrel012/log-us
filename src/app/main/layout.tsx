@@ -1,3 +1,5 @@
+'use client';
+
 import MainHeader from '@/components/header/mainHeader';
 
 export default function MainLayout({

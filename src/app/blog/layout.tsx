@@ -1,3 +1,5 @@
+'use client';
+
 import BlogHeader from '@/components/header/blogHeader';
 
 export default function BlogLayout({
