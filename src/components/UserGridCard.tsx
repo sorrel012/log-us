@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import PersonIcon from '@/components/icons/PersonIcon';
 import Link from 'next/link';
-import { UserGridProps } from '@/components/UserGrid';
+import { GridType, UserGridProps } from '@/components/UserGrid';
 
 export default function UserGridCard({
     image,
