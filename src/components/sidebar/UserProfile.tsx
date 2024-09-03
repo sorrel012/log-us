@@ -1,10 +1,10 @@
-import MyLogUserProfile from '@/components/sidebar/MyLogUserProfile';
+import OurLogsUserProfile from '@/components/sidebar/OurLogsUserProfile';
 
 export default function UserProfile() {
     return (
         <section className="mb-4 flex flex-col border-b border-solid border-customLightBlue-100 pb-4 lg:mb-7 lg:pb-7">
-            <MyLogUserProfile />
-            {/*<OurLogsUserProfile />*/}
+            {/*<MyLogUserProfile />*/}
+            <OurLogsUserProfile />
             <p className="font-default mt-2 px-2 text-sm leading-4">
                 안녕하세용 제 블로그에 오신 여러분 매우 환영합니당~
             </p>
