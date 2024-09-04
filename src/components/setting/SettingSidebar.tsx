@@ -3,7 +3,7 @@
 import PanelModule from '@/components/sidebar/PanelModule';
 import { usePathname } from 'next/navigation';
 
-const basePath = '/manage';
+const basePath = '/setting';
 const profile = [
     { title: '회원정보 변경', link: `${basePath}/profile` },
     { title: '구독 블로그 관리', link: `${basePath}/subscribe` },
@@ -21,7 +21,7 @@ const ourLog = [
     { title: '블로그 개설', link: `${basePath}/new-blog` },
 ];
 
-const ourLogBasePath = '/manage/our-log';
+const ourLogBasePath = '/setting/our-log';
 const ourLogDtl = [
     { title: '글 관리', link: `${ourLogBasePath}/posts` },
     { title: '댓글 관리', link: `${ourLogBasePath}/comments` },
@@ -31,7 +31,7 @@ const ourLogDtl = [
     { title: '블로그 탈퇴', link: `${ourLogBasePath}/delete-blog` },
 ];
 
-export default function ManageSidebar() {
+export default function SettingSidebar() {
     const pathName = usePathname();
     const isOurLogPath = pathName.includes('/our-log');
 

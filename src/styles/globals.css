@@ -179,4 +179,16 @@ h1, h2, h3, h4, h5, h6 {
   color: white;
   border-radius: 50%;
 }
- 
+
+/* input */
+input[type=checkbox] {
+  cursor: pointer;
+  accent-color: #6E7F91;
+  border: 1px solid #6E7F91;
+  border-radius: 3px;
+  height: 1.5rem;
+  width: 1.5rem;
+  outline: none;
+}
+
+/*# sourceMappingURL=globals.css.map */
