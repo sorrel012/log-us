@@ -1,10 +1,11 @@
-import { IoSearch } from "react-icons/io5";
+import Search from "@/components/search/Search";
 import { FaRegBell } from "react-icons/fa";
 import { useState } from 'react';
 import { FaCircleUser } from "react-icons/fa6";
 
+
 export default function BlogHeader() {
-    const [isLogined, setIsLogined] = useState(true)
+    const [isLogined, setIsLogined] = useState(false)
 
     return (
         <header className='shadow-md p-2'>
@@ -19,7 +20,7 @@ export default function BlogHeader() {
                 <div className='flex items-center gap-6'>
                     {isLogined && (
                         <>
-                            <IoSearch className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
+                            <Search />
                             <FaRegBell className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
                             <FaCircleUser className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer mr-4'/>
                         </>
@@ -27,7 +28,7 @@ export default function BlogHeader() {
 
                     {!isLogined && (
                         <>
-                            <IoSearch className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
+                            <Search />
                             <button className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-6 py-1 rounded-lg mr-4 hover:bg-customDarkBlue-100 transition-colors duration-300">
                                 로그인
                             </button>

@@ -1,12 +1,12 @@
 import Link from 'next/link';
+import Search from "@/components/search/Search";
 
 import { useState } from 'react';
 import { FaRegBell } from "react-icons/fa";
-import { IoSearch } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
 
 export default function MainHeader() {
-    const [isLogined, setIsLogined] = useState(true)
+    const [isLogined, setIsLogined] = useState(false)
 
     return (
         <header>
@@ -31,16 +31,16 @@ export default function MainHeader() {
                                 <p className='text-customLightBlue-200 text-xl hover:text-customDarkBlue-200 cursor-pointer'>Our-log</p>
                             </div>
                             <div className='flex justify-between items-center gap-4 mr-5'>
-                                <IoSearch className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
+                                <Search/>
                                 <FaRegBell className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
                                 <FiSettings className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
                             </div>
                         </>
                     )}
                     {!isLogined && (
-                        <>
-                            <IoSearch className='text-2xl text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer'/>
-                        </>
+                        <div className="mr-5">
+                            <Search />
+                        </div>
                     )}
                     <div>
                         <button className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-10 py-1.5 rounded-lg mr-2 hover:bg-customDarkBlue-100 transition-colors duration-300">
