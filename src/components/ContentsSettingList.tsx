@@ -1,18 +1,11 @@
-import ContentSetting from '@/components/ContentSetting';
+'use client';
+
+import ContentSetting, {
+    ContentsButtonProps,
+    ContentsProps,
+} from '@/components/ContentSetting';
 import PostSettingSubText from '@/components/setting/PostSettingSubText';
 import { useState } from 'react';
-
-export interface ContentsProps {
-    contents: string;
-    series?: string;
-    category?: string;
-    nickName?: string;
-    title?: string;
-    date: Date;
-    views?: number;
-    comments?: number;
-    likes?: number;
-}
 
 export default function ContentsSettingList({
     contents,
@@ -24,11 +17,32 @@ export default function ContentsSettingList({
     );
 
     const handleCheckboxChange = (
-        newSelectedContents: ContentsProps[],
+        newSelectedContents: ContentsProps,
         isChecked: boolean,
     ) => {
-        setSelectedContents(newSelectedContents);
+        setSelectedContents((prev) => {
+            return [...prev, newSelectedContents];
+        });
     };
+
+    const handleUpdate = (val: number) => {};
+    const handleDelete = (val: number) => {};
+    const handleStatistics = (val: number) => {};
+
+    const buttons: ContentsButtonProps[] = [
+        {
+            text: '수정',
+            onClick: handleUpdate,
+        },
+        {
+            text: '삭제',
+            onClick: handleDelete,
+        },
+        {
+            text: '통계',
+            onClick: handleStatistics,
+        },
+    ];
 
     return (
         <section className="font-default rounded-md border border-solid border-customLightBlue-100">
@@ -38,6 +52,7 @@ export default function ContentsSettingList({
                     content={content}
                     isLast={index === contents.length - 1}
                     onSelect={handleCheckboxChange}
+                    buttons={buttons}
                 >
                     <PostSettingSubText {...content} />
                 </ContentSetting>

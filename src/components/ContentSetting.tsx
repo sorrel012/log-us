@@ -3,22 +3,40 @@
 import LightButton from '@/components/ui/LightButton';
 import { ContentsProps } from '@/components/ContentsSettingList';
 
+export interface ContentsProps {
+    sn: number;
+    contents: string;
+    series?: string;
+    category?: string;
+    nickName?: string;
+    title?: string;
+    date: Date;
+    views?: number;
+    comments?: number;
+    likes?: number;
+}
+
+export interface ContentsButtonProps {
+    text: string;
+    onClick: (val: number) => void;
+}
+
 export default function ContentSetting({
     content,
     children,
     isLast,
     onSelect,
+    buttons,
 }: {
     content: ContentsProps;
     children: React.ReactNode;
     isLast: boolean;
     onSelect: (content: ContentsProps, isChecked: boolean) => void;
+    buttons: ContentsButtonProps[];
 }) {
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onSelect(content, e.target.checked);
     };
-
-    const handleClick = () => {};
 
     return (
         <div
@@ -40,17 +58,14 @@ export default function ContentSetting({
                 </div>
             </div>
             <div className="text-customLightBlue-200">
-                <LightButton
-                    text="수정"
-                    onClick={handleClick}
-                    className="mr-1"
-                />
-                <LightButton
-                    text="삭제"
-                    onClick={handleClick}
-                    className="mr-1"
-                />
-                <LightButton text="통계" onClick={handleClick} />
+                {buttons.map((button, index) => (
+                    <LightButton
+                        key={index}
+                        className="mr-1"
+                        text={button.text}
+                        onClick={() => button.onClick(content.sn)}
+                    />
+                ))}
             </div>
         </div>
     );
