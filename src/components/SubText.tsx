@@ -1,10 +1,15 @@
 import SubLineBar from '@/components/SubLineBar';
 
-export default function SubText({ text }: { text: string }) {
+interface SubTextProps {
+    text: string;
+    isLast?: boolean;
+}
+
+export default function SubText({ text, isLast = false }: SubTextProps) {
     return (
         <div className="flex">
             {text}
-            <SubLineBar />
+            {!isLast && <SubLineBar />}
         </div>
     );
 }

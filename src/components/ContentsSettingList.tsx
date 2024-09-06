@@ -5,50 +5,51 @@ import ContentSetting, {
     ContentsProps,
 } from '@/components/ContentSetting';
 import PostSettingSubText from '@/components/setting/PostSettingSubText';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+interface ContentsSettingListProps {
+    contents: ContentsProps[];
+    buttons: ContentsButtonProps[];
+    onChange: (val: ContentsProps[]) => void;
+}
 
 export default function ContentsSettingList({
     contents,
-}: {
-    contents: ContentsProps[];
-}) {
+    buttons,
+    onChange,
+}: ContentsSettingListProps) {
     const [selectedContents, setSelectedContents] = useState<ContentsProps[]>(
         [],
     );
+
+    useEffect(() => {
+        onChange(selectedContents);
+    }, [selectedContents]);
 
     const handleCheckboxChange = (
         newSelectedContents: ContentsProps,
         isChecked: boolean,
     ) => {
-        setSelectedContents((prev) => {
-            return [...prev, newSelectedContents];
-        });
+        if (isChecked) {
+            setSelectedContents((prev) => [...prev, newSelectedContents]);
+        } else {
+            const index = selectedContents.findIndex(
+                (content) => content.sn === newSelectedContents.sn,
+            );
+            setSelectedContents((prev) => [
+                ...prev.slice(0, index),
+                ...prev.slice(index + 1),
+            ]);
+        }
     };
-
-    const handleUpdate = (val: number) => {};
-    const handleDelete = (val: number) => {};
-    const handleStatistics = (val: number) => {};
-
-    const buttons: ContentsButtonProps[] = [
-        {
-            text: '수정',
-            onClick: handleUpdate,
-        },
-        {
-            text: '삭제',
-            onClick: handleDelete,
-        },
-        {
-            text: '통계',
-            onClick: handleStatistics,
-        },
-    ];
 
     return (
         <section className="font-default rounded-md border border-solid border-customLightBlue-100">
             {contents.map((content, index) => (
                 <ContentSetting
-                    key={content.title}
+                    key={
+                        content.postId || content.commentId || content.noticeId
+                    }
                     content={content}
                     isLast={index === contents.length - 1}
                     onSelect={handleCheckboxChange}

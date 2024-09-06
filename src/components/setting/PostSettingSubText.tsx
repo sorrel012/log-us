@@ -15,16 +15,27 @@ interface ContentSubProps {
     likes?: number;
 }
 
-export default function PostSettingSubText(content: ContentSubProps) {
+export default function PostSettingSubText({
+    series,
+    comments,
+    likes,
+    date,
+    views,
+    category,
+    title,
+    nickName,
+}: ContentSubProps) {
     return (
         <>
-            <SubText text={content.series!} />
-            <SubText text={content.category!} />
-            {content.date && <SubText text={dateFormatter(content.date)} />}
+            {nickName && <SubText text={nickName} />}
+            {series && <SubText text={series} />}
+            {category && <SubText text={category} />}
+            {title && <SubText text={title} />}
+            {date && <SubText text={dateFormatter(date)} />}
             <div className="flex gap-1">
-                <ViewIcon views={content.views!} />
-                <CommentIcon comments={content.comments!} />
-                <LikeIcon likes={content.likes!} />
+                {views && <ViewIcon views={views!} />}
+                {comments && <CommentIcon comments={comments!} />}
+                {likes && <LikeIcon likes={likes!} />}
             </div>
         </>
     );

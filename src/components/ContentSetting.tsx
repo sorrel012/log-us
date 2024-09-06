@@ -1,10 +1,11 @@
 'use client';
 
 import LightButton from '@/components/ui/LightButton';
-import { ContentsProps } from '@/components/ContentsSettingList';
 
 export interface ContentsProps {
-    sn: number;
+    postId?: number;
+    commentId?: number;
+    noticeId?: number;
     contents: string;
     series?: string;
     category?: string;
@@ -58,14 +59,22 @@ export default function ContentSetting({
                 </div>
             </div>
             <div className="text-customLightBlue-200">
-                {buttons.map((button, index) => (
-                    <LightButton
-                        key={index}
-                        className="mr-1"
-                        text={button.text}
-                        onClick={() => button.onClick(content.sn)}
-                    />
-                ))}
+                {buttons &&
+                    buttons.map((button, index) => (
+                        <LightButton
+                            key={index}
+                            className="mr-1"
+                            text={button.text}
+                            onClick={() =>
+                                button.onClick(
+                                    content.postId ||
+                                        content.commentId ||
+                                        content.noticeId ||
+                                        0,
+                                )
+                            }
+                        />
+                    ))}
             </div>
         </div>
     );
