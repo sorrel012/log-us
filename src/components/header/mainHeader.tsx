@@ -6,7 +6,7 @@ import { FaRegBell } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 
 export default function MainHeader() {
-    const [isLogined, setIsLogined] = useState(false)
+    const [isLogined, setIsLogined] = useState(true)
 
     return (
         <header>

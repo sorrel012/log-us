@@ -5,7 +5,7 @@ import { FaCircleUser } from "react-icons/fa6";
 
 
 export default function BlogHeader() {
-    const [isLogined, setIsLogined] = useState(false)
+    const [isLogined, setIsLogined] = useState(true)
 
     return (
         <header className='shadow-md p-2'>

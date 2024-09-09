@@ -1,6 +1,6 @@
 'use client';
 
-import MainHeader from '@/components/header/mainHeader';
+import MainHeader from '@/components/header/MainHeader';
 
 export default function MainLayout({
     children,
