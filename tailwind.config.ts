@@ -26,6 +26,9 @@ const config: Config = {
                 customBrown: {
                     100: '#A38970',
                 },
+                customMint : {
+                    100 : '#A5C4BD',
+                }
             },
         },
     },
