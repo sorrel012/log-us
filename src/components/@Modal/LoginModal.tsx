@@ -32,7 +32,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal }) => {
         
 
         <div>
-          {/* 회원 로그인 탭 */}
           <div>
             <ul className="flex flex-wrap -mb-px text-center justify-center" role="tablist">
                 <li className="w-2/4">
@@ -44,9 +43,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal }) => {
             </ul>
           </div>
 
-          {/* 관리자 로그인 탭 */}
-          {/* <div className="> */}
-            <div className="rounded-b-lg border-solid border-2 border-t-0 border-gray-200" role="tabpanel">
+          {/* 로그인 박스 */}
+            <div className={`rounded-b-lg border-solid border-2 border-t-0 border-gray-200 ${activeTab == 2 ? 'mb-16' : ''}`} role="tabpanel">
               <form className="py-10">
                 <input type="text" placeholder='아이디' className='w-10/12 border rounded-md p-3 px-7 mb-2' />
                 <input type="password" placeholder='비밀번호' className='w-10/12 border rounded-md p-3 px-7 mb-2'/>
@@ -65,22 +63,26 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal }) => {
                 </div>
               </form>
             </div>
-          {/* </div> */}
 
           {/* 아이디/비밀번호 찾기 */}
-          <div className="flex justify-around items-center text-gray-500 my-5">
-            <div className='cursor-pointer'>아이디 찾기</div>
-            <div className='w-0.5 h-5 bg-gray-200 border'></div>
-            <div className='cursor-pointer'>비밀번호 찾기</div>
-            <div className='w-0.5 h-5 bg-gray-200 border'></div>
-            <Link href='/join'>회원가입</Link>
-          </div>
+          {activeTab == 1 && (
+            <div className="flex justify-around items-center text-gray-500 my-5">
+              <div className='cursor-pointer'>아이디 찾기</div>
+              <div className='w-0.5 h-5 bg-gray-200 border'></div>
+              <div className='cursor-pointer'>비밀번호 찾기</div>
+              <div className='w-0.5 h-5 bg-gray-200 border'></div>
+              <Link href='/join'>회원가입</Link>
+            </div>
+          )}
         </div>
 
         {/* 소셜 로그인 */}
-        <div className="social-login">
-          <img src="/kakao_login.png" width={425} alt="kakao login" className="mt-5 mb-16" />
-        </div>
+        {activeTab == 1 && (
+          <div className="social-login">
+            <img src="/kakao_login.png" width={425} alt="kakao login" className="mt-5 mb-16" />
+          </div>
+        )}
+
 
       </div>
     </div>
