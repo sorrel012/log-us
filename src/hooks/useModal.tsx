@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
-export const useModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+type ModalType = 'login' | 'join' | null;
 
-  const openModal = () => {
-      setIsOpen(true);
+export const useModal = () => {
+  const [modalType, setModalType] = useState<ModalType>(null);
+
+  const openModal = (type : ModalType) => {
+    setModalType(type);
   }
 
   const closeModal = () => {
-      setIsOpen(false);
+    setModalType(null);
   }
 
-  return { isOpen, openModal, closeModal };
+  return { modalType, openModal, closeModal };
 };

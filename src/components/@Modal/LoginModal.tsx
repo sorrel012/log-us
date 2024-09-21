@@ -1,14 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 import { FaTimes } from "react-icons/fa";
-import Link from 'next/link';
 
 interface LoginModalProps {
   isOpen: boolean;
   closeModal: () => void;
+  openJoinModal : () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal, openJoinModal }) => {
   const [activeTab, setActiveTab] = useState(1);
   
   if (!isOpen) {
@@ -71,7 +71,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal }) => {
               <div className='w-0.5 h-5 bg-gray-200 border'></div>
               <div className='cursor-pointer'>비밀번호 찾기</div>
               <div className='w-0.5 h-5 bg-gray-200 border'></div>
-              <Link href='/join'>회원가입</Link>
+              <div className='cursor-pointer' onClick={openJoinModal}>회원가입</div>
             </div>
           )}
         </div>

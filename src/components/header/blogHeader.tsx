@@ -1,14 +1,15 @@
 import Search from "@/components/search/Search";
 import { useModal } from '../../hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
+import JoinModal from '../@Modal/JoinModal';
 
 import { FaRegBell } from "react-icons/fa";
 import { useState } from 'react';
 import { FaCircleUser } from "react-icons/fa6";
 
 export default function BlogHeader() {
-    const [isLogined, setIsLogined] = useState(true)
-    const { isOpen, openModal, closeModal } = useModal();
+    const [isLogined, setIsLogined] = useState(false)
+    const { modalType, openModal, closeModal } = useModal();
 
     return (
         <header className='shadow-md p-2'>
@@ -32,10 +33,11 @@ export default function BlogHeader() {
                     {!isLogined && (
                         <>
                             <Search />
-                            <button onClick={openModal} className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-6 py-1 rounded-lg mr-4 hover:bg-customDarkBlue-100 transition-colors duration-300">
+                            <button onClick={() => openModal('login')} className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-6 py-1 rounded-lg mr-4 hover:bg-customDarkBlue-100 transition-colors duration-300">
                                 로그인
                             </button>
-                            <LoginModal isOpen={isOpen} closeModal={closeModal} />
+                            <LoginModal isOpen={modalType === 'login'} closeModal={closeModal} openJoinModal={() => openModal('join')}/>
+                            <JoinModal isOpen={modalType === 'join'} closeModal={closeModal} />
                         </>
                     )}
                    

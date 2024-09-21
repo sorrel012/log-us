@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Search from "@/components/search/Search";
 import { useModal } from '../../hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
+import JoinModal from '../@Modal/JoinModal';
 
 import { useState } from 'react';
 import { FaRegBell } from "react-icons/fa";
@@ -9,7 +10,7 @@ import { FiSettings } from "react-icons/fi";
 
 export default function MainHeader() {
     const [isLogined, setIsLogined] = useState(true)
-    const { isOpen, openModal, closeModal } = useModal();
+    const { modalType, openModal, closeModal } = useModal();
 
     return (
         <header>
@@ -46,10 +47,11 @@ export default function MainHeader() {
                         </div>
                     )}
                     <div>
-                        <button onClick={openModal} className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-10 py-1.5 rounded-lg mr-2 hover:bg-customDarkBlue-100 transition-colors duration-300">
+                        <button onClick={() => openModal('login')} className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-10 py-1.5 rounded-lg mr-2 hover:bg-customDarkBlue-100 transition-colors duration-300">
                             로그인
                         </button>
-                        <LoginModal isOpen={isOpen} closeModal={closeModal} />
+                        <LoginModal isOpen={modalType === 'login'} closeModal={closeModal} openJoinModal={() => openModal('join')}/>
+                        <JoinModal isOpen={modalType === 'join'} closeModal={closeModal} />
                     </div>
                 </div>
             </div>
