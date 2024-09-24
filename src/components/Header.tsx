@@ -7,7 +7,7 @@ export default function Header() {
     const router = useRouter();
 
     const handleNotificationClick = () => {
-        router.push('/blog/notification/notification');
+        router.push('/blog/notification', { scroll: false });
     };
 
     return (
