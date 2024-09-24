@@ -14,8 +14,9 @@ const config: Config = {
                     200: '#6E7F91',
                 },
                 customDarkBlue: {
-                    100: '#506b87',
-                    200: '#394C60',
+                    100: '#394C60',
+                    200: '#506b87',
+
                 },
                 customBeige: {
                     100: '#EFECE7',

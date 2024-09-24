@@ -19,7 +19,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={dohyeon.className}>{children}</body>
+            <body className={dohyeon.className}>
+                <div id="modal"></div>
+                {children}
+            </body>
         </html>
     );
 }
