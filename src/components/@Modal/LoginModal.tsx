@@ -21,24 +21,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal, openJoinMod
 
   return (
     <div className="modal-backdrop" onClick={closeModal}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content font-default" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={closeModal}>
           <FaTimes />
         </button>
         {/* 로고 */}
-        <div className={"flex justify-center my-3"}>
+        <div className="flex justify-center my-3">
           <img src="/logo.png" width={350} alt="Logo" />
         </div>
         
 
-        <div>
+        <div className="w-9/12">
           <div>
             <ul className="flex flex-wrap -mb-px text-center justify-center" role="tablist">
                 <li className="w-2/4">
-                    <button className={`inline-block w-full py-3 rounded-t-lg ${activeTab === 1 ? 'border-2 border-b-0 ' : 'border-b-2 bg-gray-200/70'}`} onClick={() => handleTabClick(1)} type="button" role="tab" aria-selected={activeTab === 1}>회원 로그인</button>
+                    <button className={`inline-block w-full py-3 rounded-t-lg ${activeTab === 1 ? 'border-2 border-b-0 font-semibold' : 'border-b-2 bg-gray-200/70'}`} onClick={() => handleTabClick(1)} type="button" role="tab" aria-selected={activeTab === 1}>회원 로그인</button>
                 </li>
                 <li className="w-2/4">
-                    <button className={`inline-block w-full py-3 rounded-t-lg ${activeTab === 2 ? 'border-2 border-b-0 ' : 'border-b-2 bg-gray-200/70'}`}  onClick={() => handleTabClick(2)} type="button" role="tab" aria-selected={activeTab === 2}>관리자 로그인</button>
+                    <button className={`inline-block w-full py-3 rounded-t-lg ${activeTab === 2 ? 'border-2 border-b-0 font-semibold' : 'border-b-2 bg-gray-200/70'}`}  onClick={() => handleTabClick(2)} type="button" role="tab" aria-selected={activeTab === 2}>관리자 로그인</button>
                 </li>
             </ul>
           </div>
@@ -79,7 +79,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal, openJoinMod
         {/* 소셜 로그인 */}
         {activeTab == 1 && (
           <div className="social-login">
-            <img src="/kakao_login.png" width={425} alt="kakao login" className="mt-5 mb-16" />
+            <img src="/kakao_login.png" width={400} alt="kakao login" className="mt-5 mb-16" />
           </div>
         )}
 

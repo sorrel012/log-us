@@ -28,6 +28,10 @@ const config: Config = {
                 },
                 customMint : {
                     100 : '#A5C4BD',
+                },
+                customBegie : {
+                    100 : '#F6F6F6',
+                    200 : '#EFECE7'
                 }
             },
         },
