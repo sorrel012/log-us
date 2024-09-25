@@ -18,23 +18,21 @@ export async function customFetch(
         headers['Content-Type'] = 'application/json';
     }
 
-    //TODO mber-id zustand에서 받아오는 걸로 수정
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    //TODO mber-id zustand에서 받아오는 걸로 수정 필요
     headers['member-id'] = 'sorrel012';
 
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
     try {
-        const response = await fetch(
-            // `https://df5lnwgipj4a5.cloudfront.net/${url}`,
-            `http://localhost:8080${url}`,
-            {
-                method: method,
-                headers,
-                body: JSON.stringify(body),
-                ...options,
-                signal,
-            },
-        );
+        const response = await fetch(`${baseUrl}${url}`, {
+            method: method,
+            headers,
+            body: JSON.stringify(body),
+            ...options,
+            signal,
+        });
 
         clearTimeout(timeoutId);
 
