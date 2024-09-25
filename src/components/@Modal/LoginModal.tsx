@@ -79,7 +79,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, closeModal, openJoinMod
         {/* 소셜 로그인 */}
         {activeTab == 1 && (
           <div className="social-login">
-            <img src="/kakao_login.png" width={400} alt="kakao login" className="mt-5 mb-16" />
+            <img src="/kakao_login.png" width={400} alt="kakao login" className="mt-5" />
+            <img src="/naver_login.png" width={400} alt="kakao login" className="mt-3" />
+            <img src="/google_login.png" width={400} alt="kakao login" className="mt-3 mb-16" />
           </div>
         )}
 

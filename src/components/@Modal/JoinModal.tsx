@@ -39,9 +39,9 @@ const JoinModal: React.FC<JoinModalProps> = ({ isOpen, closeModal }) => {
 
                 {/* 소셜 로그인 */}
                 <div className="flex gap-20 mb-7">
-                    <img src='/google_login_round.png' width={60}/>
-                    <img src='/naver_login_round.png' width={60} />
-                    <img src='/google_login_round.png' width={60}/>
+                    <img src='/kakao_login_round.png' width={60} className="cursor-pointer"/>
+                    <img src='/naver_login_round.png' width={60} className="cursor-pointer"/>
+                    <img src='/google_login_round.png' width={60} className="cursor-pointer"/>
                 </div>
 
 

@@ -22,6 +22,7 @@ const config: Config = {
                 },
                 customGray: {
                     100: '#CDCAC5',
+                    200 :'#F6F6F6',
                 },
                 customBrown: {
                     100: '#A38970',
@@ -29,10 +30,6 @@ const config: Config = {
                 customMint : {
                     100 : '#A5C4BD',
                 },
-                customBegie : {
-                    100 : '#F6F6F6',
-                    200 : '#EFECE7'
-                }
             },
         },
     },
