@@ -4,7 +4,6 @@ import { FaRegBell } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 
 export default function BellIcon() {
-    console.log('?');
     const router = useRouter();
 
     const handleNotificationClick = () => {
