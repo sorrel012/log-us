@@ -13,8 +13,8 @@ export default function BlogLayout({
     return (
         <>
             {modal}
+            <BlogHeader />
             <div className="flex">
-                <BlogHeader />
                 <Sidebar />
                 <div className="ml-[20%] w-[80%] lg:ml-[16.6667%] lg:w-[83.3333%]">
                     {children}

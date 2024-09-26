@@ -1,5 +1,3 @@
-'use client';
-
 import { IoMdNotificationsOutline } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
 
