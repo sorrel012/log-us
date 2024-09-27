@@ -1,39 +1,49 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+type NotificationType = 'comments' | 'subscriptions';
+
+interface ModalType {
+    title: string;
+    type: NotificationType;
+}
+
+const notificationModalType: ModalType[] = [
+    { title: '새 댓글', type: 'comments' },
+    { title: '구독', type: 'subscriptions' },
+];
 
 export default function NotificationModalPage() {
     const router = useRouter();
+
+    const [selectedType, setSelectedType] = useState('comments');
+
+    const handleTabClick = (type: NotificationType) => {
+        setSelectedType(type);
+    };
+
     const onCloseClick = () => {
         router.back();
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-            <div className="h-[60vh] w-[40vw] max-w-screen-lg rounded-lg bg-white shadow-lg lg:h-[65vh] lg:w-[50vw]">
-                {/*/!* Modal Header *!/*/}
-                {/*<div className="flex justify-between border-b border-gray-300 p-4">*/}
-                {/*    <h2 className="text-lg font-semibold">구독</h2>*/}
-                {/*    <button onClick={onCloseClick}>*/}
-                {/*        <IoCloseOutline*/}
-                {/*            size={24}*/}
-                {/*            className="text-gray-500 hover:text-black"*/}
-                {/*        />*/}
-                {/*    </button>*/}
-                {/*</div>*/}
-
-                {/*/!* Modal Body *!/*/}
-                {/*<div className="p-6">/!* 여기에 내용이 들어갑니다 *!/</div>*/}
-
-                {/*/!* Modal Footer *!/*/}
-                {/*<div className="flex justify-end border-t border-gray-300 p-4">*/}
-                {/*    <button*/}
-                {/*        onClick={onCloseClick}*/}
-                {/*        className="rounded-md bg-gray-500 px-4 py-2 text-white"*/}
-                {/*    >*/}
-                {/*        닫기*/}
-                {/*    </button>*/}
-                {/*</div>*/}
+        <div className="font-default fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+            <div className="h-[60vh] w-[40vw] max-w-screen-lg rounded-lg bg-white px-3 shadow-lg lg:h-[65vh] lg:w-[50vw]">
+                <div className="flex gap-10 border-b border-solid border-customLightBlue-100 px-2 pb-3 pt-5">
+                    {notificationModalType.map((tab) => (
+                        <h2
+                            key={tab.type}
+                            className={`text-md pb-2 hover:cursor-pointer hover:font-bold ${
+                                selectedType === tab.type ? 'font-bold' : ''
+                            }${selectedType !== tab.type ? 'text-customLightBlue-200' : ''}`}
+                            onClick={() => handleTabClick(tab.type)}
+                        >
+                            {tab.title}
+                        </h2>
+                    ))}
+                </div>
             </div>
         </div>
     );
