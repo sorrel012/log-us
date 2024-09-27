@@ -18,7 +18,12 @@ export default function Home() {
             //     .catch((error) => {
             //         console.log('error:, ', error);
             //     });
-            customFetch('/test', 'POST', data)
+            // customFetch('/test', 'POST', data)
+            //     .then((response) => console.log('response: ', response))
+            //     .catch((error) => {
+            //         console.log('error:, ', error);
+            //     });
+            customFetch('/data.json', 'GET')
                 .then((response) => console.log('response: ', response))
                 .catch((error) => {
                     console.log('error:, ', error);
