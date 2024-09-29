@@ -1,12 +1,12 @@
 const TIMEOUT = 30 * 1000;
 
-export async function customFetch(
+export async function customFetch<T>(
     url: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
     body?: any,
     headers?: Record<string, string>,
     options?: Omit<RequestInit, 'headers'>,
-): Promise<Response> {
+): Promise<T> {
     const controller = new AbortController();
     const { signal } = controller;
 
@@ -29,22 +29,21 @@ export async function customFetch(
         const response = await fetch(`${baseUrl}${url}`, {
             method: method,
             headers,
-            body: JSON.stringify(body),
+            ...(body ? { body: JSON.stringify(body) } : {}),
             ...options,
             signal,
         });
 
         clearTimeout(timeoutId);
 
-        const data = await response.json();
-
-        if (data.status > 200) {
+        if (!response.ok) {
             throw new Error(
-                '서버 접속 오류가 발생하였습니다. 시스템 상태를 확인해 주세요.',
+                `서버 오류가 발생하였습니다. ${response.statusText}`,
             );
         }
 
-        return data;
+        // JSON 데이터를 반환
+        return (await response.json()) as T;
     } catch (error) {
         clearTimeout(timeoutId);
 
@@ -54,6 +53,6 @@ export async function customFetch(
             );
         }
 
-        throw error;
+        throw new Error(error.message || '네트워크 오류가 발생했습니다.');
     }
 }
