@@ -1,3 +1,10 @@
+import SeriesGrid from '@/components/blog/series/SeriesGrid';
+
 export default function BlogMain() {
-    return <div>블로그 화면</div>;
+    return (
+        <section>
+            <h2 className="font-bold">시리즈</h2>
+            <SeriesGrid />
+        </section>
+    );
 }
