@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.52.2",
     "@toast-ui/editor": "^3.2.2",
     "next": "14.2.7",
     "react": "^18",
