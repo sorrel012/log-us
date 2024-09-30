@@ -1,60 +1,56 @@
-{
-  "code": 200,
-  "message": "OK",
-  "data": [
+[
     {
-      "seriesId": 1,
-      "seriesName": "TypeScript",
-      "seriesOrder": 1,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
+        "seriesId": 1,
+        "seriesName": "TypeScript",
+        "seriesOrder": 1,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
     },
     {
-      "seriesId": 2,
-      "seriesName": "Next.js",
-      "seriesOrder": 2,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
+        "seriesId": 2,
+        "seriesName": "Next.js",
+        "seriesOrder": 2,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
     },
     {
-      "seriesId": 3,
-      "seriesName": "React",
-      "seriesOrder": 3,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
+        "seriesId": 3,
+        "seriesName": "React",
+        "seriesOrder": 3,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
     },
     {
-      "seriesId": 4,
-      "seriesName": "TypeScript",
-      "seriesOrder": 4,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
+        "seriesId": 4,
+        "seriesName": "TypeScript",
+        "seriesOrder": 4,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
     },
     {
-      "seriesId": 5,
-      "seriesName": "Next.js",
-      "seriesOrder": 5,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
+        "seriesId": 5,
+        "seriesName": "Next.js",
+        "seriesOrder": 5,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
     },
     {
-      "seriesId": 6,
-      "seriesName": "React",
-      "seriesOrder": 3,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
+        "seriesId": 6,
+        "seriesName": "React",
+        "seriesOrder": 3,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
     },
     {
-      "seriesId": 7,
-      "seriesName": "Next.js",
-      "seriesOrder": 7,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
+        "seriesId": 7,
+        "seriesName": "Next.js",
+        "seriesOrder": 7,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory3.daumcdn.net/tistory/5433026/skinCover/ccb49d342bc94a66ac3a4dc6df344c1b"
     },
     {
-      "seriesId": 8,
-      "seriesName": "React",
-      "seriesOrder": 8,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
+        "seriesId": 8,
+        "seriesName": "React",
+        "seriesOrder": 8,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory2.daumcdn.net/tistory/5433026/skinCover/c9029f2e22a9466c9bddc87ce5e6ae14"
     },
     {
-      "seriesId": 9,
-      "seriesName": "TypeScript",
-      "seriesOrder": 9,
-      "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
+        "seriesId": 9,
+        "seriesName": "TypeScript",
+        "seriesOrder": 9,
+        "imgUrl": "https://i1.daumcdn.net/thumb/C290x290/?fname=https://tistory1.daumcdn.net/tistory/5433026/skinCover/279e15d71dd742de9a256be22c1b0f04"
     }
-  ]
-}
+]
