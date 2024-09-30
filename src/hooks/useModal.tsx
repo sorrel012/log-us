@@ -7,11 +7,11 @@ export const useModal = () => {
 
   const openModal = (type : ModalType) => {
     setModalType(type);
-  }
+  };
 
   const closeModal = () => {
     setModalType(null);
-  }
+  };
 
   return { modalType, openModal, closeModal };
 };

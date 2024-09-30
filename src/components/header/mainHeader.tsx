@@ -1,26 +1,26 @@
 import Link from 'next/link';
-import Search from "@/components/search/Search";
+import Search from '@/components/search/Search';
 import { useModal } from '../../hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
 import JoinModal from '../@Modal/JoinModal';
 
 import { useState } from 'react';
-import { FaRegBell } from "react-icons/fa";
-import { FiSettings } from "react-icons/fi";
+import { FaRegBell } from 'react-icons/fa';
+import { FiSettings } from 'react-icons/fi';
 
 export default function MainHeader() {
-    const [isLogined, setIsLogined] = useState(true)
+    const [isLogined, setIsLogined] = useState(true);
     const { modalType, openModal, closeModal } = useModal();
 
     return (
         <header>
-            <div className="max-w-screen-2xl mx-auto flex justify-between items-center p-5">
+            <div className='max-w-screen-2xl mx-auto flex justify-between items-center p-5'>
                 {/* 메인 헤더 공통 구역 */}
-                <div className="flex items-center">
+                <div className='flex items-center'>
                     <Link href='/main'>
-                        <img src="/logo.png" width={300} alt="Logo" />
+                        <img src='/logo.png' width={300} alt='Logo' />
                     </Link>
-                    <div className="ml-3 flex space-x-10">
+                    <div className='ml-3 flex space-x-10'>
                         <Link href='/notice' className='text-2xl'>공지사항</Link>
                         <Link href='/qna' className='text-2xl'>QnA</Link>
                     </div>
@@ -42,12 +42,12 @@ export default function MainHeader() {
                         </>
                     )}
                     {!isLogined && (
-                        <div className="mr-5">
+                        <div className='mr-5'>
                             <Search />
                         </div>
                     )}
                     <div>
-                        <button onClick={() => openModal('login')} className="text-xl text-white tracking-wide bg-customDarkBlue-200 px-10 py-1.5 rounded-lg mr-2 hover:bg-customDarkBlue-100 transition-colors duration-300">
+                        <button onClick={() => openModal('login')} className='text-xl text-white tracking-wide bg-customDarkBlue-200 px-10 py-1.5 rounded-lg mr-2 hover:bg-customDarkBlue-100 transition-colors duration-300'>
                             로그인
                         </button>
                         <LoginModal isOpen={modalType === 'login'} closeModal={closeModal} openJoinModal={() => openModal('join')}/>

@@ -11,6 +11,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.52.2",
     "@toast-ui/editor": "^3.2.2",
+    "framer-motion": "^11.6.0",
     "next": "14.2.7",
     "react": "^18",
     "react-dom": "^18",
@@ -25,7 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.7",
     "postcss": "^8",
     "prettier": "^3.3.3",
