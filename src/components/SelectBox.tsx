@@ -9,12 +9,12 @@ export interface SelectType {
 }
 
 interface SelectProps {
-    onItemsPerPageChange: (value: number) => void;
+    onItemsPerValueChange: (value: number) => void;
     items: SelectType[];
 }
 
 export default function SelectBox({
-    onItemsPerPageChange,
+    onItemsPerValueChange,
     items,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function SelectBox({
 
     const handleOptionClick = (item: SelectType) => {
         setSelectedText(item.text);
-        onItemsPerPageChange(item.value);
+        onItemsPerValueChange(item.value);
         setIsOpen((prev) => !prev);
     };
 
@@ -37,7 +37,7 @@ export default function SelectBox({
                 selectBoxRef.current &&
                 !selectBoxRef.current!.contains(event.target as Node)
             ) {
-                setIsOpen(false); // 외부 클릭 시 드롭다운 닫기
+                setIsOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);

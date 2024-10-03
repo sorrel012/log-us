@@ -20,7 +20,7 @@ export default function Sidebar() {
                     <UserProfile />
                     <PanelModule title="시리즈" contents={series} />
                 </div>
-                <div className="mb-3 p-5">
+                <div className="mb-14 p-5">
                     <Visitor />
                 </div>
             </aside>
