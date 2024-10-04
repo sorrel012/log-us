@@ -20,15 +20,21 @@ export default function BlogLayout({
             <BlogHeader />
             <div className="flex">
                 {isSidebarShow && <Sidebar />}
-                {isSidebarShow && (
-                    <div className="font-default ml-[20%] w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]">
-                        {children}
-                    </div>
-                )}
-                {!isSidebarShow && (
-                    <div className="h-full w-full">{children}</div>
-                )}
+                <div className={getStyle(isSidebarShow)}>{children}</div>
             </div>
         </>
     );
+}
+
+function getStyle(isSidebarShow: boolean) {
+    let childrenStyle = 'font-default overflow-y-auto pb-24';
+
+    if (isSidebarShow) {
+        childrenStyle +=
+            ' ml-[20%] h-screen w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]';
+    } else {
+        childrenStyle += ' h-full w-full';
+    }
+
+    return childrenStyle;
 }

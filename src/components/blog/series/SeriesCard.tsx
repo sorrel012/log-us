@@ -23,7 +23,7 @@ export default function SeriesCard({
 
     return (
         <article
-            className="cursor-pointer rounded-xl border border-solid border-customLightBlue-100 p-5 text-center"
+            className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-solid border-customLightBlue-100 p-5 text-center"
             onClick={handleClick}
         >
             <Image
