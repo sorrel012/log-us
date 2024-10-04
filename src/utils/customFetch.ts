@@ -1,5 +1,17 @@
 const TIMEOUT = 30 * 1000;
 
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
+export interface FetchConfig {
+    method?: HttpMethod;
+    data?: any;
+    headers?: Record<string, string>;
+    options?: any;
+    queryKey: any[];
+    staleTime?: number;
+    invalidateCache?: boolean;
+}
+
 interface FetchState<T> {
     data?: T;
     isLoading: boolean;
@@ -7,18 +19,9 @@ interface FetchState<T> {
     error?: string;
 }
 
-export interface FetchConfig {
-    method?: HttpMethod;
-    data?: any;
-    headers?: Record<string, string>;
-    options?: any;
-}
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-
 export async function customFetch<T>(
     url: string,
-    config: FetchConfig = {},
+    config: FetchConfig,
 ): Promise<FetchState<T>> {
     const controller = new AbortController();
     const { signal } = controller;
