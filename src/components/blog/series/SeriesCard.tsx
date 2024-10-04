@@ -1,10 +1,40 @@
-import Image from 'next/image';
+'use client';
 
-export default function SeriesCard({ seriesName, imgUrl }) {
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+
+interface SeriesGridProps {
+    seriesId: number;
+    seriesName: string;
+    imgUrl: string;
+}
+
+export default function SeriesCard({
+    seriesId,
+    seriesName,
+    imgUrl,
+}: SeriesGridProps) {
+    const router = useRouter();
+    const { memberId } = useParams();
+
+    const handleClick = () => {
+        router.push(`/${memberId}/posts/series=${seriesId}`);
+    };
+
     return (
-        <article className="w-full border border-solid border-customLightBlue-100">
-            <Image src={imgUrl} alt={seriesName} width={200} height={200} />
-            <div>{seriesName}</div>
+        <article
+            className="cursor-pointer rounded-xl border border-solid border-customLightBlue-100 p-5 text-center"
+            onClick={handleClick}
+        >
+            <Image
+                src={imgUrl}
+                alt={seriesName}
+                width={180}
+                height={180}
+                className="rounded-md"
+                priority
+            />
+            <div className="mt-4 font-bold">{seriesName}</div>
         </article>
     );
 }

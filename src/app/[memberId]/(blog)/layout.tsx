@@ -1,6 +1,6 @@
 'use client';
 
-import BlogHeader from '@/components/header/BlogHeader';
+import BlogHeader from '@/components/header/blogHeader';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { usePathname } from 'next/navigation';
 
@@ -21,7 +21,7 @@ export default function BlogLayout({
             <div className="flex">
                 {isSidebarShow && <Sidebar />}
                 {isSidebarShow && (
-                    <div className="font-default ml-[20%] w-[80%] p-6 lg:ml-[16.6667%] lg:w-[83.3333%]">
+                    <div className="font-default ml-[20%] w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]">
                         {children}
                     </div>
                 )}
