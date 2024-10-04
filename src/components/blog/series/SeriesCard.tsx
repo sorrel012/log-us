@@ -15,10 +15,10 @@ export default function SeriesCard({
     imgUrl,
 }: SeriesGridProps) {
     const router = useRouter();
-    const { memberId } = useParams();
+    const { blogAddress } = useParams();
 
     const handleClick = () => {
-        router.push(`/${memberId}/posts/series=${seriesId}`);
+        router.push(`/${blogAddress}/posts/series=${seriesId}`);
     };
 
     return (
