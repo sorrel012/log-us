@@ -7,7 +7,7 @@ export default function SeriesGrid() {
         isLoading,
         isError,
         error,
-    } = useFetch('/series.json');
+    } = useFetch('/series.json', { queryKey: ['series'] });
 
     return (
         <section className="">
