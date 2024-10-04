@@ -5,6 +5,7 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export interface FetchConfig {
     method?: HttpMethod;
     data?: any;
+    params?: Record<string, any>;
     headers?: Record<string, string>;
     options?: any;
     queryKey: any[];
@@ -26,7 +27,7 @@ export async function customFetch<T>(
     const controller = new AbortController();
     const { signal } = controller;
 
-    let { method, data, headers = {}, options = {} } = config;
+    let { method, data, params, headers = {}, options = {} } = config;
 
     if (!method) {
         method = 'GET';
@@ -39,6 +40,11 @@ export async function customFetch<T>(
     headers['member-id'] = 'sorrel012';
 
     let baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    if (method === 'GET' && params) {
+        const queryString = new URLSearchParams(params).toString();
+        url += `?${queryString}`;
+    }
 
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
