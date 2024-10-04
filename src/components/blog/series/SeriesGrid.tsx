@@ -1,6 +1,8 @@
 import { useFetch } from '@/hooks/useFetch';
 import SeriesCard from '@/components/blog/series/SeriesCard';
 import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
+import Popup from '@/components/Popup';
+import { useEffect, useState } from 'react';
 
 export default function SeriesGrid() {
     const {
@@ -9,6 +11,20 @@ export default function SeriesGrid() {
         isError,
         error,
     } = useFetch('/series.json', { queryKey: ['series'] });
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
+    useEffect(() => {
+        if (isError && !showPopup) {
+            setPopupMessage(error ? error : '알 수 없는 오류가 발생했습니다.');
+            setShowPopup(true);
+        }
+    }, [isError, error]);
 
     return (
         <section>
@@ -31,10 +47,22 @@ export default function SeriesGrid() {
                     ))}
                 </div>
             )}
-            {!isLoading && !isError && !series && (
+            {!isLoading && isError && (
+                <div className="leading-6">
+                    <div>시리즈를 불러올 수 없습니다. </div>
+                    <div>잠시 후 다시 시도해주세요. </div>
+                </div>
+            )}
+            {!isLoading && !isError && series.length === 0 && (
                 <div>시리즈가 존재하지 않습니다.</div>
             )}
-            {isError && <div>{error}</div>}
+
+            <Popup
+                show={showPopup}
+                title="에러"
+                text={popupMessage}
+                onClose={handleClosePopup}
+            />
         </section>
     );
 }
