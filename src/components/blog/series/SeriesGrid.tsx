@@ -1,5 +1,6 @@
 import { useFetch } from '@/hooks/useFetch';
 import SeriesCard from '@/components/blog/series/SeriesCard';
+import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
 
 export default function SeriesGrid() {
     const {
@@ -10,8 +11,14 @@ export default function SeriesGrid() {
     } = useFetch('/series.json', { queryKey: ['series'] });
 
     return (
-        <section className="">
-            {isLoading && <div>로딩 중~~</div>}
+        <section>
+            {isLoading && (
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
+                    {Array.from({ length: 9 }).map((_, index) => (
+                        <SeriesSkeleton key={index} />
+                    ))}
+                </div>
+            )}
             {!isLoading && !isError && series && (
                 <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
                     {series.map((item) => (
