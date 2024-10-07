@@ -18,7 +18,7 @@ export default function SeriesCard({
     const { blogAddress } = useParams();
 
     const handleClick = () => {
-        router.push(`/${blogAddress}/posts/series=${seriesId}`);
+        router.push(`/${blogAddress}/posts/series=${seriesId}&${seriesName}`);
     };
 
     return (

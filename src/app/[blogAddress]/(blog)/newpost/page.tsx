@@ -21,7 +21,6 @@ export default function NewPostPage() {
     const handleImage = useCallback(
         async (file: File, callback: typeof Function) => () => {
             const url = 'https';
-            console.log('드루와');
             // const url = await getImage(file);
             callback(url);
         },

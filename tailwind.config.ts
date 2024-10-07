@@ -16,7 +16,6 @@ const config: Config = {
                 customDarkBlue: {
                     100: '#394C60',
                     200: '#506b87',
-
                 },
                 customBeige: {
                     100: '#EFECE7',
@@ -30,6 +29,6 @@ const config: Config = {
             },
         },
     },
-    plugins: [],
+    plugins: [require('@tailwindcss/line-clamp')],
 };
 export default config;

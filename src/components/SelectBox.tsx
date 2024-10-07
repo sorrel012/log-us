@@ -11,14 +11,19 @@ export interface SelectType {
 interface SelectProps {
     onItemsPerValueChange: (value: number) => void;
     items: SelectType[];
+    defaultValue?: number;
 }
 
 export default function SelectBox({
     onItemsPerValueChange,
     items,
+    defaultValue,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState(items[0].text);
+    const [selectedText, setSelectedText] = useState(
+        items.find((item) => item.value === defaultValue)?.text ||
+            items[0].text,
+    );
     const selectBoxRef = useRef<HTMLDivElement | null>(null);
 
     const handleToggle = () => {

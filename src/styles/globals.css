@@ -198,6 +198,7 @@ h1, h2, h3, h4, h5, h6 {
   color: black;
   display: flex;
   align-items: center;
+  margin-bottom: -5px;
   justify-content: space-between;
   padding: 10px;
   cursor: pointer;

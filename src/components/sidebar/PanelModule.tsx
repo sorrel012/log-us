@@ -15,13 +15,13 @@ export default function PanelModule({ title, contents }: ModuleProps) {
             <div className="mb-3 font-bold">{title}</div>
             <ul className="text-sm leading-6 lg:leading-7">
                 {contents &&
-                    contents.map((item, index) => (
+                    contents.map(({ seriesId, seriesName }, index) => (
                         <li key={index} className="truncate">
                             <Link
                                 className="hover:cursor-pointer hover:border-b hover:border-solid"
-                                href={`/${blogAddress}/posts/series=${item.seriesId}`}
+                                href={`/${blogAddress}/posts/series=${seriesId}&${seriesName}`}
                             >
-                                {item.seriesName}
+                                {seriesName}
                             </Link>
                         </li>
                     ))}
