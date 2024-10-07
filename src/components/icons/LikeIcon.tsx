@@ -4,7 +4,7 @@ export default function LikeIcon({ likes }: { likes: number }) {
     return (
         <div className="flex">
             <IoEyeOutline />
-            <div className="ml-0.5">{likes}</div>
+            <span className="ml-0.5">{likes}</span>
         </div>
     );
 }

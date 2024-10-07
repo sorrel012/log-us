@@ -51,10 +51,10 @@ export default function BlogLayout({
     return (
         <>
             <BlogHeader />
-            <div className="flex">
+            <main className="flex">
                 {isSidebarShow && <Sidebar />}
                 <div className={getStyle(isSidebarShow)}>{children}</div>
-            </div>
+            </main>
             <Popup
                 show={showPopup}
                 title="에러"

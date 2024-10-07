@@ -4,7 +4,7 @@ export default function CommentIcon({ comments }: { comments: number }) {
     return (
         <div className="flex">
             <IoMdHeartEmpty />
-            <div className="ml-0.5">{comments}</div>
+            <span className="ml-0.5">{comments}</span>
         </div>
     );
 }
