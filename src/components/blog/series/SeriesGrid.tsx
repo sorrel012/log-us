@@ -1,30 +1,17 @@
-import { useFetch } from '@/hooks/useFetch';
 import SeriesCard from '@/components/blog/series/SeriesCard';
 import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
+import { UseSeries } from '@/hooks/useSeries';
 import Popup from '@/components/Popup';
-import { useEffect, useState } from 'react';
 
 export default function SeriesGrid() {
     const {
         data: series,
         isLoading,
         isError,
-        error,
-    } = useFetch('/series.json', { queryKey: ['series'] });
-
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-    };
-
-    useEffect(() => {
-        if (isError && !showPopup) {
-            setPopupMessage(error ? error : '알 수 없는 오류가 발생했습니다.');
-            setShowPopup(true);
-        }
-    }, [isError, error]);
+        showPopup,
+        popupMessage,
+        handleClosePopup,
+    } = UseSeries();
 
     return (
         <section>

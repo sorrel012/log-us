@@ -1,14 +1,11 @@
 import UserProfile from '@/components/sidebar/UserProfile';
 import Visitor from '@/components/sidebar/Visitor';
 import PanelModule from '@/components/sidebar/PanelModule';
-import { useFetch } from '@/hooks/useFetch';
-import { Series } from '@/lib/series';
+import { UseSeries } from '@/hooks/useSeries';
+import Popup from '@/components/Popup';
 
 export default function Sidebar() {
-    let { data, isLoading, isError, error } = useFetch<Series[]>(
-        '/series.json',
-        { queryKey: ['series'] },
-    );
+    const { data, showPopup, popupMessage, handleClosePopup } = UseSeries();
 
     const series = data
         ? [
@@ -33,6 +30,12 @@ export default function Sidebar() {
                     <Visitor />
                 </div>
             </aside>
+            <Popup
+                show={showPopup}
+                title="에러"
+                text={popupMessage}
+                onClose={handleClosePopup}
+            />
         </>
     );
 }

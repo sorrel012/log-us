@@ -1,82 +1,16 @@
-'use client';
+import BlogLayout from '@/components/blog/BlogLayout';
 
-import BlogHeader from '@/components/header/blogHeader';
-import Sidebar from '@/components/sidebar/Sidebar';
-import { usePathname } from 'next/navigation';
-import { useBlogStore } from '@/store/useBlogStore';
-import { useFetch } from '@/hooks/useFetch';
-import Popup from '@/components/Popup';
-import { useEffect, useState } from 'react';
-
-export default function BlogLayout({
+export default function BlogRootLayout({
     children,
     modal,
 }: Readonly<{
     children: React.ReactNode;
     modal: React.ReactNode;
 }>) {
-    const { setBlogId } = useBlogStore();
-    const params = usePathname();
-    const isSidebarShow = !params.includes('newpost');
-    const blogAddress = params.split('/')[1];
-
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-
-    const { data, isLoading, isError, error } = useFetch('/blog-id.json', {
-        params: { blogAddress: blogAddress },
-        queryKey: ['blogId', blogAddress],
-    });
-
-    useEffect(() => {
-        if (!isLoading && data) {
-            setBlogId(data.blogId);
-        } else if (!isLoading && !data) {
-            setPopupMessage('블로그 정보를 받아올 수 없습니다.');
-            setShowPopup(true);
-        }
-    }, [data, isLoading, setBlogId]);
-
-    useEffect(() => {
-        if (isError && !showPopup) {
-            setPopupMessage(
-                isError ? error : '알 수 없는 오류가 발생했습니다.',
-            );
-            setShowPopup(true);
-        }
-    }, [isError, error, data]);
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-    };
-
     return (
         <>
             {modal}
-            <BlogHeader />
-            <div className="flex">
-                {isSidebarShow && <Sidebar />}
-                <div className={getStyle(isSidebarShow)}>{children}</div>
-            </div>
-            <Popup
-                show={showPopup}
-                title="에러"
-                text={popupMessage}
-                onClose={handleClosePopup}
-            />
+            <BlogLayout>{children}</BlogLayout>
         </>
     );
-}
-
-function getStyle(isSidebarShow: boolean) {
-    let childrenStyle = 'font-default overflow-y-auto pb-24';
-
-    if (isSidebarShow) {
-        childrenStyle +=
-            ' ml-[20%] h-screen w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]';
-    } else {
-        childrenStyle += ' h-full w-full';
-    }
-
-    return childrenStyle;
 }
