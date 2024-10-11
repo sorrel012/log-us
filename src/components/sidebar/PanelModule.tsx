@@ -19,7 +19,7 @@ export default function PanelModule({ title, contents }: ModuleProps) {
                         <li key={index} className="truncate">
                             <Link
                                 className="hover:cursor-pointer hover:border-b hover:border-solid"
-                                href={`/${blogAddress}/posts/series=${seriesId}&${seriesName}`}
+                                href={`/${blogAddress}/posts/series/${seriesId}&${seriesName}`}
                             >
                                 {seriesName}
                             </Link>

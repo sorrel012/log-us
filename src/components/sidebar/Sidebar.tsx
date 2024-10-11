@@ -25,7 +25,6 @@ export default function Sidebar() {
         <>
             <aside className="fixed flex h-[100vh] w-1/5 flex-col overflow-y-auto border-r border-solid border-customLightBlue-100 lg:w-1/6">
                 <div className="flex-1 p-5">
-                    <div>{`isLoading: ${isLoading}`}</div>
                     <UserProfile />
                     {series && <PanelModule title="시리즈" contents={series} />}
                     {isLoading && (

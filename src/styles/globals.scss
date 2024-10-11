@@ -307,3 +307,29 @@ input[type='checkbox'] {
     transform: translateY(-15px);
   }
 }
+
+/* 게시글 목록 */
+.hover-area {
+  .hover-text-color {
+    transition: color 0.15s ease;
+  }
+  .hover-font-bold {
+    transition: font-weight 0.15s ease;
+  }
+  .hover-image-scale {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover {
+    .hover-text-color {
+      color: #ee4c04;
+    }
+    .hover-font-bold {
+      font-weight: bold;
+    }
+    .hover-image-scale {
+      animation: bounce 0.4s;
+    }
+  }
+}
+
