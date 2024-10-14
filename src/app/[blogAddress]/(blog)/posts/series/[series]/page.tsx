@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination';
 import { Post } from '@/components/blog/post/PostCard';
 import { useFetch } from '@/hooks/useFetch';
 import PostList from '@/components/blog/post/PostList';
+import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 
 export default function PostListPage() {
     const { blogId } = useBlogStore();
@@ -64,8 +65,14 @@ export default function PostListPage() {
                     defaultValue={size}
                 />
             </div>
-            {/*TODO 로딩 skeleton 구현*/}
-            <PostList posts={posts} />
+            {isLoading && (
+                <section className="mt-8 flex flex-col gap-6">
+                    {Array.from({ length: size }).map((_, index) => (
+                        <PostListSkeleton key={index} />
+                    ))}
+                </section>
+            )}
+            {posts && <PostList posts={posts} />}
             <Pagination
                 currentPage={currPage}
                 totalPages={totalPages}
