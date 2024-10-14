@@ -19,6 +19,7 @@ export default function PostListPage() {
     const [size, setSize] = useState(10);
     const [currPage, setCurrPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [totalPosts, setTotalPosts] = useState(0);
     const [posts, setPosts] = useState<Post[]>(null);
 
     const seriesValue = Array.isArray(series) ? series[0] : series || '';
@@ -55,6 +56,7 @@ export default function PostListPage() {
         if (data?.content && posts !== data.content) {
             setPosts(data.content);
             setTotalPages(data.totalPages || 1);
+            setTotalPosts(data.totalElements || 0);
         }
     }, [data, posts]);
 
@@ -73,7 +75,17 @@ export default function PostListPage() {
     return (
         <section>
             <div className="flex h-full items-center justify-between border-b border-solid border-customLightBlue-100 pb-3">
-                <h2 className="font-bold">{seriesName}</h2>
+                <h2 className="font-bold">
+                    {seriesName}
+                    {!isError && (
+                        <span
+                            className="relative ml-0.5 text-sm text-customLightBlue-200"
+                            style={{ top: '-0.1em' }}
+                        >
+                            {totalPosts}
+                        </span>
+                    )}
+                </h2>
                 <SelectBox
                     onItemsPerValueChange={handleItemsPerValueChange}
                     items={PAGE_SIZE_OPTIONS}
