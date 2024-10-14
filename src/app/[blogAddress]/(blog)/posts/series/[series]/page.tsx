@@ -10,6 +10,7 @@ import { Post } from '@/components/blog/post/PostCard';
 import { useFetch } from '@/hooks/useFetch';
 import PostList from '@/components/blog/post/PostList';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
+import Popup from '@/components/Popup';
 
 export default function PostListPage() {
     const { blogId } = useBlogStore();
@@ -24,6 +25,9 @@ export default function PostListPage() {
     const [seriesId, seriesName] = seriesValue
         ? decodeURIComponent(seriesValue).split('&')
         : [null, ''];
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
     const params = useMemo(
         () => ({
@@ -41,6 +45,13 @@ export default function PostListPage() {
     });
 
     useEffect(() => {
+        if (isError) {
+            setShowPopup(true);
+            setPopupMessage(error || '게시글을 불러올 수 업습니다.');
+        }
+    }, [isError, error]);
+
+    useEffect(() => {
         if (data?.content && posts !== data.content) {
             setPosts(data.content);
             setTotalPages(data.totalPages || 1);
@@ -55,6 +66,10 @@ export default function PostListPage() {
         setCurrPage(page);
     };
 
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
     return (
         <section>
             <div className="flex h-full items-center justify-between border-b border-solid border-customLightBlue-100 pb-3">
@@ -65,18 +80,34 @@ export default function PostListPage() {
                     defaultValue={size}
                 />
             </div>
-            {isLoading && (
+
+            {isLoading ? (
                 <section className="mt-8 flex flex-col gap-6">
                     {Array.from({ length: size }).map((_, index) => (
                         <PostListSkeleton key={index} />
                     ))}
                 </section>
+            ) : isError ? (
+                <div className="mt-4 leading-6">
+                    <div>게시글을 불러올 수 없습니다.</div>
+                    <div>잠시 후 다시 시도해주세요.</div>
+                </div>
+            ) : posts?.length === 0 ? (
+                <div className="mt-4">게시글이 존재하지 않습니다.</div>
+            ) : (
+                <PostList posts={posts} />
             )}
-            {posts && <PostList posts={posts} />}
+
             <Pagination
                 currentPage={currPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
+            />
+            <Popup
+                show={showPopup}
+                title="에러"
+                text={popupMessage}
+                onClose={handleClosePopup}
             />
         </section>
     );
