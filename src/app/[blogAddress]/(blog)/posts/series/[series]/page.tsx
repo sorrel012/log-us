@@ -12,6 +12,37 @@ import PostList from '@/components/blog/post/PostList';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import Popup from '@/components/Popup';
 
+interface Pageable {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+}
+
+interface PostList {
+    content: Post[];
+    pageable: Pageable;
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    first: boolean;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    numberOfElements: number;
+    empty: boolean;
+}
+
 export default function PostListPage() {
     const { blogId } = useBlogStore();
     const { series } = useParams();
@@ -40,10 +71,13 @@ export default function PostListPage() {
         [blogId, seriesId, size, currPage],
     );
 
-    const { data, isLoading, isError, error } = useFetch('/posts.json', {
-        queryKey: ['posts', blogId, seriesId, currPage, size],
-        params,
-    });
+    const { data, isLoading, isError, error } = useFetch<PostList>(
+        '/posts.json',
+        {
+            queryKey: ['posts', blogId, seriesId, currPage, size],
+            params,
+        },
+    );
 
     useEffect(() => {
         if (isError) {
