@@ -34,8 +34,13 @@ export default function PostCard({
     const { blogAddress } = useParams();
     const router = useRouter();
     const formattedDate = new Date(createdDate).toLocaleDateString();
+
     const handlePostClick = () => {
         router.push(`/${blogAddress}/posts/post/${postId}`);
+    };
+
+    const handleTagClick = (tag: string) => {
+        router.push(`/${blogAddress}/posts/tag/${tag}`);
     };
 
     return (
@@ -77,8 +82,9 @@ export default function PostCard({
                 {tags &&
                     tags.map((tag, index) => (
                         <span
-                            className="rounded-2xl bg-customBeige-100/70 px-3 py-1 text-sm text-customBrown-100"
+                            className="cursor-pointer rounded-2xl bg-customBeige-100/70 px-3 py-1 text-sm text-customBrown-100"
                             key={index}
+                            onClick={() => handleTagClick(tag)}
                         >
                             {tag}
                         </span>
