@@ -5,14 +5,34 @@ import PanelModule from '@/components/sidebar/PanelModule';
 import { UseSeries } from '@/hooks/useSeries';
 import Popup from '@/components/Popup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export default function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true);
-    const [shouldFetch, setShouldFetch] = useState(false); // 데이터를 fetching 할지 여부
+interface SidebarProps {
+    isOpen: boolean;
+    handleSidebarClick: () => void;
+}
+
+const sidebarVariants = {
+    initial: { x: '-150%' },
+    animate: {
+        x: 0,
+        transition: {
+            ease: 'easeOut',
+            duration: 0.5,
+        },
+    },
+    exit: {
+        x: '-150%',
+        transition: {
+            ease: 'easeOut',
+            duration: 0.5,
+        },
+    },
+};
+
+export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
     const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
-        UseSeries(shouldFetch);
+        UseSeries();
 
     const series = data
         ? [
@@ -26,39 +46,25 @@ export default function Sidebar() {
           ]
         : [];
 
-    const handleSidebarClick = () => {
-        setIsOpen((prev) => !prev);
-    };
-
-    useEffect(() => {
-        if (isOpen) {
-            setShouldFetch(true); // 사이드바가 열릴 때 데이터를 fetching하도록 설정
-        } else {
-            setShouldFetch(false); // 사이드바가 닫힐 때 데이터 fetching 중단
-        }
-    }, [isOpen]);
-
     return (
-        <aside className="fixed flex h-[100vh] w-1/5 flex-col overflow-y-auto lg:w-1/6">
+        <aside
+            className={`fixed h-[100vh] ${isOpen ? 'flex w-1/5 flex-col lg:w-1/6' : 'fixed'}`}
+        >
             <AnimatePresence>
                 {isOpen ? (
                     <motion.section
                         key="sidebar"
-                        initial={{ x: '-100%', opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: '-150%', opacity: 0 }}
-                        ㄴ
-                        transition={{ duration: 0.25 }}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        variants={sidebarVariants}
+                        className="overflow-y-auto border-r border-solid border-customLightBlue-100"
                     >
                         <BsList
                             className="absolute right-3 top-3 size-5 cursor-pointer"
                             onClick={handleSidebarClick}
                         />
-                        <motion.section
-                            key="sidebar-content"
-                            className="border-r border-solid border-customLightBlue-100"
-                            exit={{ height: 0 }}
-                        >
+                        <motion.section key="sidebar-content">
                             <div className="flex-1 p-5">
                                 <UserProfile />
                                 {series && (

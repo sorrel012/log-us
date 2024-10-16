@@ -15,8 +15,10 @@ export default function BlogLayout({
 }>) {
     const { setBlogId } = useBlogStore();
     const pathname = usePathname();
-    const isSidebarShow = !pathname.includes('newpost');
     const blogAddress = pathname.split('/')[1];
+
+    const isSidebarShow = !pathname.includes('newpost');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
@@ -47,13 +49,24 @@ export default function BlogLayout({
     const handleClosePopup = () => {
         setShowPopup(false);
     };
+    const handleSidebarClick = () => {
+        setIsSidebarOpen((prev) => !prev);
+    };
 
     return (
         <>
             <BlogHeader />
             <main className="flex">
-                {isSidebarShow && <Sidebar />}
-                <div className={getStyle(isSidebarShow)}>{children}</div>
+                {isSidebarShow && (
+                    <Sidebar
+                        isOpen={isSidebarOpen}
+                        isShow={isSidebarShow}
+                        handleSidebarClick={handleSidebarClick}
+                    />
+                )}
+                <div className={getStyle(isSidebarShow, isSidebarOpen)}>
+                    {children}
+                </div>
             </main>
             <Popup
                 show={showPopup}
@@ -65,12 +78,17 @@ export default function BlogLayout({
     );
 }
 
-function getStyle(isSidebarShow: boolean) {
-    let childrenStyle = 'font-default overflow-y-auto pb-24';
+function getStyle(isSidebarShow: boolean, isSidebarOpen: boolean) {
+    let childrenStyle =
+        'font-default overflow-y-auto pb-24 transition-all duration-500 ease-in-out';
 
     if (isSidebarShow) {
-        childrenStyle +=
-            ' ml-[20%] h-screen w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]';
+        if (isSidebarOpen) {
+            childrenStyle +=
+                ' ml-[20%] h-screen w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]';
+        } else {
+            childrenStyle += ' h-screen px-24 py-16 w-full';
+        }
     } else {
         childrenStyle += ' h-full w-full';
     }
