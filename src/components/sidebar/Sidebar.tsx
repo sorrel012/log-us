@@ -33,7 +33,6 @@ const sidebarVariants = {
 export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
     const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
         UseSeries();
-
     const series = data
         ? [
               {

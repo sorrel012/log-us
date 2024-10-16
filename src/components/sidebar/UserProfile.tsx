@@ -1,18 +1,76 @@
+import { useFetch } from '@/hooks/useFetch';
 import OurLogsUserProfile from '@/components/sidebar/OurLogsUserProfile';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import MyLogUserProfile from '@/components/sidebar/MyLogUserProfile';
+import React, { useEffect, useState } from 'react';
+import Popup from '@/components/Popup';
+
+export interface Member {
+    memberId: number;
+    nickname: string;
+    blogAuth: string;
+    imgUrl?: string;
+    myLogAddress: string;
+}
+
+export interface BlogInfo {
+    shareYn: string;
+    introduce?: string;
+    members: Member[];
+}
 
 export default function UserProfile() {
+    const { data, isLoading, isError, error } = useFetch<BlogInfo>(
+        '/blog-info.json',
+        {
+            queryKey: ['memberInfo'],
+        },
+    );
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    useEffect(() => {
+        if (isError && !showPopup) {
+            setPopupMessage(
+                isError ? error : '알 수 없는 오류가 발생했습니다.',
+            );
+            setShowPopup(true);
+        }
+    }, [isError, error, data]);
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
     return (
-        <section className="mb-4 flex flex-col border-b border-solid border-customLightBlue-100 pb-4 lg:mb-7 lg:pb-7">
-            {/*<MyLogUserProfile />*/}
-            <OurLogsUserProfile />
-            <p className="font-default mt-2 px-2 text-sm leading-4">
-                안녕하세용 제 블로그에 오신 여러분 매우 환영합니당~
-            </p>
-            <div className="text-center">
-                <button className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white hover:bg-customLightBlue-200/85">
-                    글쓰기
-                </button>
-            </div>
-        </section>
+        <>
+            <section className="mb-4 flex flex-col border-b border-solid border-customLightBlue-100 pb-4 lg:mb-7 lg:pb-7">
+                {isLoading && (
+                    <div className="mt-3 px-2">
+                        <LoadingSpinner />
+                    </div>
+                )}
+                {data?.shareYn === 'N' && (
+                    <MyLogUserProfile members={data.members} />
+                )}
+                {data?.shareYn === 'Y' && (
+                    <OurLogsUserProfile members={data.members} />
+                )}
+                <p className="font-default mt-2 px-2 text-sm leading-4">
+                    {data?.introduce}
+                </p>
+                <div className="text-center">
+                    {/*TODO 로그인 한 사용자와 비교*/}
+                    <button className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white hover:bg-customLightBlue-200/85">
+                        글쓰기
+                    </button>
+                </div>
+            </section>
+            <Popup
+                show={showPopup}
+                title="에러"
+                text={popupMessage}
+                onClose={handleClosePopup}
+            />
+        </>
     );
 }
