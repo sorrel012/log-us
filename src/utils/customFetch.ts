@@ -36,8 +36,6 @@ export async function customFetch<T>(
     if (!headers['Content-Type']) {
         headers['Content-Type'] = 'application/json';
     }
-    //TODO mber-id zustand에서 받아오는 걸로 수정 필요
-    headers['member-id'] = 'sorrel012';
 
     let baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
