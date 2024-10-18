@@ -57,13 +57,16 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                         animate="animate"
                         exit="exit"
                         variants={sidebarVariants}
-                        className="overflow-y-auto border-r border-solid border-customLightBlue-100"
+                        className="h-full overflow-y-auto border-r border-solid border-customLightBlue-100"
                     >
                         <BsList
                             className="absolute right-3 top-3 size-5 cursor-pointer"
                             onClick={handleSidebarClick}
                         />
-                        <motion.section key="sidebar-content">
+                        <motion.section
+                            key="sidebar-content"
+                            className="flex h-full flex-col"
+                        >
                             <div className="flex-1 p-5">
                                 <UserProfile />
                                 {series && (
