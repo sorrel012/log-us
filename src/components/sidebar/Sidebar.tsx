@@ -47,7 +47,7 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
 
     return (
         <aside
-            className={`fixed h-[100vh] ${isOpen ? 'flex w-1/5 flex-col lg:w-1/6' : 'fixed'}`}
+            className={`fixed h-[100vh] select-none ${isOpen ? 'flex w-1/5 flex-col lg:w-1/6' : 'fixed'}`}
         >
             <AnimatePresence>
                 {isOpen ? (
