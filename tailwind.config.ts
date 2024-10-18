@@ -27,6 +27,10 @@ const config: Config = {
                     100: '#A38970',
                 },
             },
+            screens: {
+                '3xl': '1800px',
+                '4xl': '2200px',
+            },
         },
     },
     plugins: [],

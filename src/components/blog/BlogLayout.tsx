@@ -56,7 +56,7 @@ export default function BlogLayout({
     return (
         <>
             <BlogHeader />
-            <main className="flex">
+            <main className="mx-auto flex">
                 {isSidebarShow && (
                     <Sidebar
                         isOpen={isSidebarOpen}

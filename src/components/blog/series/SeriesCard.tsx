@@ -26,15 +26,14 @@ export default function SeriesCard({
             className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border border-solid border-customLightBlue-100 p-5 text-center"
             onClick={handleClick}
         >
-            <figure className="relative">
-                <Image
-                    src={imgUrl}
-                    alt={seriesName}
-                    className="rounded-md"
-                    priority
-                    fill
-                />
-            </figure>
+            <Image
+                src={imgUrl}
+                alt={seriesName}
+                className="rounded-md"
+                priority
+                width={180}
+                height={180}
+            />
             <div className="mt-4 font-bold">{seriesName}</div>
         </article>
     );
