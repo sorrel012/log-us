@@ -6,6 +6,7 @@ import { UseSeries } from '@/hooks/useSeries';
 import Popup from '@/components/Popup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
+import { IoClose } from 'react-icons/io5';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -25,7 +26,7 @@ const sidebarVariants = {
         x: '-150%',
         transition: {
             ease: 'easeOut',
-            duration: 0.5,
+            duration: 0.6,
         },
     },
 };
@@ -51,50 +52,60 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
         >
             <AnimatePresence>
                 {isOpen ? (
-                    <motion.section
-                        key="sidebar"
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        variants={sidebarVariants}
-                        className="h-full overflow-y-auto border-r border-solid border-customLightBlue-100"
-                    >
-                        <BsList
-                            className="absolute right-3 top-3 size-5 cursor-pointer"
-                            onClick={handleSidebarClick}
-                        />
+                    <>
                         <motion.section
-                            key="sidebar-content"
-                            className="flex h-full flex-col"
+                            key="sidebar"
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            variants={sidebarVariants}
+                            className="h-full overflow-y-auto border-r border-solid border-customLightBlue-100"
                         >
-                            <div className="flex-1 p-5">
-                                <UserProfile />
-                                {series && (
-                                    <PanelModule
-                                        title="시리즈"
-                                        contents={series}
-                                    />
-                                )}
-                                {isLoading && (
-                                    <div className="mt-3 px-2">
-                                        <LoadingSpinner />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="mb-14 p-5">
-                                <Visitor />
-                            </div>
+                            <IoClose
+                                key="closeIcon"
+                                className="absolute right-3 top-3 size-5 cursor-pointer text-customDarkBlue-100"
+                                onClick={handleSidebarClick}
+                                initial="initial"
+                                animate="animate"
+                                variants={sidebarVariants}
+                            />
+                            <motion.section
+                                key="sidebar-content"
+                                className="flex h-full flex-col"
+                                exit={{
+                                    opacity: 0,
+                                    transition: { duration: 0 },
+                                }}
+                            >
+                                <div className="flex-1 p-5">
+                                    <UserProfile />
+                                    {series && (
+                                        <PanelModule
+                                            title="시리즈"
+                                            contents={series}
+                                        />
+                                    )}
+                                    {isLoading && (
+                                        <div className="mt-3 px-2">
+                                            <LoadingSpinner />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="mb-14 p-5">
+                                    <Visitor />
+                                </div>
+                            </motion.section>
+                            <Popup
+                                show={showPopup}
+                                title="에러"
+                                text={popupMessage}
+                                onClose={handleClosePopup}
+                            />
                         </motion.section>
-                        <Popup
-                            show={showPopup}
-                            title="에러"
-                            text={popupMessage}
-                            onClose={handleClosePopup}
-                        />
-                    </motion.section>
+                    </>
                 ) : (
                     <BsList
-                        className="absolute left-3 top-3 size-5 cursor-pointer"
+                        className="absolute left-3 top-3 size-5 cursor-pointer text-customDarkBlue-100"
                         onClick={handleSidebarClick}
                     />
                 )}
