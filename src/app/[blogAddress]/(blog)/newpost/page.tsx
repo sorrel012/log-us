@@ -1,11 +1,17 @@
 'use client';
 
 import SelectBox from '@/components/SelectBox';
-import { useCallback, useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 import TextEditor from '@/components/blog/TextEditor';
 import { UseSeries } from '@/hooks/useSeries';
+import { GrFormPreviousLink } from 'react-icons/gr';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function NewPostPage() {
+    const router = useRouter();
+    const pathname = usePathname();
+    const blogAddress = pathname.split('/')[1];
     const { data } = UseSeries();
     const series = data
         ? [
@@ -24,24 +30,23 @@ export default function NewPostPage() {
     }));
 
     const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
 
     const onItemsPerValueChange = (value: number) => {};
-    const handleImage = useCallback(
-        async (file: File, callback: typeof Function) => () => {
-            const url = 'https';
-            // const url = await getImage(file);
-            callback(url);
-        },
-        [],
-    );
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
+        // 저장 후 처리
+        //서버에 데이터 전송
+    };
 
     return (
-        <section className="px-24 py-10">
+        <form className="px-24 py-10" onSubmit={handleSubmit}>
             {selectedSeries.length > 0 && (
                 <SelectBox
                     onItemsPerValueChange={onItemsPerValueChange}
                     items={selectedSeries}
-                    defaultValue={selectedSeries[0]?.value} // Ensure selectedSeries[0] exists
+                    defaultValue={selectedSeries[0]?.value}
                 />
             )}
             <input
@@ -51,7 +56,30 @@ export default function NewPostPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
             />
-            <TextEditor handleImage={handleImage} />
-        </section>
+            <TextEditor onChange={setContent} />
+            <div className="mt-5 flex justify-between">
+                <Link
+                    href={`/${blogAddress}`}
+                    className="flex cursor-pointer items-center text-customLightBlue-200"
+                >
+                    <GrFormPreviousLink />
+                    <button type="button">나가기</button>
+                </Link>
+                <div className="*:cursor-pointer *:rounded-md *:py-1">
+                    <button
+                        type="button"
+                        className="mr-2 border border-customLightBlue-200 px-1 text-customLightBlue-200"
+                    >
+                        임시저장
+                    </button>
+                    <button
+                        type="submit"
+                        className="border border-customLightBlue-200 bg-customLightBlue-200 px-4 text-white"
+                    >
+                        발행
+                    </button>
+                </div>
+            </div>
+        </form>
     );
 }
