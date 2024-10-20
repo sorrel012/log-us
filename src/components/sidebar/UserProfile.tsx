@@ -4,6 +4,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import MyLogUserProfile from '@/components/sidebar/MyLogUserProfile';
 import React, { useEffect, useState } from 'react';
 import Popup from '@/components/Popup';
+import { useRouter } from 'next/navigation';
 
 export interface Member {
     memberId: number;
@@ -15,11 +16,14 @@ export interface Member {
 
 export interface BlogInfo {
     shareYn: string;
+    blogAddress: string;
     introduce?: string;
     members: Member[];
 }
 
 export default function UserProfile() {
+    const router = useRouter();
+
     const { data, isLoading, isError, error } = useFetch<BlogInfo>(
         '/blog-info.json',
         {
@@ -45,6 +49,10 @@ export default function UserProfile() {
         setShowPopup(false);
     };
 
+    const handleButtonClick = () => {
+        router.push(`/${data?.blogAddress}/newpost`);
+    };
+
     return (
         <>
             <section className="mb-4 flex flex-col border-b border-solid border-customLightBlue-100 pb-4 lg:mb-7 lg:pb-6">
@@ -65,7 +73,10 @@ export default function UserProfile() {
                 {isContain && (
                     <div className="text-center">
                         {/*TODO 로그인 한 사용자와 비교*/}
-                        <button className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85">
+                        <button
+                            className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
+                            onClick={handleButtonClick}
+                        >
                             글쓰기
                         </button>
                     </div>

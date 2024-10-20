@@ -5,8 +5,8 @@
     "shareYn": "Y",
     "members": [
         {
-            "memberId": 2,
-            "nickname": "유저2",
+            "memberId": 1,
+            "nickname": "유저1",
             "blogAuth": "OWNER",
             "imgUrl": "https://img1.daumcdn.net/thumb/C428x428/?scode=mtistory2&fname=https%3A%2F%2Ftistory1.daumcdn.net%2Ftistory%2F5433026%2Fattach%2Fc946169e598e471db147bca6cc192885",
             "myLogAddress": "blog2"
