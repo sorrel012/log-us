@@ -6,9 +6,9 @@ interface PopupProps {
     show: boolean;
     title: string;
     text?: string;
-    onConfirm?: () => void;
-    onClose: () => void;
-    type?: string;
+    onConfirm: () => void;
+    onCancel?: () => void;
+    type?: 'alert' | 'confirm';
 }
 
 const popupVariants = {
@@ -36,7 +36,7 @@ export default function Popup({
     title,
     text,
     onConfirm,
-    onClose,
+    onCancel,
     type = 'alert',
 }: PopupProps) {
     const [isClient, setIsClient] = useState(false);
@@ -76,11 +76,11 @@ export default function Popup({
                         </div>
                         <div className="button">
                             {type === 'confirm' && (
-                                <button className="confirm" onClick={onConfirm}>
+                                <button className="confirm" onClick={onCancel}>
                                     취소
                                 </button>
                             )}
-                            <button className="close" onClick={onClose}>
+                            <button className="close" onClick={onConfirm}>
                                 확인
                             </button>
                         </div>

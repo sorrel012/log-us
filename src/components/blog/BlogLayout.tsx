@@ -72,7 +72,7 @@ export default function BlogLayout({
                 show={showPopup}
                 title="에러"
                 text={popupMessage}
-                onClose={handleClosePopup}
+                onConfirm={handleClosePopup}
             />
         </>
     );

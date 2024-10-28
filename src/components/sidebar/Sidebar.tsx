@@ -99,7 +99,7 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                                 show={showPopup}
                                 title="에러"
                                 text={popupMessage}
-                                onClose={handleClosePopup}
+                                onConfirm={handleClosePopup}
                             />
                         </motion.section>
                     </>
