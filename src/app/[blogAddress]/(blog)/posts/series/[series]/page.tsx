@@ -25,7 +25,7 @@ interface Pageable {
     unpaged: boolean;
 }
 
-interface PostList {
+export interface PostList {
     content: Post[];
     pageable: Pageable;
     last: boolean;
