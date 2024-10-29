@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 interface PopupProps {
     show: boolean;
-    title: string;
+    title?: string;
     text?: string;
     onConfirm: () => void;
     onCancel?: () => void;
