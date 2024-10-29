@@ -102,7 +102,7 @@ export default function NewPostPage() {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupTitle, setPopupTitle] = useState('');
     const [popupId, setPopupId] = useState<popupIdType>('');
-    const [popupType, setPopupType] = useState<string | null>(null);
+    const [popupType, setPopupType] = useState<'alert' | 'confirm'>();
     const handleBackClick = () => {
         if (content.trim().length > 0 || title.trim().length > 0 || seriesId) {
             setPopupTitle('작성 중인 글을 저장하시겠습니까?');
