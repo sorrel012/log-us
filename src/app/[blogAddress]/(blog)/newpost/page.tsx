@@ -1,14 +1,29 @@
 'use client';
 
-import SelectBox from '@/components/SelectBox';
 import React, { FormEventHandler, useState } from 'react';
-import TextEditor from '@/components/blog/TextEditor';
-import { UseSeries } from '@/hooks/useSeries';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { usePathname, useRouter } from 'next/navigation';
-import Popup from '@/components/Popup';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
+import SelectBox from '@/components/SelectBox';
+import TextEditor from '@/components/blog/TextEditor';
+import Popup from '@/components/Popup';
+import { UseSeries } from '@/hooks/useSeries';
+import { isObjEqual } from '@/utils/commonUtil';
+
+type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
+
+interface PostPayload {
+    blogId: number;
+    categoryId?: number;
+    seriesId?: number | null;
+    title: string;
+    content: string;
+    status: PostStatus;
+    tags?: string[];
+}
+
+type popupIdType = 'TMP_SAVE_EXIT' | 'CLOSE' | 'EXIT' | 'SAVE' | '';
 
 export default function NewPostPage() {
     const router = useRouter();
@@ -46,37 +61,175 @@ export default function NewPostPage() {
         //서버에 데이터 전송
     };
 
+    const savePost = (type: string) => {
+        const formData = new FormData();
+        let requestDto;
+
+        if (type === 'TEMPORARY') {
+            requestDto = {
+                blogId,
+                title,
+                content,
+                status: 'TEMPORARY',
+                ...(seriesId > 0 && { seriesId }),
+            };
+        } else {
+            // TODO 게시글 등록
+            requestDto = {
+                blogId,
+                title,
+                content,
+                status: 'TEMPORARY',
+                ...(seriesId > 0 && { seriesId }),
+            };
+        }
+
+        formData.append('requestDto', JSON.stringify(requestDto));
+
+        return formData;
+    };
+
+    const openErrorPopup = () => {
+        handleClosePopup();
+        setTimeout(() => {
+            setPopupId('CLOSE');
+            setPopupMessage('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+        }, 300);
+    };
+
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [popupTitle, setPopupTitle] = useState('');
+    const [popupId, setPopupId] = useState<popupIdType>('');
+    const [popupType, setPopupType] = useState<string | null>(null);
     const handleBackClick = () => {
-        console.log(content.trim().length, title.trim().length, !seriesId);
         if (content.trim().length > 0 || title.trim().length > 0 || seriesId) {
             setPopupTitle('작성 중인 글을 저장하시겠습니까?');
             setPopupMessage('저장하지 않은 글은 복구할 수 없습니다.');
             setShowPopup(true);
+            setPopupType('confirm');
+            setPopupId('EXIT');
         } else {
             router.push(`/${blogAddress}`);
         }
     };
     const handleClosePopup = () => {
         setShowPopup(false);
+        setPopupTitle('');
+        setPopupMessage('');
+        setPopupType(null);
+        setPopupId('');
     };
-    const handleTmpPostSave = async () => {
-        //TODO 임시 저장 수정
-        const data = { blogId, seriesId, title, content };
-        await customFetch('tmpsave.com', {
-            queryKey: ['tmpPost'],
-            method: 'POST',
-            data,
-        }).then(() => {
-            setShowPopup(false);
+    const handleConfirm = async () => {
+        if (popupId === 'EXIT') {
+            const data = savePost('TEMPORARY');
+            await customFetch('/posts', {
+                queryKey: ['tmpPost'],
+                method: 'POST',
+                data,
+            })
+                .then(() => {
+                    handleClosePopup();
+                    setTimeout(() => {
+                        setPopupId('TMP_SAVE_EXIT');
+                        setPopupTitle('작성 중인 글이 저장되었습니다.');
+                        setPopupType('alert');
+                        setShowPopup(true);
+                    }, 300);
+                })
+                .catch((error) => {
+                    openErrorPopup();
+                });
+        } else if (popupId === 'TMP_SAVE_EXIT') {
+            handleClosePopup();
             router.push(`/${blogAddress}/posts/series/0&전체보기`);
-        });
+        } else if (popupId === 'SAVE') {
+            handleClosePopup();
+            router.push(`/${blogAddress}/posts/series/0&전체보기`);
+        } else if (popupId === 'CLOSE') {
+            handleClosePopup();
+        }
+    };
+
+    const handleTmpPost = async () => {
+        // 임시저장 게시글 조회
+        customFetch<PostPayload>('/posts-blogId.json', {
+            queryKey: ['tmpPost'],
+            params: { blogId },
+        })
+            .then((response) => {
+                if (!response || !response.data) {
+                    throw new Error('임시 저장에 실패했습니다.');
+                }
+
+                const tmpPost = response?.data;
+                const tmpPostExists = !!tmpPost?.status;
+                const hasChange =
+                    title.trim() ||
+                    (content.trim() && content !== '<p><br></p>') ||
+                    seriesId;
+
+                if (hasChange) {
+                    if (tmpPostExists) {
+                        // 1. 작성한 내용이 있고 서버에 임시 저장된 게시글이 있는 경우 (덮어쓰기)
+                        const newTmpPost = { seriesId, title, content };
+                        if (
+                            !isObjEqual(newTmpPost, {
+                                seriesId: tmpPost?.seriesId,
+                                title: tmpPost?.title,
+                                content: tmpPost?.content,
+                            })
+                        ) {
+                            setPopupTitle('이미 저장된 게시글이 있습니다.');
+                            setPopupMessage('저장하시겠습니까?');
+                            setPopupType('confirm');
+                            setShowPopup(true);
+                            setPopupId('EXIT');
+                        } else {
+                            setPopupTitle('변경 사항이 없습니다.');
+                            setShowPopup(true);
+                            setPopupId('CLOSE');
+                        }
+                    } else {
+                        // 2. 작성한 내용이 있고 서버에 임시 저장된 게시글이 없는 경우 (임시 저장)
+                        const data = savePost('TEMPORARY');
+                        customFetch('/posts', {
+                            queryKey: ['tmpPost'],
+                            method: 'POST',
+                            data,
+                        })
+                            .then(() => {
+                                setPopupId('CLOSE');
+                                setPopupTitle(
+                                    '작성 중인 글이 임시 저장되었습니다.',
+                                );
+                                setShowPopup(true);
+                            })
+                            .catch(() => openErrorPopup());
+                    }
+                } else if (tmpPost && tmpPostExists) {
+                    // 3. 작성한 내용이 없고 서버에 임시 저장된 게시글이 있는 경우 (불러오기)
+                    setTitle(tmpPost.title);
+                    setContent(tmpPost.content);
+                    setSeriesId(tmpPost.seriesId || 0);
+                    setPopupId('CLOSE');
+                    setPopupTitle('임시 저장된 글을 불러왔습니다.');
+                    setShowPopup(true);
+                } else {
+                    // 4. 작성한 내용이 없고 서버에 임시 저장된 게시글이 없는 경우
+                    setPopupId('CLOSE');
+                    setPopupTitle('임시 저장된 글이 없습니다.');
+                    setShowPopup(true);
+                }
+            })
+            .catch(() => {
+                openErrorPopup();
+            });
     };
 
     return (
-        <>
+        <div className="h-screen overflow-y-auto">
             <form
                 className="mx-auto max-w-screen-xl px-24 py-10"
                 onSubmit={handleSubmit}
@@ -85,7 +238,7 @@ export default function NewPostPage() {
                     <SelectBox
                         onItemsPerValueChange={handleItemsPerValueChange}
                         items={selectedSeries}
-                        defaultValue={selectedSeries[0]?.value}
+                        defaultValue={seriesId || selectedSeries[0]?.value}
                     />
                 )}
                 <input
@@ -95,7 +248,7 @@ export default function NewPostPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <TextEditor onChange={setContent} />
+                <TextEditor onChange={setContent} contents={content} />
                 <div className="mt-5 flex justify-between">
                     <div
                         className="flex cursor-pointer items-center text-customLightBlue-200"
@@ -104,10 +257,11 @@ export default function NewPostPage() {
                         <GrFormPreviousLink />
                         <button type="button">나가기</button>
                     </div>
-                    <div className="*:cursor-pointer *:rounded-md *:py-1">
+                    <div className="*:cursor-pointer *:rounded-md *:py-1.5">
                         <button
                             type="button"
                             className="mr-2 border border-customLightBlue-200 px-1 text-customLightBlue-200"
+                            onClick={handleTmpPost}
                         >
                             임시저장
                         </button>
@@ -124,10 +278,10 @@ export default function NewPostPage() {
                 show={showPopup}
                 title={popupTitle}
                 text={popupMessage}
-                type="confirm"
-                onConfirm={handleTmpPostSave}
+                type={popupType}
+                onConfirm={handleConfirm}
                 onCancel={handleClosePopup}
             />
-        </>
+        </div>
     );
 }

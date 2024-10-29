@@ -17,7 +17,7 @@ export default function BlogLayout({
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
 
-    const isSidebarShow = !pathname.includes('newpost');
+    const isShow = !pathname.includes('newpost');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
@@ -55,16 +55,16 @@ export default function BlogLayout({
 
     return (
         <>
-            <BlogHeader />
+            {isShow && <BlogHeader />}
             <main className="mx-auto flex">
-                {isSidebarShow && (
+                {isShow && (
                     <Sidebar
                         isOpen={isSidebarOpen}
-                        isShow={isSidebarShow}
+                        isShow={isShow}
                         handleSidebarClick={handleSidebarClick}
                     />
                 )}
-                <div className={getStyle(isSidebarShow, isSidebarOpen)}>
+                <div className={getStyle(isShow, isSidebarOpen)}>
                     {children}
                 </div>
             </main>
@@ -78,11 +78,11 @@ export default function BlogLayout({
     );
 }
 
-function getStyle(isSidebarShow: boolean, isSidebarOpen: boolean) {
+function getStyle(isShow: boolean, isSidebarOpen: boolean) {
     let childrenStyle =
         'font-default overflow-y-auto pb-24 transition-all duration-500 ease-in-out';
 
-    if (isSidebarShow) {
+    if (isShow) {
         if (isSidebarOpen) {
             childrenStyle +=
                 ' ml-[20%] h-screen w-[80%] p-10 lg:ml-[16.6667%] lg:w-[83.3333%]';

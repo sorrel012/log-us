@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
@@ -17,10 +17,16 @@ const toolbarItems = [
 
 export default function TextEditor({
     onChange,
+    contents,
 }: {
     onChange: (content: string) => void;
+    contents: string;
 }) {
     const editorRef = useRef<Editor>();
+
+    useEffect(() => {
+        editorRef.current?.getInstance().setHTML(contents || '');
+    }, [contents]);
 
     const handleImageUpload = async (
         image: File | Blob,
@@ -44,7 +50,7 @@ export default function TextEditor({
         <Editor
             ref={editorRef}
             height="600px"
-            initialValue=" "
+            initialValue={contents}
             placeholder="내용을 입력하세요"
             initialEditType="wysiwyg"
             hideModeSwitch={true}

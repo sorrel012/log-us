@@ -26,6 +26,13 @@ export default function SelectBox({
     );
     const selectBoxRef = useRef<HTMLDivElement | null>(null);
 
+    useEffect(() => {
+        const selectedItem = items.find((item) => item.value === defaultValue);
+        if (selectedItem) {
+            setSelectedText(selectedItem.text);
+        }
+    }, [defaultValue, items]);
+
     const handleToggle = () => {
         setIsOpen((prev) => !prev);
     };
