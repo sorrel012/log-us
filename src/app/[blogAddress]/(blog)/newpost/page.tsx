@@ -10,7 +10,7 @@ import TextEditor from '@/components/blog/TextEditor';
 import Popup from '@/components/Popup';
 import { UseSeries } from '@/hooks/useSeries';
 import { isObjEqual } from '@/utils/commonUtil';
-import SavePost from '@/components/blog/SavePost';
+import SavePostPopup from '@/components/blog/post/SavePostPopup';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
@@ -256,11 +256,11 @@ export default function NewPostPage() {
             return;
         }
 
-        setShowPopup(true);
+        setShowSavePopup(true);
     };
 
     return (
-        <div className="h-screen overflow-y-auto">
+        <div className="flex h-screen items-center justify-center overflow-y-auto">
             <form
                 className="mx-auto max-w-screen-xl px-24 py-10"
                 onSubmit={handleSubmit}
@@ -320,10 +320,11 @@ export default function NewPostPage() {
                 onCancel={handleClosePopup}
             />
 
-            <SavePost
+            <SavePostPopup
                 show={showSavePopup}
                 onClose={() => setShowPopup(false)}
                 message="게시글이 발행되었습니다."
+                title={title}
             />
         </div>
     );
