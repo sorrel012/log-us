@@ -33,7 +33,7 @@ export async function customFetch<T>(
         method = 'GET';
     }
 
-    if (!headers['Content-Type']) {
+    if (!(data instanceof FormData) && !headers['Content-Type']) {
         headers['Content-Type'] = 'application/json';
     }
 
@@ -54,7 +54,7 @@ export async function customFetch<T>(
     try {
         const response = await fetch(`${baseUrl}${url}`, {
             method,
-            ...(data && { body: JSON.stringify(data) }),
+            body: data instanceof FormData ? data : JSON.stringify(data),
             headers,
             ...options,
             signal,
@@ -65,6 +65,12 @@ export async function customFetch<T>(
         if (!response.ok) {
             state.isError = true;
             state.error = `서버 오류가 발생하였습니다. ${response.statusText}`;
+        }
+
+        if (!response.ok) {
+            return Promise.reject(
+                `서버 오류가 발생하였습니다. ${response.statusText}`,
+            );
         }
 
         state.data = (await response.json()) as T;
