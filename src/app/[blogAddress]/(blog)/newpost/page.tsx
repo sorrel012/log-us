@@ -153,79 +153,72 @@ export default function NewPostPage() {
     };
 
     const handleTmpPost = async () => {
-        // 임시저장 게시글 조회
-        customFetch<PostPayload>('/posts-blogId.json', {
-            queryKey: ['tmpPost'],
-            params: { blogId },
-        })
-            .then((response) => {
-                if (!response || !response.data) {
-                    throw new Error('임시 저장에 실패했습니다.');
-                }
+        try {
+            const response = await customFetch<PostPayload>(
+                '/posts-blogId.json',
+                {
+                    queryKey: ['tmpPost'],
+                    params: { blogId },
+                },
+            );
 
-                const tmpPost = response?.data;
-                const tmpPostExists = !!tmpPost?.status;
-                const hasChange =
-                    title.trim() ||
-                    (content.trim() && content !== '<p><br></p>') ||
-                    seriesId;
+            if (!response || !response.data) {
+                throw new Error('임시 저장에 실패했습니다.');
+            }
 
-                if (hasChange) {
-                    if (tmpPostExists) {
-                        // 1. 작성한 내용이 있고 서버에 임시 저장된 게시글이 있는 경우 (덮어쓰기)
-                        const newTmpPost = { seriesId, title, content };
-                        if (
-                            !isObjEqual(newTmpPost, {
-                                seriesId: tmpPost?.seriesId,
-                                title: tmpPost?.title,
-                                content: tmpPost?.content,
-                            })
-                        ) {
-                            setPopupTitle('이미 저장된 게시글이 있습니다.');
-                            setPopupMessage('저장하시겠습니까?');
-                            setPopupType('confirm');
-                            setShowPopup(true);
-                            setPopupId('EXIT');
-                        } else {
-                            setPopupTitle('변경 사항이 없습니다.');
-                            setShowPopup(true);
-                            setPopupId('CLOSE');
-                        }
-                    } else {
-                        // 2. 작성한 내용이 있고 서버에 임시 저장된 게시글이 없는 경우 (임시 저장)
-                        const data = savePost('TEMPORARY');
-                        customFetch('/posts', {
-                            queryKey: ['tmpPost'],
-                            method: 'POST',
-                            data,
+            const tmpPost = response.data;
+            const tmpPostExists = !!tmpPost.status;
+            const hasChange =
+                title.trim() ||
+                (content.trim() && content !== '<p><br></p>') ||
+                seriesId;
+
+            if (hasChange) {
+                if (tmpPostExists) {
+                    const newTmpPost = { seriesId, title, content };
+                    if (
+                        !isObjEqual(newTmpPost, {
+                            seriesId: tmpPost.seriesId,
+                            title: tmpPost.title,
+                            content: tmpPost.content,
                         })
-                            .then(() => {
-                                setPopupId('CLOSE');
-                                setPopupTitle(
-                                    '작성 중인 글이 임시 저장되었습니다.',
-                                );
-                                setShowPopup(true);
-                            })
-                            .catch(() => openErrorPopup());
+                    ) {
+                        setPopupTitle('이미 저장된 게시글이 있습니다.');
+                        setPopupMessage('저장하시겠습니까?');
+                        setPopupType('confirm');
+                        setShowPopup(true);
+                        setPopupId('EXIT');
+                    } else {
+                        setPopupTitle('변경 사항이 없습니다.');
+                        setShowPopup(true);
+                        setPopupId('CLOSE');
                     }
-                } else if (tmpPost && tmpPostExists) {
-                    // 3. 작성한 내용이 없고 서버에 임시 저장된 게시글이 있는 경우 (불러오기)
-                    setTitle(tmpPost.title);
-                    setContent(tmpPost.content);
-                    setSeriesId(tmpPost.seriesId || 0);
-                    setPopupId('CLOSE');
-                    setPopupTitle('임시 저장된 글을 불러왔습니다.');
-                    setShowPopup(true);
                 } else {
-                    // 4. 작성한 내용이 없고 서버에 임시 저장된 게시글이 없는 경우
+                    const data = savePost('TEMPORARY');
+                    await customFetch('/posts', {
+                        queryKey: ['tmpPost'],
+                        method: 'POST',
+                        data,
+                    });
                     setPopupId('CLOSE');
-                    setPopupTitle('임시 저장된 글이 없습니다.');
+                    setPopupTitle('작성 중인 글이 임시 저장되었습니다.');
                     setShowPopup(true);
                 }
-            })
-            .catch(() => {
-                openErrorPopup();
-            });
+            } else if (tmpPostExists) {
+                setTitle(tmpPost.title);
+                setContent(tmpPost.content);
+                setSeriesId(tmpPost.seriesId || 0);
+                setPopupId('CLOSE');
+                setPopupTitle('임시 저장된 글을 불러왔습니다.');
+                setShowPopup(true);
+            } else {
+                setPopupId('CLOSE');
+                setPopupTitle('임시 저장된 글이 없습니다.');
+                setShowPopup(true);
+            }
+        } catch (error) {
+            openErrorPopup();
+        }
     };
 
     return (
