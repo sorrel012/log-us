@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { usePathname, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
@@ -10,6 +10,7 @@ import TextEditor from '@/components/blog/TextEditor';
 import Popup from '@/components/Popup';
 import { UseSeries } from '@/hooks/useSeries';
 import { isObjEqual } from '@/utils/commonUtil';
+import SavePost from '@/components/blog/SavePost';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
@@ -23,7 +24,14 @@ interface PostPayload {
     tags?: string[];
 }
 
-type popupIdType = 'TMP_SAVE_EXIT' | 'CLOSE' | 'EXIT' | 'SAVE' | '';
+type popupIdType =
+    | 'TMP_SAVE_EXIT'
+    | 'CLOSE'
+    | 'EXIT'
+    | 'SAVE'
+    | 'CONTENT_EMPTY'
+    | 'TITLE_EMPTY'
+    | '';
 
 export default function NewPostPage() {
     const router = useRouter();
@@ -149,6 +157,12 @@ export default function NewPostPage() {
             router.push(`/${blogAddress}/posts/series/0&전체보기`);
         } else if (popupId === 'CLOSE') {
             handleClosePopup();
+        } else if (popupId === 'TITLE_EMPTY') {
+            titleRef.current?.focus();
+            handleClosePopup();
+        } else if (popupId === 'CONTENT_EMPTY') {
+            handleClosePopup();
+            setIsContentEmpty(true);
         }
     };
 
@@ -221,6 +235,30 @@ export default function NewPostPage() {
         }
     };
 
+    const [showSavePopup, setShowSavePopup] = useState(false);
+    const titleRef = useRef<HTMLInputElement>();
+    const [isContentEmpty, setIsContentEmpty] = useState(false);
+
+    const handlePublish = () => {
+        if (!title.trim()) {
+            setPopupId('TITLE_EMPTY');
+            setPopupTitle('제목을 입력해 주세요.');
+            setShowPopup(true);
+
+            return;
+        }
+
+        if (!content.trim || content === '<p><br></p>') {
+            setPopupId('CONTENT_EMPTY');
+            setPopupTitle('내용을 입력해 주세요.');
+            setShowPopup(true);
+
+            return;
+        }
+
+        setShowPopup(true);
+    };
+
     return (
         <div className="h-screen overflow-y-auto">
             <form
@@ -240,8 +278,13 @@ export default function NewPostPage() {
                     placeholder="제목을 입력하세요"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    ref={titleRef}
                 />
-                <TextEditor onChange={setContent} contents={content} />
+                <TextEditor
+                    onChange={setContent}
+                    contents={content}
+                    isEmpty={isContentEmpty}
+                />
                 <div className="mt-5 flex justify-between">
                     <div
                         className="flex cursor-pointer items-center text-customLightBlue-200"
@@ -261,6 +304,7 @@ export default function NewPostPage() {
                         <button
                             type="submit"
                             className="border border-customLightBlue-200 bg-customLightBlue-200 px-4 text-white"
+                            onClick={handlePublish}
                         >
                             발행
                         </button>
@@ -274,6 +318,12 @@ export default function NewPostPage() {
                 type={popupType}
                 onConfirm={handleConfirm}
                 onCancel={handleClosePopup}
+            />
+
+            <SavePost
+                show={showSavePopup}
+                onClose={() => setShowPopup(false)}
+                message="게시글이 발행되었습니다."
             />
         </div>
     );

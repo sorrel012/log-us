@@ -20,15 +20,21 @@ const toolbarItems = [
 export default function TextEditor({
     onChange,
     contents,
+    isEmpty,
 }: {
     onChange: (content: string) => void;
     contents: string;
+    isEmpty: boolean;
 }) {
     const editorRef = useRef<Editor>();
 
     useEffect(() => {
         editorRef.current?.getInstance().setHTML(contents || '');
     }, [contents]);
+
+    useEffect(() => {
+        editorRef.current?.getInstance().focus();
+    }, [isEmpty]);
 
     const handleImageUpload = async (
         image: File | Blob,
