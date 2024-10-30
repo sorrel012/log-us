@@ -405,5 +405,28 @@ $spinner-border-width: 4px;
     animation: fade-in 0.3s ease-out;
     overflow-y: auto;
   }
+
+  @keyframes bounce {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(5deg);
+    }
+    75% {
+      transform: rotate(-5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  &-bounce {
+    transform-origin: bottom center;
+
+    &:hover {
+      animation: bounce 0.4s ease-in-out;
+    }
+  }
 }
 

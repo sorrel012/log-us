@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { CiSettings } from 'react-icons/ci';
 import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
@@ -31,24 +33,32 @@ export default function SavePostPopup({
         const file = e.target.files?.[0];
         if (file) {
             setImage(file);
-            setImagePreview(URL.createObjectURL(file)); // 선택한 이미지의 미리보기 URL 생성
+            setImagePreview(URL.createObjectURL(file));
         }
     };
-
     const handleImageClick = () => {
         fileInputRef.current?.click();
+    };
+    const handleImageDelete = () => {
+        setImage(null);
+        setImagePreview(null);
     };
 
     if (!show) return null;
 
     return (
-        <div className="popup-overlay" onClick={onClose}>
+        <div
+            className="popup-overlay *:focus-visible:outline-none"
+            onClick={onClose}
+        >
             <div className="popup-content">
                 <div className="mb-3 flex items-center border-b border-solid border-customDarkBlue-100 pb-2 text-lg font-bold">
                     <CiSettings />️ <span className="ml-1">설정</span>
                 </div>
-                <div className="mb-3">
-                    <label className="text-md font-semibold">제목</label>
+                <div className="mb-3 flex">
+                    <label className="text-md w-1/7 flex-shrink-0 font-semibold">
+                        제목
+                    </label>
                     <div className="ml-2 truncate text-customDarkBlue-100">
                         {title}
                     </div>
@@ -60,23 +70,36 @@ export default function SavePostPopup({
                                 이미지
                             </label>
                             {imagePreview && (
-                                <MdDelete className="text-customDarkBlue-100" />
+                                <MdDelete
+                                    className="popup-bounce cursor-pointer text-customDarkBlue-100"
+                                    onClick={handleImageDelete}
+                                />
                             )}
                         </div>
-                        <div
-                            className="mt-2 cursor-pointer"
-                            onClick={handleImageClick}
-                        >
+                        <div className="mt-2 cursor-pointer">
                             {imagePreview ? (
-                                <div className="flex">
+                                <div className="relative flex size-56">
                                     <Image
                                         src={imagePreview}
                                         alt="미리보기"
                                         className="size-56 rounded border object-cover"
+                                        fill
                                     />
                                 </div>
                             ) : (
-                                <MdOutlineAddPhotoAlternate className="size-56 text-customLightBlue-200" />
+                                <>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleImageChange}
+                                        style={{ display: 'none' }}
+                                        accept="image/*"
+                                    />
+                                    <MdOutlineAddPhotoAlternate
+                                        className="size-56 text-customLightBlue-200"
+                                        onClick={handleImageClick}
+                                    />
+                                </>
                             )}
                         </div>
                     </div>
@@ -86,10 +109,10 @@ export default function SavePostPopup({
                                 카테고리
                             </label>
                             <div className="flex justify-between gap-2 text-sm text-customDarkBlue-100">
-                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2">
+                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2 focus-visible:outline-none">
                                     <option>1차 선택</option>
                                 </select>
-                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2">
+                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2 focus-visible:outline-none">
                                     <option>2차 선택</option>
                                 </select>
                             </div>
@@ -101,7 +124,7 @@ export default function SavePostPopup({
                             <input
                                 type="text"
                                 placeholder="특수문자와 공백을 제외하고 5개까지 입력 가능합니다."
-                                className="mt-2 w-full rounded border border-gray-300 p-2 text-sm text-customDarkBlue-100"
+                                className="mt-2 w-full rounded border border-gray-300 p-2 text-sm text-customDarkBlue-100 focus-visible:outline-none"
                             />
                         </div>
                         <div className="mb-4">

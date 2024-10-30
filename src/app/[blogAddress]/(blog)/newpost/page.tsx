@@ -29,8 +29,8 @@ type popupIdType =
     | 'CLOSE'
     | 'EXIT'
     | 'SAVE'
-    | 'CONTENT_EMPTY'
-    | 'TITLE_EMPTY'
+    | 'CONTENT_FOCUS'
+    | 'TITLE_FOCUS'
     | '';
 
 export default function NewPostPage() {
@@ -157,10 +157,10 @@ export default function NewPostPage() {
             router.push(`/${blogAddress}/posts/series/0&전체보기`);
         } else if (popupId === 'CLOSE') {
             handleClosePopup();
-        } else if (popupId === 'TITLE_EMPTY') {
+        } else if (popupId === 'TITLE_FOCUS') {
             titleRef.current?.focus();
             handleClosePopup();
-        } else if (popupId === 'CONTENT_EMPTY') {
+        } else if (popupId === 'CONTENT_FOCUS') {
             handleClosePopup();
             setIsContentEmpty(true);
         }
@@ -241,7 +241,7 @@ export default function NewPostPage() {
 
     const handlePublish = () => {
         if (!title.trim()) {
-            setPopupId('TITLE_EMPTY');
+            setPopupId('TITLE_FOCUS');
             setPopupTitle('제목을 입력해 주세요.');
             setShowPopup(true);
 
@@ -249,8 +249,24 @@ export default function NewPostPage() {
         }
 
         if (!content.trim || content === '<p><br></p>') {
-            setPopupId('CONTENT_EMPTY');
+            setPopupId('CONTENT_FOCUS');
             setPopupTitle('내용을 입력해 주세요.');
+            setShowPopup(true);
+
+            return;
+        }
+
+        if (title.length > 100) {
+            setPopupId('TITLE_FOCUS');
+            setPopupTitle('제목을 100자 이내로 작성해 주세요.');
+            setShowPopup(true);
+
+            return;
+        }
+
+        if (content.length > 100) {
+            setPopupId('CONTENT_FOCUS');
+            setPopupTitle('내용을 10,000자 이내로 작성해 주세요.');
             setShowPopup(true);
 
             return;
