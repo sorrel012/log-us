@@ -100,6 +100,18 @@ export default function SavePostPopup({
         setCategoryDtlId(id);
     };
 
+    const handleStatusClick = (value: string) => {
+        if (status === '') {
+            setStatus(value);
+        } else {
+            setStatus('');
+        }
+    };
+
+    useEffect(() => {
+        console.log('status: ', status);
+    }, [status]);
+
     if (!show) return null;
 
     return (
@@ -177,7 +189,7 @@ export default function SavePostPopup({
                             <input
                                 type="text"
                                 placeholder="특수문자와 공백을 제외하고 5개까지 입력 가능합니다."
-                                className="mt-3 w-full rounded border border-customLightBlue-100 border-gray-300 p-2 text-sm text-customDarkBlue-100 focus-visible:outline-none"
+                                className="mt-3 w-full rounded border border-customLightBlue-100 p-2 text-sm text-customDarkBlue-100 focus-visible:outline-none"
                             />
                         </div>
                         <div className="mb-4">
@@ -188,7 +200,10 @@ export default function SavePostPopup({
                                 {STATUS.map((st) => (
                                     <button
                                         key={st.value}
-                                        className="rounded-md border border-solid border-customLightBlue-100 px-2 py-2 text-customDarkBlue-100"
+                                        className={`rounded-md border border-solid px-2 py-2 text-customDarkBlue-100 ${st.value === status ? 'border-customLightBlue-200' : 'border-customLightBlue-100'}`}
+                                        onClick={() =>
+                                            handleStatusClick(st.value)
+                                        }
                                     >
                                         {st.text}
                                     </button>
