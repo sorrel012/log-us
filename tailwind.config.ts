@@ -31,6 +31,9 @@ const config: Config = {
                 '3xl': '1800px',
                 '4xl': '2200px',
             },
+            fontSize: {
+                md: '1rem',
+            },
         },
     },
     plugins: [],
