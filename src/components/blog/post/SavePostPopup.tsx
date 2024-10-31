@@ -168,7 +168,7 @@ export default function SavePostPopup({
                             <label className="text-md font-semibold">
                                 카테고리
                             </label>
-                            <div className="mt-3 flex w-full justify-between gap-2 text-sm">
+                            <div className="text-md mt-3 flex w-full justify-between gap-2">
                                 <SelectBox
                                     onItemsPerValueChange={handleCategory}
                                     items={category}
