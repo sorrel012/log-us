@@ -13,6 +13,7 @@ interface SelectProps {
     items: SelectType[];
     defaultValue?: number;
     disabled?: boolean;
+    width?: string;
 }
 
 export default function SelectBox({
@@ -20,6 +21,7 @@ export default function SelectBox({
     items,
     defaultValue,
     disabled,
+    width,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedText, setSelectedText] = useState<string>(
@@ -73,7 +75,7 @@ export default function SelectBox({
             ref={selectBoxRef}
         >
             <button
-                className="select-box"
+                className={`select-box ${width ? width : 'w-[140px]'}`}
                 onClick={handleToggle}
                 disabled={disabled}
             >
@@ -83,7 +85,9 @@ export default function SelectBox({
                 </div>
             </button>
             {isOpen && (
-                <ul className="options-container">
+                <ul
+                    className={`options-container ${width ? width : 'w-[140px]'}`}
+                >
                     {items.map((item) => (
                         <li
                             key={item.value}

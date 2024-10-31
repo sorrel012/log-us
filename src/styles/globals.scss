@@ -208,10 +208,8 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.8em;
   margin-bottom: 5px;
   background-color: white;
-  min-width: 140px;
 
   .select-box {
-    width: 100%;
     background-color: white;
     color: black;
     display: flex;
@@ -233,7 +231,6 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: 36px;
     left: 0;
-    width: 100%;
     background-color: white;
     border: 1px solid $color-light-blue-opacity;
     border-radius: 5px;

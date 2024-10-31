@@ -28,14 +28,26 @@ export default function SavePostPopup({
     onPublish: () => void;
     title: string;
 }) {
-    const [image, setImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const [category, setCategory] = useState([
+        { text: '1차 카테고리' + '', value: 0 },
+    ]);
+    const [categoryDtl, setCategoryDtl] = useState([
+        { text: '2차 카테고리', value: 0 },
+    ]);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    const [thumbImg, setThumbImg] = useState<File | null>(null);
+    const [categoryId, setCategoryId] = useState<number>();
+    const [categoryDtlId, setCategoryDtlId] = useState<number>();
+    const [tags, setTags] = useState<string[]>([]);
+    const [status, setStatus] = useState<string>('');
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setImage(file);
+            setThumbImg(file);
             setImagePreview(URL.createObjectURL(file));
         }
     };
@@ -43,18 +55,9 @@ export default function SavePostPopup({
         fileInputRef.current?.click();
     };
     const handleImageDelete = () => {
-        setImage(null);
+        setThumbImg(null);
         setImagePreview(null);
     };
-
-    const [categoryId, setCategoryId] = useState<number>();
-    const [category, setCategory] = useState([
-        { text: '1차 카테고리', value: 0 },
-    ]);
-    const [categoryDtlId, setCategoryDtlId] = useState<number>();
-    const [categoryDtl, setCategoryDtl] = useState([
-        { text: '2차 카테고리', value: 0 },
-    ]);
 
     const { data: categoryData } = useFetch('/category.json', {
         queryKey: ['category'],
@@ -105,16 +108,8 @@ export default function SavePostPopup({
             onClick={onClose}
         >
             <div className="popup-content">
-                <div className="mb-3 flex items-center border-b border-solid border-customDarkBlue-100 pb-2 text-lg font-bold">
+                <div className="mb-5 flex items-center border-b border-solid border-customDarkBlue-100 pb-2 text-lg font-bold">
                     <CiSettings />️ <span className="ml-1">설정</span>
-                </div>
-                <div className="mb-3 flex">
-                    <label className="text-md w-1/7 flex-shrink-0 font-semibold">
-                        제목
-                    </label>
-                    <div className="ml-2 truncate text-customDarkBlue-100">
-                        {title}
-                    </div>
                 </div>
                 <div className="flex justify-between gap-4">
                     <div className="w-1/2">
@@ -161,15 +156,17 @@ export default function SavePostPopup({
                             <label className="text-md font-semibold">
                                 카테고리
                             </label>
-                            <div className="mt-2 flex w-full justify-between gap-2 text-sm text-customDarkBlue-100">
+                            <div className="mt-3 flex w-full justify-between gap-2 text-sm">
                                 <SelectBox
                                     onItemsPerValueChange={handleCategory}
                                     items={category}
+                                    width="w-full"
                                 />
                                 <SelectBox
                                     onItemsPerValueChange={handleCategoryDtl}
                                     items={categoryDtl}
                                     disabled={!categoryId}
+                                    width="w-full"
                                 />
                             </div>
                         </div>
@@ -180,14 +177,14 @@ export default function SavePostPopup({
                             <input
                                 type="text"
                                 placeholder="특수문자와 공백을 제외하고 5개까지 입력 가능합니다."
-                                className="mt-2 w-full rounded border border-gray-300 p-2 text-sm text-customDarkBlue-100 focus-visible:outline-none"
+                                className="mt-3 w-full rounded border border-customLightBlue-100 border-gray-300 p-2 text-sm text-customDarkBlue-100 focus-visible:outline-none"
                             />
                         </div>
                         <div className="mb-4">
                             <label className="text-md font-semibold">
                                 공개여부
                             </label>
-                            <div className="mt-2 flex space-x-4">
+                            <div className="mt-3 flex space-x-4">
                                 {STATUS.map((st) => (
                                     <button
                                         key={st.value}

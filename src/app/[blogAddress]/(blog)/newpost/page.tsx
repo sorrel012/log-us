@@ -337,7 +337,7 @@ export default function NewPostPage() {
             />
 
             <SavePostPopup
-                show={showSavePopup}
+                show={true}
                 onClose={() => setShowPopup(false)}
                 message="게시글이 발행되었습니다."
                 title={title}
