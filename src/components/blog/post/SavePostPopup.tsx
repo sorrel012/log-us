@@ -1,9 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CiSettings } from 'react-icons/ci';
 import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import Image from 'next/image';
+import SelectBox from '@/components/SelectBox';
+import { useFetch } from '@/hooks/useFetch';
+import { customFetch } from '@/utils/customFetch';
 
 const STATUS = [
     { text: '공개', value: 'PUBLIC' },
@@ -42,6 +45,56 @@ export default function SavePostPopup({
     const handleImageDelete = () => {
         setImage(null);
         setImagePreview(null);
+    };
+
+    const [categoryId, setCategoryId] = useState<number>();
+    const [category, setCategory] = useState([
+        { text: '1차 카테고리', value: 0 },
+    ]);
+    const [categoryDtlId, setCategoryDtlId] = useState<number>();
+    const [categoryDtl, setCategoryDtl] = useState([
+        { text: '2차 카테고리', value: 0 },
+    ]);
+
+    const { data: categoryData } = useFetch('/category.json', {
+        queryKey: ['category'],
+    });
+
+    useEffect(() => {
+        const selectBoxCategory = categoryData?.map((category) => ({
+            text: category.categoryName,
+            value: category.categoryId,
+        }));
+        if (selectBoxCategory?.length > 0) {
+            setCategory([
+                { text: '1차 카테고리', value: 0 },
+                ...selectBoxCategory,
+            ]);
+        }
+    }, [categoryData]);
+
+    useEffect(() => {
+        if (categoryId) {
+            customFetch('/category-dtl.json', {
+                queryKey: ['categoryDtl', categoryId],
+                params: { categoryId },
+            }).then((res) => {
+                const selectBoxCategoryDtl = res.data.map((categoryDtl) => ({
+                    text: categoryDtl.categoryDtlName,
+                    value: categoryDtl.categoryDtlId,
+                }));
+                setCategoryDtl([
+                    { text: '2차 카테고리', value: 0 },
+                    ...selectBoxCategoryDtl,
+                ]);
+            });
+        }
+    }, [categoryId]);
+    const handleCategory = (id: number) => {
+        setCategoryId(id);
+    };
+    const handleCategoryDtl = (id: number) => {
+        setCategoryDtlId(id);
     };
 
     if (!show) return null;
@@ -108,13 +161,16 @@ export default function SavePostPopup({
                             <label className="text-md font-semibold">
                                 카테고리
                             </label>
-                            <div className="flex justify-between gap-2 text-sm text-customDarkBlue-100">
-                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2 focus-visible:outline-none">
-                                    <option>1차 선택</option>
-                                </select>
-                                <select className="mt-2 inline w-full rounded border border-gray-300 p-2 focus-visible:outline-none">
-                                    <option>2차 선택</option>
-                                </select>
+                            <div className="mt-2 flex w-full justify-between gap-2 text-sm text-customDarkBlue-100">
+                                <SelectBox
+                                    onItemsPerValueChange={handleCategory}
+                                    items={category}
+                                />
+                                <SelectBox
+                                    onItemsPerValueChange={handleCategoryDtl}
+                                    items={categoryDtl}
+                                    disabled={!categoryId}
+                                />
                             </div>
                         </div>
                         <div className="mb-4">

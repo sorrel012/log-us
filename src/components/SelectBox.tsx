@@ -12,24 +12,33 @@ interface SelectProps {
     onItemsPerValueChange: (value: number) => void;
     items: SelectType[];
     defaultValue?: number;
+    disabled?: boolean;
 }
 
 export default function SelectBox({
     onItemsPerValueChange,
     items,
     defaultValue,
+    disabled,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState(
-        items.find((item) => item.value === defaultValue)?.text ||
-            items[0].text,
+    const [selectedText, setSelectedText] = useState<string>(
+        items.length > 0
+            ? items.find((item) => item.value === defaultValue)?.text ||
+                  items[0].text
+            : '선택',
     );
+
     const selectBoxRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const selectedItem = items.find((item) => item.value === defaultValue);
-        if (selectedItem) {
-            setSelectedText(selectedItem.text);
+        if (items.length > 0) {
+            const selectedItem = items.find(
+                (item) => item.value === defaultValue,
+            );
+            if (selectedItem) {
+                setSelectedText(selectedItem.text);
+            }
         }
     }, [defaultValue, items]);
 
@@ -59,8 +68,15 @@ export default function SelectBox({
     }, []);
 
     return (
-        <div className="select" ref={selectBoxRef}>
-            <button className="select-box" onClick={handleToggle}>
+        <div
+            className={`select w-full ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+            ref={selectBoxRef}
+        >
+            <button
+                className="select-box"
+                onClick={handleToggle}
+                disabled={disabled}
+            >
                 <span className="selected-text">{selectedText}</span>
                 <div>
                     {isOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
