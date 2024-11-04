@@ -4,7 +4,7 @@ import BlogHeader from '@/components/header/blogHeader';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Popup from '@/components/Popup';
 import React, { useEffect, useState } from 'react';
-import { useBlogStore } from '@/store/useBlogStore';
+import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { usePathname } from 'next/navigation';
 import { useFetch } from '@/hooks/useFetch';
 
@@ -13,7 +13,7 @@ export default function BlogLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { setBlogId } = useBlogStore();
+    const { setBlogId, setBlogInfo } = useBlogStore();
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
 
@@ -36,6 +36,22 @@ export default function BlogLayout({
             setShowPopup(true);
         }
     }, [data, isLoading, setBlogId]);
+
+    const { data: infoData, isLoading: isInfoLoading } = useFetch<BlogInfo>(
+        '/blog-info.json',
+        {
+            queryKey: ['memberInfo'],
+        },
+    );
+
+    useEffect(() => {
+        if (!isInfoLoading && infoData) {
+            setBlogInfo(infoData);
+        } else if (!isInfoLoading && !infoData) {
+            setPopupMessage('블로그 정보를 받아올 수 없습니다.');
+            setShowPopup(true);
+        }
+    }, [infoData, isInfoLoading, setBlogInfo]);
 
     useEffect(() => {
         if (isError && !showPopup) {
