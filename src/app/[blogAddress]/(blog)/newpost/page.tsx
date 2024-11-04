@@ -69,7 +69,7 @@ export default function NewPostPage() {
         //서버에 데이터 전송
     };
 
-    const savePost = (type: string) => {
+    const getData = (type: string, postInfo?: any) => {
         const formData = new FormData();
         let requestDto;
 
@@ -82,13 +82,18 @@ export default function NewPostPage() {
                 ...(seriesId > 0 && { seriesId }),
             };
         } else {
-            // TODO 게시글 등록
+            formData.append('thumbImg', postInfo?.thumbImg);
             requestDto = {
                 blogId,
                 title,
                 content,
-                status: 'TEMPORARY',
+                status: postInfo?.status,
                 ...(seriesId > 0 && { seriesId }),
+                ...(postInfo?.parentId > 0 && { parentId: postInfo?.parentId }),
+                ...(postInfo?.categoryId > 0 && {
+                    categoryId: postInfo?.categoryId,
+                }),
+                tags: postInfo?.tags,
             };
         }
 
@@ -131,7 +136,7 @@ export default function NewPostPage() {
     };
     const handleConfirm = async () => {
         if (popupId === 'EXIT') {
-            const data = savePost('TEMPORARY');
+            const data = getData('TEMPORARY');
             await customFetch('/posts', {
                 queryKey: ['tmpPost'],
                 method: 'POST',
@@ -208,7 +213,7 @@ export default function NewPostPage() {
                         setPopupId('CLOSE');
                     }
                 } else {
-                    const data = savePost('TEMPORARY');
+                    const data = getData('TEMPORARY');
                     await customFetch('/posts', {
                         queryKey: ['tmpPost'],
                         method: 'POST',
@@ -275,6 +280,27 @@ export default function NewPostPage() {
         setShowSavePopup(true);
     };
 
+    const handleSavePost = async (post) => {
+        const data = getData(post.status, post);
+        await customFetch('/posts', {
+            queryKey: ['savePost', post.status],
+            method: 'POST',
+            data,
+        })
+            .then(() => {
+                handleClosePopup();
+                setTimeout(() => {
+                    setPopupId('EXIT');
+                    setPopupTitle('글이 발행되었습니다.');
+                    setPopupType('alert');
+                    setShowPopup(true);
+                }, 300);
+            })
+            .catch((error) => {
+                openErrorPopup();
+            });
+    };
+
     return (
         <div className="flex h-screen items-center justify-center overflow-y-auto">
             <form
@@ -337,10 +363,10 @@ export default function NewPostPage() {
             />
 
             <SavePostPopup
-                show={true}
-                onClose={() => setShowPopup(false)}
+                show={showSavePopup}
+                onClose={() => setShowSavePopup(false)}
                 message="게시글이 발행되었습니다."
-                title={title}
+                onPostSave={handleSavePost}
             />
         </div>
     );

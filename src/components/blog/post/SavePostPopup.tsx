@@ -8,36 +8,41 @@ import SelectBox from '@/components/SelectBox';
 import { useFetch } from '@/hooks/useFetch';
 import { customFetch } from '@/utils/customFetch';
 import Popup from '@/components/Popup';
+import { useBlogStore } from '@/store/useBlogStore';
 
 const STATUS = [
     { text: '공개', value: 'PUBLIC' },
     { text: '비공개', value: 'SECRET' },
 ];
 
+const SHARE_STATUS = [
+    { text: '공개', value: 'PUBLIC' },
+    { text: '멤버공개', value: 'SECRET' },
+];
+
 export default function SavePostPopup({
     show,
     onClose,
-    onPublish,
-    title,
+    onPostSave,
 }: {
     show: boolean;
     onClose: () => void;
-    onPublish: () => void;
-    title: string;
+    onPostSave: (post: any) => void;
 }) {
+    const { blogInfo } = useBlogStore();
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [thumbImg, setThumbImg] = useState<File | null>(null);
-    const [category, setCategory] = useState([
+    const [parentCategory, setParentCategory] = useState([
         { text: '1차 카테고리', value: 0 },
     ]);
-    const [categoryDtl, setCategoryDtl] = useState([
+    const [category, setCategory] = useState([
         { text: '2차 카테고리', value: 0 },
     ]);
+    const [parentId, setParentId] = useState<number>();
     const [categoryId, setCategoryId] = useState<number>();
-    const [categoryDtlId, setCategoryDtlId] = useState<number>();
     const [tags, setTags] = useState<string[]>([]);
     const [status, setStatus] = useState<string>('');
 
@@ -54,43 +59,43 @@ export default function SavePostPopup({
         setImagePreview(null);
     };
 
-    const { data: categoryData } = useFetch('/category.json', {
-        queryKey: ['category'],
+    const { data: parentCategoryData } = useFetch('/category.json', {
+        queryKey: ['parent', 'category'],
     });
 
     useEffect(() => {
-        const selectBoxCategory = categoryData?.map((category) => ({
-            text: category.categoryName,
-            value: category.categoryId,
+        const selectBoxCategory = parentCategoryData?.map((parent) => ({
+            text: parent.categoryName,
+            value: parent.categoryId,
         }));
         if (selectBoxCategory?.length > 0) {
-            setCategory([
+            setParentCategory([
                 { text: '1차 카테고리', value: 0 },
                 ...selectBoxCategory,
             ]);
         }
-    }, [categoryData]);
+    }, [parentCategoryData]);
 
     useEffect(() => {
-        if (categoryId) {
-            customFetch('/category-dtl.json', {
-                queryKey: ['categoryDtl', categoryId],
-                params: { categoryId },
+        if (parentId) {
+            customFetch('/category.json', {
+                queryKey: ['category', parentId],
+                params: { parentId },
             }).then((res) => {
-                const selectBoxCategoryDtl = res.data.map((categoryDtl) => ({
-                    text: categoryDtl.categoryDtlName,
-                    value: categoryDtl.categoryDtlId,
+                const selectBoxCategoryDtl = res.data.map((category) => ({
+                    text: category.categoryName,
+                    value: category.categoryId,
                 }));
-                setCategoryDtl([
+                setCategory([
                     { text: '2차 카테고리', value: 0 },
                     ...selectBoxCategoryDtl,
                 ]);
             });
         }
-    }, [categoryId]);
+    }, [parentId]);
 
+    const handleParentCategory = (id: number) => setParentId(id);
     const handleCategory = (id: number) => setCategoryId(id);
-    const handleCategoryDtl = (id: number) => setCategoryDtlId(id);
 
     const handleStatusClick = (value: string) =>
         setStatus(status === value ? '' : value);
@@ -133,10 +138,23 @@ export default function SavePostPopup({
         setPopupMessage('');
     };
 
+    const handleSavePost = () => {
+        onPostSave({
+            thumbImg,
+            parentId,
+            categoryId,
+            status,
+            tags,
+        });
+        onClose();
+    };
+
+    const statusButtons = blogInfo?.shareYn === 'Y' ? SHARE_STATUS : STATUS;
+
     if (!show) return null;
 
     return (
-        <div
+        <section
             className="popup-overlay *:focus-visible:outline-none"
             onClick={onClose}
         >
@@ -144,10 +162,10 @@ export default function SavePostPopup({
                 <div className="mb-5 flex items-center border-b border-solid border-customDarkBlue-100 pb-2 text-lg font-bold">
                     <CiSettings />️ <span className="ml-1">설정</span>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-6">
                     <div className="w-1/2">
                         <div className="flex">
-                            <label className="text-md mr-1 font-semibold">
+                            <label className="mr-1 text-md font-semibold">
                                 이미지
                             </label>
                             {imagePreview && (
@@ -159,12 +177,14 @@ export default function SavePostPopup({
                         </div>
                         <div className="mt-2 cursor-pointer">
                             {imagePreview ? (
-                                <Image
-                                    src={imagePreview}
-                                    alt="미리보기"
-                                    className="size-56 rounded border object-cover"
-                                    fill
-                                />
+                                <div className="relative flex size-[12.4rem]">
+                                    <Image
+                                        src={imagePreview}
+                                        alt="미리보기"
+                                        className="rounded border object-cover"
+                                        fill
+                                    />
+                                </div>
                             ) : (
                                 <>
                                     <input
@@ -175,7 +195,7 @@ export default function SavePostPopup({
                                         accept="image/*"
                                     />
                                     <MdOutlineAddPhotoAlternate
-                                        className="size-56 text-customLightBlue-200"
+                                        className="size-[12.4rem] text-customLightBlue-200"
                                         onClick={handleImageClick}
                                     />
                                 </>
@@ -187,17 +207,19 @@ export default function SavePostPopup({
                             <label className="text-md font-semibold">
                                 카테고리
                             </label>
-                            <div className="text-md mt-3 flex w-full justify-between gap-2">
+                            <div className="mt-3 flex w-full justify-between gap-2 text-md">
+                                <SelectBox
+                                    onItemsPerValueChange={handleParentCategory}
+                                    items={parentCategory}
+                                    width="w-full"
+                                    defaultValue={parentId}
+                                />
                                 <SelectBox
                                     onItemsPerValueChange={handleCategory}
                                     items={category}
+                                    disabled={!parentId}
                                     width="w-full"
-                                />
-                                <SelectBox
-                                    onItemsPerValueChange={handleCategoryDtl}
-                                    items={categoryDtl}
-                                    disabled={!categoryId}
-                                    width="w-full"
+                                    defaultValue={categoryId}
                                 />
                             </div>
                         </div>
@@ -206,7 +228,7 @@ export default function SavePostPopup({
                                 공개여부
                             </label>
                             <div className="mt-3 flex space-x-4">
-                                {STATUS.map((st) => (
+                                {statusButtons.map((st) => (
                                     <button
                                         key={st.value}
                                         className={`w-[80px] rounded-md border border-solid py-1.5 text-sm text-customDarkBlue-100 ${st.value === status ? 'border-customLightBlue-200' : 'border-customLightBlue-100'}`}
@@ -249,7 +271,7 @@ export default function SavePostPopup({
                         </div>
                     ))}
                 </div>
-                <div className="mt-6 flex justify-end">
+                <div className="mt-3 flex justify-end">
                     <button
                         onClick={onClose}
                         className="mr-4 rounded border border-gray-300 px-4 py-2 text-customDarkBlue-100"
@@ -257,7 +279,7 @@ export default function SavePostPopup({
                         취소
                     </button>
                     <button
-                        onClick={onPublish}
+                        onClick={handleSavePost}
                         className="rounded bg-customLightBlue-200 px-6 py-2 text-white"
                     >
                         발행
@@ -269,6 +291,6 @@ export default function SavePostPopup({
                 text={popupMessage}
                 onConfirm={handleConfirm}
             />
-        </div>
+        </section>
     );
 }
