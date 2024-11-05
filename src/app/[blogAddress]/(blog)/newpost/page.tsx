@@ -157,7 +157,8 @@ export default function NewPostPage() {
         } else if (popupId === 'CLOSE') {
             handleClosePopup();
         } else if (popupId === 'TITLE_FOCUS') {
-            titleRef.current?.focus();
+            const tmpRef = titleRef.current!;
+            tmpRef.focus();
             handleClosePopup();
         } else if (popupId === 'CONTENT_FOCUS') {
             handleClosePopup();
