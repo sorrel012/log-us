@@ -14,6 +14,7 @@ interface SelectProps {
     defaultValue?: number;
     disabled?: boolean;
     width?: string;
+    containerWidth?: string;
 }
 
 export default function SelectBox({
@@ -22,6 +23,7 @@ export default function SelectBox({
     defaultValue,
     disabled,
     width,
+    containerWidth,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedText, setSelectedText] = useState<string>(
@@ -71,7 +73,7 @@ export default function SelectBox({
 
     return (
         <div
-            className={`select w-full ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+            className={`select ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${containerWidth ? containerWidth : 'w-full'}`}
             ref={selectBoxRef}
         >
             <button

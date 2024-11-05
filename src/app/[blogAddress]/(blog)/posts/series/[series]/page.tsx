@@ -124,6 +124,7 @@ export default function PostListPage() {
                     onItemsPerValueChange={handleItemsPerValueChange}
                     items={PAGE_SIZE_OPTIONS}
                     defaultValue={size}
+                    containerWidth="w-70"
                 />
             </div>
 
