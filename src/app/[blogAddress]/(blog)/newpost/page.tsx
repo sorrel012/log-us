@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FormEventHandler, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { usePathname, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
@@ -61,12 +61,6 @@ export default function NewPostPage() {
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);
-    };
-
-    const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-        event.preventDefault();
-        // 저장 후 처리
-        //서버에 데이터 전송
     };
 
     const getData = (type: string, postInfo?: any) => {
@@ -140,7 +134,7 @@ export default function NewPostPage() {
             await customFetch('/posts', {
                 queryKey: ['tmpPost'],
                 method: 'POST',
-                data,
+                body: data,
             })
                 .then(() => {
                     handleClosePopup();
@@ -151,7 +145,7 @@ export default function NewPostPage() {
                         setShowPopup(true);
                     }, 300);
                 })
-                .catch((error) => {
+                .catch(() => {
                     openErrorPopup();
                 });
         } else if (popupId === 'TMP_SAVE_EXIT') {
@@ -217,7 +211,7 @@ export default function NewPostPage() {
                     await customFetch('/posts', {
                         queryKey: ['tmpPost'],
                         method: 'POST',
-                        data,
+                        body: data,
                     });
                     setPopupId('CLOSE');
                     setPopupTitle('작성 중인 글이 임시 저장되었습니다.');
@@ -241,7 +235,8 @@ export default function NewPostPage() {
     };
 
     const [showSavePopup, setShowSavePopup] = useState(false);
-    const titleRef = useRef<HTMLInputElement>();
+    const titleRef = useRef<HTMLInputElement | null>(null);
+
     const [isContentEmpty, setIsContentEmpty] = useState(false);
 
     const handlePublish = () => {
@@ -285,7 +280,7 @@ export default function NewPostPage() {
         await customFetch('/posts', {
             queryKey: ['savePost', post.status],
             method: 'POST',
-            data,
+            body: data,
         })
             .then(() => {
                 handleClosePopup();
@@ -296,17 +291,14 @@ export default function NewPostPage() {
                     setShowPopup(true);
                 }, 300);
             })
-            .catch((error) => {
+            .catch(() => {
                 openErrorPopup();
             });
     };
 
     return (
-        <div className="flex h-screen items-center justify-center overflow-y-auto">
-            <form
-                className="mx-auto max-w-screen-xl px-24 py-10"
-                onSubmit={handleSubmit}
-            >
+        <section className="h-screen overflow-y-auto">
+            <div className="mx-auto max-w-screen-xl px-24 py-10">
                 {selectedSeries.length > 0 && (
                     <SelectBox
                         onItemsPerValueChange={handleItemsPerValueChange}
@@ -352,7 +344,7 @@ export default function NewPostPage() {
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
             <Popup
                 show={showPopup}
                 title={popupTitle}
@@ -368,6 +360,6 @@ export default function NewPostPage() {
                 message="게시글이 발행되었습니다."
                 onPostSave={handleSavePost}
             />
-        </div>
+        </section>
     );
 }

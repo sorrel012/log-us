@@ -3,12 +3,12 @@ const TIMEOUT = 30 * 1000;
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export interface FetchConfig {
+    queryKey: any[];
     method?: HttpMethod;
-    data?: any;
+    body?: any;
     params?: Record<string, any>;
     headers?: Record<string, string>;
     options?: any;
-    queryKey: any[];
     staleTime?: number;
     invalidateCache?: boolean;
 }
@@ -22,7 +22,7 @@ interface FetchState<T> {
 
 export async function customFetch<T>(
     url: string,
-    config: FetchConfig,
+    config: Partial<FetchConfig> & { queryKey: any[] },
 ): Promise<FetchState<T>> {
     const controller = new AbortController();
     const { signal } = controller;
@@ -67,12 +67,6 @@ export async function customFetch<T>(
             state.error = `서버 오류가 발생하였습니다. ${response.statusText}`;
         }
 
-        if (!response.ok) {
-            return Promise.reject(
-                `서버 오류가 발생하였습니다. ${response.statusText}`,
-            );
-        }
-
         state.data = (await response.json()) as T;
         state.isLoading = false;
     } catch (error) {
@@ -84,7 +78,8 @@ export async function customFetch<T>(
             state.error =
                 '응답 시간이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.';
         } else {
-            state.error = error.message || '네트워크 오류가 발생했습니다.';
+            state.error =
+                (error as Error).message || '네트워크 오류가 발생했습니다.';
         }
     } finally {
         clearTimeout(timeoutId);

@@ -46,7 +46,7 @@ export default function TextEditor({
         try {
             const response = await customFetch('/temporary-image', {
                 method: 'POST',
-                data: formData,
+                body: formData,
                 queryKey: ['imageUpload'],
             });
 
