@@ -36,7 +36,7 @@ export default function PostCard({
     const formattedDate = new Date(createdDate).toLocaleDateString();
 
     const handlePostClick = () => {
-        router.push(`/${blogAddress}/posts/post/${postId}`);
+        router.push(`/${blogAddress}/posts/${postId}`);
     };
 
     const handleTagClick = (tag: string) => {
