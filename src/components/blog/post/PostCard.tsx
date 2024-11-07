@@ -6,8 +6,10 @@ import { useParams, useRouter } from 'next/navigation';
 
 export interface Post {
     postId: number;
+    nickname: string;
     content: string;
     commentCount: number;
+    liked: boolean;
     likeCount: number;
     createdDate: Date;
     imgUrl: string;
@@ -16,6 +18,9 @@ export interface Post {
     reportStatus?: string;
     views: number;
     title: string;
+    categoryName: string;
+    seriesId?: number;
+    seriesName?: string;
 }
 
 export default function PostCard({

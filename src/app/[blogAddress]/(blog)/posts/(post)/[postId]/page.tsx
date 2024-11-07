@@ -2,11 +2,11 @@
 
 import { usePathname } from 'next/navigation';
 import { useFetch } from '@/hooks/useFetch';
-import PostComments from '@/components/blog/post/PostComments';
 import Popup from '@/components/Popup';
 import { useEffect, useState } from 'react';
+import PostDetail from '@/components/blog/post/PostDetail';
 
-export default function PostDetail() {
+export default function PostDetailPage() {
     const pathname = usePathname();
     const postId = pathname?.split('/')[3];
 
@@ -24,10 +24,19 @@ export default function PostDetail() {
         }
     }, [isError, error]);
 
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        setPopupMessage('');
+    };
+
     return (
         <section>
-            <PostDetail />
-            <PostComments />
+            {data && (
+                <>
+                    <PostDetail {...data} />
+                    {/*<PostComments />*/}
+                </>
+            )}
             <Popup
                 show={showPopup}
                 title="에러"

@@ -1,5 +1,19 @@
-export function dateFormatter(date: Date) {
-    return date.toLocaleString('ko-KR', {
+import { format as timeagoFormat } from 'timeago.js';
+
+export function dateFormatter(date: Date | string): string {
+    const parsedDate = typeof date === 'string' ? new Date(date) : date;
+
+    const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
+    const now = new Date();
+
+    const isWithinOneMonth =
+        now.getTime() - parsedDate.getTime() < ONE_MONTH_IN_MS;
+
+    if (isWithinOneMonth) {
+        return timeagoFormat(parsedDate, 'ko_KR');
+    }
+
+    return parsedDate.toLocaleString('ko-KR', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
