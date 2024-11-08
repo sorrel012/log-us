@@ -4,9 +4,19 @@ import { dateFormatter } from '@/utils/commonUtil';
 import ViewIcon from '@/components/icons/ViewIcon';
 import { Viewer } from '@toast-ui/react-editor';
 import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+
+const POST_EDIT = [
+    { value: 'statics', text: '통계' },
+    { value: 'edit', text: '수정' },
+    { value: 'delete', text: '삭제' },
+];
 
 export default function PostDetail({
     postId,
+    memberId,
     content,
     status,
     seriesName,
@@ -25,17 +35,49 @@ export default function PostDetail({
     createdDate,
     imgUrl,
 }: Post) {
+    const pathname = usePathname();
+    const blogAddress = pathname.split('/')[1];
+    //TODO zustand에서 받아오기
+    const isWriter = memberId === 1;
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     return (
-        <section className="mx-auto max-w-screen-2xl">
+        <section className="mx-auto max-w-screen-2xl pb-3">
             <header className="border-b border-solid border-customLightBlue-100 pb-6">
                 {seriesName && (
-                    <div className="text-customLightBlue-200">{seriesName}</div>
+                    <div className="mb-2 text-customLightBlue-200">
+                        {seriesName}
+                    </div>
                 )}
-                <div className="mb-2 mt-1.5 inline-flex w-full items-center gap-2">
+                <div className="mb-2 inline-flex w-full items-center gap-2">
                     <span className="min-w-0 truncate text-2xl font-bold">
                         {title}
                     </span>
-                    <IoEllipsisVerticalCircle className="size-7 flex-shrink-0 text-customDarkBlue-100" />
+                    {isWriter && (
+                        <div className="relative">
+                            <IoEllipsisVerticalCircle
+                                className="size-7 flex-shrink-0 cursor-pointer text-customDarkBlue-100"
+                                onClick={toggleDropdown}
+                            />
+                            {isDropdownOpen && (
+                                <div className="absolute right-1/2 mt-2 w-[80px] translate-x-1/2 transform select-none rounded-lg border border-gray-300 bg-white p-2 shadow-2xl">
+                                    {POST_EDIT.map((type) => (
+                                        <div
+                                            className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${type.value === 'delete' && 'text-red-600'}`}
+                                            key={type.value}
+                                        >
+                                            {type.text}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="mb-3 flex justify-between">
@@ -52,12 +94,14 @@ export default function PostDetail({
                         <span className="border-l border-solid border-customLightBlue-200 pl-2">
                             <ViewIcon views={views} />
                         </span>
-                        <span className="border-l border-solid border-customLightBlue-200 pl-2">
-                            <IoLockClosedOutline />
-                        </span>
+                        {status === 'SECRET' && (
+                            <span className="border-l border-solid border-customLightBlue-200 pl-2">
+                                <IoLockClosedOutline />
+                            </span>
+                        )}
                     </div>
                 </div>
-                <ul className="flex gap-2">
+                <ul className="mt-5 flex gap-2">
                     {tags?.map((tag) => (
                         <li
                             key={tag}
@@ -76,7 +120,10 @@ export default function PostDetail({
             <footer>
                 <div className="flex justify-between gap-8">
                     {preId ? (
-                        <div className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4">
+                        <Link
+                            href={`/${blogAddress}/posts/${preId}`}
+                            className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4"
+                        >
                             <GrLinkPrevious className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />
                             <div className="flex min-w-0 flex-1 flex-col justify-around">
                                 <div>이전글</div>
@@ -84,12 +131,15 @@ export default function PostDetail({
                                     {preTitle}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ) : (
-                        <div className="w-1/2"></div> // 빈 div로 공간 유지
+                        <div className="w-1/2"></div>
                     )}
                     {nextId && (
-                        <div className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4 text-right">
+                        <Link
+                            href={`/${blogAddress}/posts/${nextId}`}
+                            className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4 text-right"
+                        >
                             <div className="flex min-w-0 flex-1 flex-col justify-around">
                                 <div>다음글</div>
                                 <div className="overflow-hidden truncate text-ellipsis text-lg font-bold">
@@ -97,7 +147,7 @@ export default function PostDetail({
                                 </div>
                             </div>
                             <GrLinkNext className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />
-                        </div>
+                        </Link>
                     )}
                 </div>
             </footer>

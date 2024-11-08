@@ -9,7 +9,7 @@
     "title": "[Next.js] Sanity 사용하기",
     "content": "<h2>SanitySanity는 Headless Content Management System(CMS)이다.<h2><br>Gatsby(React) 프로젝트를 할 때 Headless CMS로 Contentful을 사용한 적이 있는데, 너무 편하고 좋았다.(서버가 없을 때)<br>근데 <p>Contentful은 읽기는 되지만  쓰기가 안 되는 관계로... 특정 기능은 서버 ~~.</p> <img src='https://img1.daumcdn.net/thumb/C428x428/?scode=mtistory2&fname=https%3A%2F%2Ftistory1.daumcdn.net%2Ftistory%2F5433026%2Fattach%2Fc946169e598e471db147bca6cc192885' >",
     "views": 50,
-    "status": "PUBLIC",
+    "status": "SECRET",
     "reportStatus": null,
     "createdDate": "2024-08-29 14:30:04",
     "liked": false,

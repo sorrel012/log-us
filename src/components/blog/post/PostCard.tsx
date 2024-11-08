@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 
 export interface Post {
     postId: number;
+    memberId: number;
     nickname: string;
     content: string;
     commentCount: number;
