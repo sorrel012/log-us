@@ -1,6 +1,5 @@
 import { BsList } from 'react-icons/bs';
 import UserProfile from '@/components/sidebar/UserProfile';
-import Visitor from '@/components/sidebar/Visitor';
 import PanelModule from '@/components/sidebar/PanelModule';
 import { UseSeries } from '@/hooks/useSeries';
 import Popup from '@/components/Popup';
@@ -90,9 +89,6 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                                             <LoadingSpinner />
                                         </div>
                                     )}
-                                </div>
-                                <div className="mb-14 p-5">
-                                    <Visitor />
                                 </div>
                             </motion.section>
                             <Popup
