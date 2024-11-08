@@ -78,7 +78,7 @@ export default function TextEditor({
         <>
             <Editor
                 ref={editorRef}
-                height="600px"
+                height="80vh"
                 initialValue={contents}
                 placeholder="내용을 입력하세요"
                 initialEditType="wysiwyg"

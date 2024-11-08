@@ -14,6 +14,10 @@ export interface Post {
     createdDate: Date;
     imgUrl: string;
     tags?: string[];
+    preId?: 1;
+    preTitle?: '이전 게시글제목';
+    nextId?: 3;
+    nextTitle?: '다음 게시글제목';
     status: '';
     reportStatus?: string;
     views: number;

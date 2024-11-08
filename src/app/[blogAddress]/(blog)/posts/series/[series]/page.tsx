@@ -107,7 +107,7 @@ export default function PostListPage() {
     };
 
     return (
-        <section>
+        <section className="mx-auto max-w-screen-2xl">
             <div className="flex h-full items-center justify-between border-b border-solid border-customLightBlue-100 pb-3">
                 <h2 className="font-bold">
                     {seriesName}
