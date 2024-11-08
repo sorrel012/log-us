@@ -3,6 +3,7 @@ import { IoEllipsisVerticalCircle, IoLockClosedOutline } from 'react-icons/io5';
 import { dateFormatter } from '@/utils/commonUtil';
 import ViewIcon from '@/components/icons/ViewIcon';
 import { Viewer } from '@toast-ui/react-editor';
+import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
 
 export default function PostDetail({
     postId,
@@ -14,6 +15,10 @@ export default function PostDetail({
     reportStatus,
     title,
     tags,
+    preId,
+    preTitle,
+    nextId,
+    nextTitle,
     views,
     liked,
     likeCount,
@@ -21,7 +26,7 @@ export default function PostDetail({
     imgUrl,
 }: Post) {
     return (
-        <section>
+        <section className="mx-auto max-w-screen-2xl">
             <header className="border-b border-solid border-customLightBlue-100 pb-6">
                 {seriesName && (
                     <div className="text-customLightBlue-200">{seriesName}</div>
@@ -63,13 +68,37 @@ export default function PostDetail({
                     ))}
                 </ul>
             </header>
-            <main className="mt-10">
-                <Viewer initialValue={content} />
+            <main className="my-10">
+                <div className="content leading-6">
+                    <Viewer initialValue={content} />
+                </div>
             </main>
             <footer>
-                <div>
-                    <div>이전글</div>
-                    <div>다음글</div>
+                <div className="flex justify-between gap-8">
+                    {preId ? (
+                        <div className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4">
+                            <GrLinkPrevious className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />
+                            <div className="flex min-w-0 flex-1 flex-col justify-around">
+                                <div>이전글</div>
+                                <div className="overflow-hidden truncate text-ellipsis text-lg font-bold">
+                                    {preTitle}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="w-1/2"></div> // 빈 div로 공간 유지
+                    )}
+                    {nextId && (
+                        <div className="flex w-1/2 gap-5 rounded-md bg-customBeige-100 px-5 pb-3 pt-4 text-right">
+                            <div className="flex min-w-0 flex-1 flex-col justify-around">
+                                <div>다음글</div>
+                                <div className="overflow-hidden truncate text-ellipsis text-lg font-bold">
+                                    {nextTitle}
+                                </div>
+                            </div>
+                            <GrLinkNext className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />
+                        </div>
+                    )}
                 </div>
             </footer>
         </section>

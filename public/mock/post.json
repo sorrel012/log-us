@@ -17,9 +17,9 @@
     "commentCount": 2,
     "tags": ["Java", "Spring", "JPA", "Hibernate", "REST_API"],
     "preId": 1,
-    "preTitle": "이전 게시글제목",
+    "preTitle": "Next14에서 달라진 점은 무엇일까?",
     "nextId": 3,
-    "nextTitle": "다음 게시글제목",
+    "nextTitle": "Prettier",
     "comments": [
         {
             "commentId": 1,

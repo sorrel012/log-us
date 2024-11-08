@@ -387,4 +387,9 @@ input[type=checkbox] {
   animation: bounce 0.4s ease-in-out;
 }
 
+/* Text Viewer */
+.content img {
+  padding: 10px 0;
+}
+
 /*# sourceMappingURL=globals.css.map */
