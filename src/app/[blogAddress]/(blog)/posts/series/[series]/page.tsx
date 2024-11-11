@@ -71,13 +71,10 @@ export default function PostListPage() {
         [blogId, seriesId, size, currPage],
     );
 
-    const { data, isLoading, isError, error } = useFetch<PostList>(
-        '/posts.json',
-        {
-            queryKey: ['posts', blogId, seriesId, currPage, size],
-            params,
-        },
-    );
+    const { data, isLoading, isError, error } = useFetch<PostList>('/posts', {
+        queryKey: ['posts', blogId, seriesId, currPage, size],
+        params,
+    });
 
     useEffect(() => {
         if (isError) {

@@ -33,7 +33,7 @@ export default function TagList() {
         [blogId, tag, size, currPage],
     );
     const { data, isLoading, isError, error } = useFetch<PostListType>(
-        '/posts.json',
+        '/posts',
         {
             queryKey: ['posts', blogId, tag, currPage, size],
             params,

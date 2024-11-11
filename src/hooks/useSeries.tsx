@@ -1,31 +1,17 @@
 import { useFetch } from '@/hooks/useFetch';
-import { useEffect, useState } from 'react';
+import { useBlogStore } from '@/store/useBlogStore';
 
 export const UseSeries = () => {
-    const { data, isLoading, isError, error } = useFetch('/series.json', {
-        queryKey: ['series'],
+    const { blogId } = useBlogStore();
+
+    const { data, isLoading, isError, error } = useFetch('/series', {
+        queryKey: ['series', blogId],
+        params: { blogId },
     });
-
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-    };
-
-    useEffect(() => {
-        if (isError && !showPopup) {
-            setPopupMessage(error ? error : '알 수 없는 오류가 발생했습니다.');
-            setShowPopup(true);
-        }
-    }, [isError, error]);
 
     return {
         data,
         isLoading,
         isError,
-        showPopup,
-        popupMessage,
-        handleClosePopup,
     };
 };

@@ -1,70 +1,49 @@
 'use client';
 
 import BlogHeader from '@/components/header/blogHeader';
-import Sidebar from '@/components/sidebar/Sidebar';
-import Popup from '@/components/Popup';
 import React, { useEffect, useState } from 'react';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { usePathname } from 'next/navigation';
 import { useFetch } from '@/hooks/useFetch';
+import Sidebar from '@/components/sidebar/Sidebar';
 
 export default function BlogLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { setBlogId, setBlogInfo } = useBlogStore();
+    const { blogId, setBlogId, setBlogInfo } = useBlogStore();
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
 
     const isShow = !pathname.includes('newpost');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-
-    const { data, isLoading, isError, error } = useFetch('/blog-id.json', {
-        params: { blogAddress: blogAddress },
+    const { data, isLoading, isError, error } = useFetch('/blog-id', {
+        params: { blogAddress },
         queryKey: ['blogId', blogAddress],
     });
 
     useEffect(() => {
-        if (!isLoading && data) {
+        if (data && !isError) {
             setBlogId(data.blogId);
-        } else if (!isLoading && !data) {
-            setPopupMessage('블로그 정보를 받아올 수 없습니다.');
-            setShowPopup(true);
         }
     }, [data, isLoading, setBlogId]);
 
     const { data: infoData, isLoading: isInfoLoading } = useFetch<BlogInfo>(
-        '/blog-info.json',
+        '/blog-info',
         {
             queryKey: ['memberInfo'],
+            params: { blogId },
         },
     );
 
     useEffect(() => {
         if (!isInfoLoading && infoData) {
             setBlogInfo(infoData);
-        } else if (!isInfoLoading && !infoData) {
-            setPopupMessage('블로그 정보를 받아올 수 없습니다.');
-            setShowPopup(true);
         }
     }, [infoData, isInfoLoading, setBlogInfo]);
 
-    useEffect(() => {
-        if (isError && !showPopup) {
-            setPopupMessage(
-                isError ? error : '알 수 없는 오류가 발생했습니다.',
-            );
-            setShowPopup(true);
-        }
-    }, [isError, error, data]);
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-    };
     const handleSidebarClick = () => {
         setIsSidebarOpen((prev) => !prev);
     };
@@ -84,12 +63,6 @@ export default function BlogLayout({
                     {children}
                 </div>
             </main>
-            <Popup
-                show={showPopup}
-                title="에러"
-                text={popupMessage}
-                onConfirm={handleClosePopup}
-            />
         </>
     );
 }

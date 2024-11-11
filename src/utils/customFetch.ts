@@ -67,7 +67,8 @@ export async function customFetch<T>(
             state.error = `서버 오류가 발생하였습니다. ${response.statusText}`;
         }
 
-        state.data = (await response.json()) as T;
+        const resultData = (await response.json()) as T;
+        state.data = resultData.data;
         state.isLoading = false;
     } catch (error) {
         clearTimeout(timeoutId);
