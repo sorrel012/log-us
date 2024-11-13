@@ -8,9 +8,9 @@ import { useBlogStore } from '@/store/useBlogStore';
 import SelectBox from '@/components/SelectBox';
 import TextEditor from '@/components/blog/TextEditor';
 import Popup from '@/components/Popup';
-import { UseSeries } from '@/hooks/useSeries';
 import { isObjEqual } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
+import { UseSeries } from '@/hooks/useSeries';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 

@@ -2,16 +2,15 @@
 
 import { useParams } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
-import { useFetch } from '@/hooks/useFetch';
 import { useEffect, useMemo, useState } from 'react';
 import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import PostList from '@/components/blog/post/PostList';
-import { PostList as PostListType } from '@/app/[blogAddress]/(blog)/posts/series/[series]/page';
 import Pagination from '@/components/Pagination';
 import Popup from '@/components/Popup';
+import { customFetch } from '@/utils/customFetch';
 
 export default function TagList() {
     const { tag } = useParams();
@@ -32,21 +31,30 @@ export default function TagList() {
         }),
         [blogId, tag, size, currPage],
     );
-    const { data, isLoading, isError, error } = useFetch<PostListType>(
-        '/posts',
-        {
-            queryKey: ['posts', blogId, tag, currPage, size],
-            params,
-        },
-    );
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        if (data?.content && posts !== data.content) {
-            setPosts(data.content);
-            setTotalPages(data.totalPages || 1);
-            setTotalPosts(data.totalElements || 0);
+        if (blogId) {
+            customFetch<any>('/posts/tag-search', {
+                queryKey: ['posts', blogId, tag, currPage, size],
+                params,
+            })
+                .then((response) => {
+                    setPosts(response.data.content);
+                    setTotalPages(response.data.totalPages || 1);
+                    setTotalPosts(response.data.totalElements || 0);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    setIsError(true);
+                    setShowPopup(true);
+                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
+                    setIsLoading(false);
+                });
         }
-    }, [data, posts]);
+    }, [blogId, currPage, size, tag, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);

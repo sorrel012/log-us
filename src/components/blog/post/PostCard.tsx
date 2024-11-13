@@ -3,6 +3,7 @@ import ViewIcon from '@/components/icons/ViewIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
 import LikeIcon from '@/components/icons/LikeIcon';
 import { useParams, useRouter } from 'next/navigation';
+import { HiPhoto } from 'react-icons/hi2';
 
 export interface Post {
     postId: number;
@@ -13,7 +14,7 @@ export interface Post {
     liked: boolean;
     likeCount: number;
     createdDate: Date;
-    imgUrl: string;
+    imgUrl?: string;
     tags?: string[];
     preId?: 1;
     preTitle?: '이전 게시글제목';
@@ -60,13 +61,19 @@ export default function PostCard({
                 className="hover-area flex cursor-pointer flex-col gap-3 lg:flex-row"
                 onClick={handlePostClick}
             >
-                <Image
-                    src={imgUrl}
-                    alt={title}
-                    width={120}
-                    height={120}
-                    className="hover-image-scale aspect-square size-32 object-cover"
-                />
+                <div className="size-[180px]">
+                    {imgUrl ? (
+                        <Image
+                            src={imgUrl}
+                            alt={title}
+                            width={180}
+                            height={180}
+                            className="hover-image-scale aspect-square size-32 object-cover"
+                        />
+                    ) : (
+                        <HiPhoto className="h-[180px] w-[180px] text-customLightBlue-100" />
+                    )}
+                </div>
                 <div className="flex flex-col justify-between">
                     <div>
                         <div className="mb-1 flex flex-col justify-between sm:flex-row">

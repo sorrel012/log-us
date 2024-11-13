@@ -2,15 +2,15 @@
 
 import { useParams } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
-import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
 import { useEffect, useMemo, useState } from 'react';
 import Pagination from '@/components/Pagination';
 import { Post } from '@/components/blog/post/PostCard';
-import { useFetch } from '@/hooks/useFetch';
-import PostList from '@/components/blog/post/PostList';
-import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import Popup from '@/components/Popup';
+import { customFetch } from '@/utils/customFetch';
+import SelectBox from '@/components/SelectBox';
+import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
+import PostList from '@/components/blog/post/PostList';
 
 interface Pageable {
     pageNumber: number;
@@ -71,25 +71,29 @@ export default function PostListPage() {
         [blogId, seriesId, size, currPage],
     );
 
-    const { data, isLoading, isError, error } = useFetch<PostList>('/posts', {
-        queryKey: ['posts', blogId, seriesId, currPage, size],
-        params,
-    });
+    const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        if (isError) {
-            setShowPopup(true);
-            setPopupMessage(error || '게시글을 불러올 수 업습니다.');
+        if (blogId) {
+            customFetch<any>('/posts', {
+                queryKey: ['posts', blogId, seriesId, currPage, size],
+                params,
+            })
+                .then((response) => {
+                    setPosts(response.data.content);
+                    setTotalPages(response.data.totalPages || 1);
+                    setTotalPosts(response.data.totalElements || 0);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    setIsError(true);
+                    setShowPopup(true);
+                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
+                    setIsLoading(false);
+                });
         }
-    }, [isError, error]);
-
-    useEffect(() => {
-        if (data?.content && posts !== data.content) {
-            setPosts(data.content);
-            setTotalPages(data.totalPages || 1);
-            setTotalPosts(data.totalElements || 0);
-        }
-    }, [data, posts]);
+    }, [blogId, currPage, seriesId, size, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
@@ -125,21 +129,23 @@ export default function PostListPage() {
                 />
             </div>
 
-            {isLoading ? (
+            {isLoading && (
                 <section className="mt-8 flex flex-col gap-6">
                     {Array.from({ length: size }).map((_, index) => (
                         <PostListSkeleton key={index} />
                     ))}
                 </section>
-            ) : isError ? (
+            )}
+            {isError && (
                 <div className="mt-4 leading-6">
                     <div>게시글을 불러올 수 없습니다.</div>
                     <div>잠시 후 다시 시도해주세요.</div>
                 </div>
-            ) : posts?.length === 0 ? (
-                <div className="mt-4">게시글이 존재하지 않습니다.</div>
-            ) : (
+            )}
+            {!isLoading && posts ? (
                 <PostList posts={posts} />
+            ) : (
+                <div className="mt-4">게시글이 존재하지 않습니다.</div>
             )}
 
             <Pagination

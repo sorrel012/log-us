@@ -4,8 +4,8 @@ import BlogHeader from '@/components/header/blogHeader';
 import React, { useEffect, useState } from 'react';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { usePathname } from 'next/navigation';
-import { useFetch } from '@/hooks/useFetch';
 import Sidebar from '@/components/sidebar/Sidebar';
+import { customFetch } from '@/utils/customFetch';
 
 export default function BlogLayout({
     children,
@@ -19,30 +19,25 @@ export default function BlogLayout({
     const isShow = !pathname.includes('newpost');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const { data, isLoading, isError, error } = useFetch('/blog-id', {
-        params: { blogAddress },
-        queryKey: ['blogId', blogAddress],
-    });
+    useEffect(() => {
+        customFetch('/blog-id', {
+            params: { blogAddress },
+            queryKey: ['blogId', blogAddress],
+        }).then((response) => {
+            setBlogId(response.data.blogId);
+        });
+    }, [blogAddress, setBlogId]);
 
     useEffect(() => {
-        if (data && !isError) {
-            setBlogId(data.blogId);
+        if (blogId) {
+            customFetch<BlogInfo>('/blog-info', {
+                queryKey: ['memberInfo'],
+                params: { blogId },
+            }).then((response) => {
+                setBlogInfo(response.data!);
+            });
         }
-    }, [data, isLoading, setBlogId]);
-
-    const { data: infoData, isLoading: isInfoLoading } = useFetch<BlogInfo>(
-        '/blog-info',
-        {
-            queryKey: ['memberInfo'],
-            params: { blogId },
-        },
-    );
-
-    useEffect(() => {
-        if (!isInfoLoading && infoData) {
-            setBlogInfo(infoData);
-        }
-    }, [infoData, isInfoLoading, setBlogInfo]);
+    }, [blogId, setBlogInfo]);
 
     const handleSidebarClick = () => {
         setIsSidebarOpen((prev) => !prev);

@@ -5,7 +5,6 @@ import { CiSettings } from 'react-icons/ci';
 import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import Image from 'next/image';
 import SelectBox from '@/components/SelectBox';
-import { useFetch } from '@/hooks/useFetch';
 import { customFetch } from '@/utils/customFetch';
 import Popup from '@/components/Popup';
 import { useBlogStore } from '@/store/useBlogStore';
@@ -59,12 +58,10 @@ export default function SavePostPopup({
         setImagePreview(null);
     };
 
-    const { data: parentCategoryData } = useFetch('/category.json', {
+    customFetch('/category', {
         queryKey: ['parent', 'category'],
-    });
-
-    useEffect(() => {
-        const selectBoxCategory = parentCategoryData?.map((parent) => ({
+    }).then((res) => {
+        const selectBoxCategory = res.data.map((parent) => ({
             text: parent.categoryName,
             value: parent.categoryId,
         }));
@@ -74,11 +71,13 @@ export default function SavePostPopup({
                 ...selectBoxCategory,
             ]);
         }
-    }, [parentCategoryData]);
+    });
 
     useEffect(() => {
         if (parentId) {
-            customFetch('/category.json', {
+            setCategoryId(0);
+
+            customFetch('/category', {
                 queryKey: ['category', parentId],
                 params: { parentId },
             }).then((res) => {

@@ -1,17 +1,18 @@
 import SeriesCard from '@/components/blog/series/SeriesCard';
 import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
-import { UseSeries } from '@/hooks/useSeries';
 import Popup from '@/components/Popup';
+import { useState } from 'react';
+import { UseSeries } from '@/hooks/useSeries';
 
 export default function SeriesGrid() {
-    const {
-        data: series,
-        isLoading,
-        isError,
-        showPopup,
-        popupMessage,
-        handleClosePopup,
-    } = UseSeries();
+    const { data: series, isLoading, isError, error } = UseSeries();
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        setPopupMessage('');
+    };
 
     return (
         <section>
