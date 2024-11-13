@@ -1,12 +1,12 @@
 import { Post } from '@/components/blog/post/PostCard';
 import { IoEllipsisVerticalCircle, IoLockClosedOutline } from 'react-icons/io5';
-import { dateFormatter } from '@/utils/commonUtil';
+import { dateFormatter, unescapeSpecialChars } from '@/utils/commonUtil';
 import ViewIcon from '@/components/icons/ViewIcon';
-import { Viewer } from '@toast-ui/react-editor';
 import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { Viewer } from '@toast-ui/react-editor';
 
 const POST_EDIT = [
     { value: 'statics', text: '통계' },
@@ -114,7 +114,7 @@ export default function PostDetail({
             </header>
             <main className="my-10">
                 <div className="content leading-6">
-                    <Viewer initialValue={content} />
+                    <Viewer initialValue={unescapeSpecialChars(content)} />
                 </div>
             </main>
             <footer>

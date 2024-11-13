@@ -51,3 +51,25 @@ export function isObjEqual(
 function isObject(object: any): boolean {
     return object != null && typeof object === 'object';
 }
+
+const escapeMap: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#47;',
+};
+
+export function escapeSpecialChars(str: string): string {
+    return str.replace(/[&<>"'/]/g, (char) => escapeMap[char]);
+}
+
+export function unescapeSpecialChars(str: string): string {
+    return str.replace(/&amp;|&#47;|&lt;|&gt;|&quot;|&#39;/g, (entity) => {
+        for (const [char, htmlEntity] of Object.entries(escapeMap)) {
+            if (entity === htmlEntity) return char;
+        }
+        return entity;
+    });
+}

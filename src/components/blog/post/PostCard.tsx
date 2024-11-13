@@ -4,6 +4,7 @@ import CommentIcon from '@/components/icons/CommentIcon';
 import LikeIcon from '@/components/icons/LikeIcon';
 import { useParams, useRouter } from 'next/navigation';
 import { HiPhoto } from 'react-icons/hi2';
+import { unescapeSpecialChars } from '@/utils/commonUtil';
 
 export interface Post {
     postId: number;
@@ -55,37 +56,36 @@ export default function PostCard({
     };
 
     return (
-        // TODO reportStatus에 따라 화면 처리
         <article className="rounded-xl border border-solid border-customLightBlue-100 p-5">
             <header
                 className="hover-area flex cursor-pointer flex-col gap-3 lg:flex-row"
                 onClick={handlePostClick}
             >
-                <div className="size-[180px]">
+                <div className="size-[150px]">
                     {imgUrl ? (
                         <Image
                             src={imgUrl}
                             alt={title}
-                            width={180}
-                            height={180}
+                            width={150}
+                            height={150}
                             className="hover-image-scale aspect-square size-32 object-cover"
                         />
                     ) : (
-                        <HiPhoto className="h-[180px] w-[180px] text-customLightBlue-100" />
+                        <HiPhoto className="h-[150px] w-[150px] text-customLightBlue-100" />
                     )}
                 </div>
                 <div className="flex flex-col justify-between">
                     <div>
                         <div className="mb-1 flex flex-col justify-between sm:flex-row">
                             <h3 className="hover-text-color text-lg font-bold">
-                                {title}
+                                {unescapeSpecialChars(title)}
                             </h3>
                             <time className="text-customLightBlue-200">
                                 {formattedDate}
                             </time>
                         </div>
                         <div className="hover-font-bold line-clamp-3 leading-5">
-                            {content}
+                            {unescapeSpecialChars(content)}
                         </div>
                     </div>
                     <div className="flex gap-1 text-customLightBlue-200 sm:mt-3">
