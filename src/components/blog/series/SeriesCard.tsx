@@ -29,10 +29,10 @@ export default function SeriesCard({
             <Image
                 src={imgUrl}
                 alt={seriesName}
-                className="rounded-md"
+                className="aspect-square rounded-md object-cover"
                 priority
-                width={180}
-                height={180}
+                width={150}
+                height={150}
             />
             <div className="mt-4 font-bold">{seriesName}</div>
         </article>
