@@ -68,6 +68,7 @@ export default function PostCard({
                             alt={title}
                             width={150}
                             height={150}
+                            priority
                             className="hover-image-scale aspect-square size-32 object-cover"
                         />
                     ) : (
