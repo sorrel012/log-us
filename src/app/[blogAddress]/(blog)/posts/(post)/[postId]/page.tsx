@@ -17,18 +17,22 @@ export default function PostDetailPage() {
     const [popupMessage, setPopupMessage] = useState('');
 
     useEffect(() => {
-        if (postId) {
-            customFetch<any>(`/posts/${postId}`, {
-                queryKey: ['post', postId],
-            })
-                .then((response) => {
+        (async () => {
+            if (postId) {
+                try {
+                    const response = await customFetch<any>(
+                        `/posts/${postId}`,
+                        {
+                            queryKey: ['post', postId],
+                        },
+                    );
                     setPost(response.data);
-                })
-                .catch((error) => {
+                } catch (error) {
                     setShowPopup(true);
                     setPopupMessage(error || '게시글을 불러올 수 없습니다.');
-                });
-        }
+                }
+            }
+        })();
     }, [postId]);
 
     const handleClosePopup = () => {
@@ -40,7 +44,11 @@ export default function PostDetailPage() {
         <section>
             {post && (
                 <>
-                    <PostDetail {...post} />
+                    {post ? (
+                        <PostDetail {...post} />
+                    ) : (
+                        <p>게시글을 불러오는 중입니다...</p>
+                    )}
                     {/*<PostComments />*/}
                 </>
             )}

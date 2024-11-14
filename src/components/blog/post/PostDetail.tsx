@@ -32,7 +32,7 @@ export default function PostDetail({
     views,
     liked,
     likeCount,
-    createdDate,
+    createDate,
     imgUrl,
 }: Post) {
     const pathname = usePathname();
@@ -56,7 +56,7 @@ export default function PostDetail({
                 )}
                 <div className="mb-2 inline-flex w-full items-center gap-2">
                     <span className="min-w-0 truncate text-2xl font-bold">
-                        {title}
+                        {unescapeSpecialChars(title)}
                     </span>
                     {isWriter && (
                         <div className="relative">
@@ -89,7 +89,7 @@ export default function PostDetail({
                             </span>
                         )}
                         <span className="border-l border-solid border-customLightBlue-200 pl-2">
-                            {dateFormatter(new Date(createdDate))}
+                            {dateFormatter(new Date(createDate))}
                         </span>
                         <span className="border-l border-solid border-customLightBlue-200 pl-2">
                             <ViewIcon views={views} />
@@ -128,7 +128,7 @@ export default function PostDetail({
                             <div className="flex min-w-0 flex-1 flex-col justify-around">
                                 <div>이전글</div>
                                 <div className="overflow-hidden truncate text-ellipsis text-lg font-bold">
-                                    {preTitle}
+                                    {unescapeSpecialChars(preTitle!)}
                                 </div>
                             </div>
                         </Link>
@@ -143,7 +143,7 @@ export default function PostDetail({
                             <div className="flex min-w-0 flex-1 flex-col justify-around">
                                 <div>다음글</div>
                                 <div className="overflow-hidden truncate text-ellipsis text-lg font-bold">
-                                    {nextTitle}
+                                    {unescapeSpecialChars(nextTitle!)}
                                 </div>
                             </div>
                             <GrLinkNext className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />

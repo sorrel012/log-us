@@ -20,6 +20,15 @@ interface FetchState<T> {
     error?: string;
 }
 
+export function getCacheData(key: string) {
+    const cookieString = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(`${key}=`));
+    return cookieString
+        ? JSON.parse(decodeURIComponent(cookieString.split('=')[1]))
+        : null;
+}
+
 export async function customFetch<T>(
     url: string,
     config: Partial<FetchConfig> & { queryKey: any[] },
@@ -28,6 +37,19 @@ export async function customFetch<T>(
     const { signal } = controller;
 
     let { method, body, params, headers = {}, options = {} } = config;
+
+    let state: FetchState<T> = {
+        isLoading: true,
+        isError: false,
+    };
+
+    const cacheKey = JSON.stringify(config.queryKey);
+    const cachedData = getCacheData(cacheKey);
+    const staleTime = config.staleTime || 120;
+
+    if (cachedData && !config.invalidateCache) {
+        return { data: cachedData, isLoading: false, isError: false };
+    }
 
     //TODO 토큰 받아오는 것으로 수정
     if (true) {
@@ -52,11 +74,6 @@ export async function customFetch<T>(
 
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
-    let state: FetchState<T> = {
-        isLoading: true,
-        isError: false,
-    };
-
     try {
         const response = await fetch(`${baseUrl}${url}`, {
             method,
@@ -76,6 +93,12 @@ export async function customFetch<T>(
         const resultData = (await response.json()) as T;
         state.data = resultData.data;
         state.isLoading = false;
+
+        if (state.data && !state.isError && config.queryKey[0] !== 'post') {
+            document.cookie = `${cacheKey}=${encodeURIComponent(
+                JSON.stringify(state.data),
+            )}; max-age=${staleTime}`;
+        }
     } catch (error) {
         clearTimeout(timeoutId);
         state.isLoading = false;

@@ -20,12 +20,18 @@ export default function BlogLayout({
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
-        customFetch('/blog-id', {
-            params: { blogAddress },
-            queryKey: ['blogId', blogAddress],
-        }).then((response) => {
-            setBlogId(response.data.blogId);
-        });
+        (async () => {
+            try {
+                const response = await customFetch('/blog-id', {
+                    params: { blogAddress },
+                    queryKey: ['blogId', blogAddress],
+                });
+
+                if (response && response.data && response.data.blogId) {
+                    setBlogId(response.data.blogId);
+                }
+            } catch (error) {}
+        })();
     }, [blogAddress, setBlogId]);
 
     useEffect(() => {
