@@ -64,7 +64,7 @@ export default function PostListPage() {
     const params = useMemo(
         () => ({
             blogId,
-            ...(seriesId !== 0 && { seriesId }),
+            ...(seriesId != null && seriesId !== '0' && { seriesId }),
             size,
             currPage: currPage - 1,
         }),
