@@ -14,6 +14,10 @@ import { customFetch } from '@/utils/customFetch';
 
 export default function TagList() {
     const { tag } = useParams();
+    let tagName = '';
+    if (typeof tag === 'string') {
+        tagName = decodeURIComponent(tag);
+    }
     const { blogId } = useBlogStore();
 
     const [size, setSize] = useState(10);
@@ -25,11 +29,11 @@ export default function TagList() {
     const params = useMemo(
         () => ({
             blogId,
-            tag,
+            tag: tagName,
             size,
             currPage: currPage - 1,
         }),
-        [blogId, tag, size, currPage],
+        [blogId, tagName, size, currPage],
     );
 
     const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +42,7 @@ export default function TagList() {
     useEffect(() => {
         if (blogId) {
             customFetch<any>('/posts/tag-search', {
-                queryKey: ['posts', blogId, tag, currPage, size],
+                queryKey: ['posts', blogId, tagName, currPage, size],
                 params,
             })
                 .then((response) => {
@@ -54,7 +58,7 @@ export default function TagList() {
                     setIsLoading(false);
                 });
         }
-    }, [blogId, currPage, size, tag, params]);
+    }, [blogId, currPage, size, tagName, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
@@ -74,7 +78,7 @@ export default function TagList() {
         <section className="mx-auto max-w-screen-2xl">
             <div className="flex h-full items-center justify-between border-b border-solid border-customLightBlue-100 pb-3">
                 <h2 className="font-bold">
-                    {tag}
+                    {tagName}
                     {!isError && (
                         <span
                             className="relative ml-0.5 text-sm text-customLightBlue-200"
