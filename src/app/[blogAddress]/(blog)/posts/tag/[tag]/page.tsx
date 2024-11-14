@@ -71,7 +71,7 @@ export default function TagList() {
     };
 
     return (
-        <section>
+        <section className="mx-auto max-w-screen-2xl">
             <div className="flex h-full items-center justify-between border-b border-solid border-customLightBlue-100 pb-3">
                 <h2 className="font-bold">
                     {tag}
@@ -88,6 +88,7 @@ export default function TagList() {
                     onItemsPerValueChange={handleItemsPerValueChange}
                     items={PAGE_SIZE_OPTIONS}
                     defaultValue={size}
+                    containerWidth="w-70"
                 />
             </div>
 
