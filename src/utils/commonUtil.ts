@@ -1,16 +1,32 @@
-import { format as timeagoFormat } from 'timeago.js';
+import {
+    format as timeagoFormat,
+    register as timeagoRegister,
+} from 'timeago.js';
+
+timeagoRegister(
+    'ko',
+    (number, index) =>
+        [
+            ['방금', '곧'],
+            ['%s초 전', '%s초 후'],
+            ['1분 전', '1분 후'],
+            ['%s분 전', '%s분 후'],
+            ['1시간 전', '1시간 후'],
+            ['%s시간 전', '%s시간 후'],
+        ][index],
+);
 
 export function dateFormatter(date: Date | string): string {
     const parsedDate = typeof date === 'string' ? new Date(date) : date;
 
-    const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
-    const now = new Date();
+    const today = new Date();
+    const isToday =
+        parsedDate.getFullYear() === today.getFullYear() &&
+        parsedDate.getMonth() === today.getMonth() &&
+        parsedDate.getDate() === today.getDate();
 
-    const isWithinOneMonth =
-        now.getTime() - parsedDate.getTime() < ONE_MONTH_IN_MS;
-
-    if (isWithinOneMonth) {
-        return timeagoFormat(parsedDate, 'ko_KR');
+    if (isToday) {
+        return timeagoFormat(parsedDate, 'ko'); // 'ko' locale 사용
     }
 
     return parsedDate.toLocaleString('ko-KR', {
