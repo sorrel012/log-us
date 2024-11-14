@@ -75,9 +75,9 @@ export default function PostCard({
                         <HiPhoto className="h-[150px] w-[150px] text-customLightBlue-100" />
                     )}
                 </div>
-                <div className="flex flex-col justify-between">
+                <div className="flex w-full flex-col justify-between">
                     <div>
-                        <div className="mb-1 flex flex-col justify-between sm:flex-row">
+                        <div className="mb-1 flex flex-col items-center justify-between sm:flex-row">
                             <h3 className="hover-text-color text-lg font-bold">
                                 {unescapeSpecialChars(title)}
                             </h3>
