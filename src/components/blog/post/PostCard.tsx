@@ -14,7 +14,7 @@ export interface Post {
     commentCount: number;
     liked: boolean;
     likeCount: number;
-    createdDate: Date;
+    createDate: Date;
     imgUrl?: string;
     tags?: string[];
     preId?: 1;
@@ -35,7 +35,7 @@ export default function PostCard({
     content,
     commentCount,
     likeCount,
-    createdDate,
+    createDate,
     imgUrl,
     tags,
     status,
@@ -45,7 +45,7 @@ export default function PostCard({
 }: Post) {
     const { blogAddress } = useParams();
     const router = useRouter();
-    const formattedDate = new Date(createdDate).toLocaleDateString();
+    const formattedDate = new Date(createDate).toLocaleDateString();
 
     const handlePostClick = () => {
         router.push(`/${blogAddress}/posts/${postId}`);
@@ -85,7 +85,10 @@ export default function PostCard({
                             </time>
                         </div>
                         <div className="hover-font-bold line-clamp-3 leading-5">
-                            {unescapeSpecialChars(content)}
+                            {unescapeSpecialChars(content).replace(
+                                /<[^>]*>/g,
+                                '',
+                            )}
                         </div>
                     </div>
                     <div className="flex gap-1 text-customLightBlue-200 sm:mt-3">
