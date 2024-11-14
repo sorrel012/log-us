@@ -8,7 +8,7 @@ import { useBlogStore } from '@/store/useBlogStore';
 import SelectBox from '@/components/SelectBox';
 import TextEditor from '@/components/blog/TextEditor';
 import Popup from '@/components/Popup';
-import { isObjEqual } from '@/utils/commonUtil';
+import { escapeSpecialChars, isObjEqual } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { UseSeries } from '@/hooks/useSeries';
 
@@ -70,8 +70,8 @@ export default function NewPostPage() {
         if (type === 'TEMPORARY') {
             requestDto = {
                 blogId,
-                title,
-                content,
+                title: escapeSpecialChars(title),
+                content: content,
                 status: 'TEMPORARY',
                 ...(seriesId > 0 && { seriesId }),
             };
@@ -79,9 +79,9 @@ export default function NewPostPage() {
             formData.append('thumbImg', postInfo?.thumbImg);
             requestDto = {
                 blogId,
-                title,
-                content,
-                status: postInfo?.status,
+                title: escapeSpecialChars(title),
+                content: content,
+                status: postInfo?.status || 'PUBLIC',
                 ...(seriesId > 0 && { seriesId }),
                 ...(postInfo?.parentId > 0 && { parentId: postInfo?.parentId }),
                 ...(postInfo?.categoryId > 0 && {
@@ -91,13 +91,17 @@ export default function NewPostPage() {
             };
         }
 
-        formData.append('requestDto', JSON.stringify(requestDto));
+        formData.append(
+            'requestDto',
+            new Blob([JSON.stringify(requestDto)], {
+                type: 'application/json',
+            }),
+        );
 
         return formData;
     };
 
     const openErrorPopup = () => {
-        handleClosePopup();
         setTimeout(() => {
             setPopupId('CLOSE');
             setPopupMessage('잠시 후 다시 시도해 주세요.');
@@ -131,23 +135,23 @@ export default function NewPostPage() {
     const handleConfirm = async () => {
         if (popupId === 'EXIT') {
             const data = getData('TEMPORARY');
-            await customFetch('/posts', {
-                queryKey: ['tmpPost'],
-                method: 'POST',
-                body: data,
-            })
-                .then(() => {
-                    handleClosePopup();
-                    setTimeout(() => {
-                        setPopupId('TMP_SAVE_EXIT');
-                        setPopupTitle('작성 중인 글이 저장되었습니다.');
-                        setPopupType('alert');
-                        setShowPopup(true);
-                    }, 300);
-                })
-                .catch(() => {
-                    openErrorPopup();
+            try {
+                await customFetch('/posts', {
+                    queryKey: ['tmpPost'],
+                    method: 'POST',
+                    body: data,
                 });
+
+                handleClosePopup();
+                setTimeout(() => {
+                    setPopupId('TMP_SAVE_EXIT');
+                    setPopupTitle('작성 중인 글이 저장되었습니다.');
+                    setPopupType('alert');
+                    setShowPopup(true);
+                }, 300);
+            } catch (error) {
+                openErrorPopup();
+            }
         } else if (popupId === 'TMP_SAVE_EXIT') {
             handleClosePopup();
             router.push(`/${blogAddress}/posts/series/0&전체보기`);
@@ -168,33 +172,25 @@ export default function NewPostPage() {
 
     const handleTmpPost = async () => {
         try {
-            const response = await customFetch<PostPayload>(
-                '/posts-blogId.json',
-                {
-                    queryKey: ['tmpPost'],
-                    params: { blogId },
-                },
-            );
-
-            if (!response || !response.data) {
-                throw new Error('임시 저장에 실패했습니다.');
-            }
+            const response = await customFetch<PostPayload>('/posts/temp', {
+                queryKey: ['tmpPost'],
+                params: { blogId },
+            });
 
             const tmpPost = response.data;
-            const tmpPostExists = !!tmpPost.status;
             const hasChange =
                 title.trim() ||
                 (content.trim() && content !== '<p><br></p>') ||
                 seriesId;
 
             if (hasChange) {
-                if (tmpPostExists) {
+                if (tmpPost) {
                     const newTmpPost = { seriesId, title, content };
                     if (
                         !isObjEqual(newTmpPost, {
-                            seriesId: tmpPost.seriesId,
-                            title: tmpPost.title,
-                            content: tmpPost.content,
+                            seriesId: tmpPost?.seriesId,
+                            title: tmpPost?.title,
+                            content: tmpPost?.content,
                         })
                     ) {
                         setPopupTitle('이미 저장된 게시글이 있습니다.');
@@ -209,19 +205,22 @@ export default function NewPostPage() {
                     }
                 } else {
                     const data = getData('TEMPORARY');
-                    await customFetch('/posts', {
-                        queryKey: ['tmpPost'],
-                        method: 'POST',
-                        body: data,
-                    });
-                    setPopupId('CLOSE');
-                    setPopupTitle('작성 중인 글이 임시 저장되었습니다.');
-                    setShowPopup(true);
+                    try {
+                        await customFetch('/posts', {
+                            queryKey: ['tmpPost'],
+                            method: 'POST',
+                            body: data,
+                        });
+                    } catch (error) {
+                        setPopupId('CLOSE');
+                        setPopupTitle('작성 중인 글이 임시 저장되었습니다.');
+                        setShowPopup(true);
+                    }
                 }
-            } else if (tmpPostExists) {
+            } else if (tmpPost) {
                 setTitle(tmpPost.title);
                 setContent(tmpPost.content);
-                setSeriesId(tmpPost.seriesId || 0);
+                setSeriesId(tmpPost?.seriesId || 0);
                 setPopupId('CLOSE');
                 setPopupTitle('임시 저장된 글을 불러왔습니다.');
                 setShowPopup(true);
@@ -264,8 +263,7 @@ export default function NewPostPage() {
 
             return;
         }
-
-        if (content.length > 100) {
+        if (content.length > 10000) {
             setPopupId('CONTENT_FOCUS');
             setPopupTitle('내용을 10,000자 이내로 작성해 주세요.');
             setShowPopup(true);
@@ -278,23 +276,22 @@ export default function NewPostPage() {
 
     const handleSavePost = async (post) => {
         const data = getData(post.status, post);
-        await customFetch('/posts', {
-            queryKey: ['savePost', post.status],
-            method: 'POST',
-            body: data,
-        })
-            .then(() => {
-                handleClosePopup();
-                setTimeout(() => {
-                    setPopupId('EXIT');
-                    setPopupTitle('글이 발행되었습니다.');
-                    setPopupType('alert');
-                    setShowPopup(true);
-                }, 300);
-            })
-            .catch(() => {
-                openErrorPopup();
+        try {
+            await customFetch('/posts', {
+                queryKey: ['savePost', post.status],
+                method: 'POST',
+                body: data,
             });
+            handleClosePopup();
+            setTimeout(() => {
+                setPopupId('SAVE');
+                setPopupTitle('글이 발행되었습니다.');
+                setPopupType('alert');
+                setShowPopup(true);
+            }, 300);
+        } catch (error) {
+            openErrorPopup();
+        }
     };
 
     return (
@@ -358,7 +355,6 @@ export default function NewPostPage() {
             <SavePostPopup
                 show={showSavePopup}
                 onClose={() => setShowSavePopup(false)}
-                message="게시글이 발행되었습니다."
                 onPostSave={handleSavePost}
             />
         </section>

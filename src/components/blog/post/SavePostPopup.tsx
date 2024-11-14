@@ -43,7 +43,7 @@ export default function SavePostPopup({
     const [parentId, setParentId] = useState<number>();
     const [categoryId, setCategoryId] = useState<number>();
     const [tags, setTags] = useState<string[]>([]);
-    const [status, setStatus] = useState<string>('');
+    const [status, setStatus] = useState<string>('PUBLIC');
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -58,20 +58,22 @@ export default function SavePostPopup({
         setImagePreview(null);
     };
 
-    customFetch('/category', {
-        queryKey: ['parent', 'category'],
-    }).then((res) => {
-        const selectBoxCategory = res.data.map((parent) => ({
-            text: parent.categoryName,
-            value: parent.categoryId,
-        }));
-        if (selectBoxCategory?.length > 0) {
-            setParentCategory([
-                { text: '1차 카테고리', value: 0 },
-                ...selectBoxCategory,
-            ]);
-        }
-    });
+    useEffect(() => {
+        customFetch('/category', {
+            queryKey: ['parent', 'category'],
+        }).then((res) => {
+            const selectBoxCategory = res.data.map((parent) => ({
+                text: parent.categoryName,
+                value: parent.categoryId,
+            }));
+            if (selectBoxCategory?.length > 0) {
+                setParentCategory([
+                    { text: '1차 카테고리', value: 0 },
+                    ...selectBoxCategory,
+                ]);
+            }
+        });
+    }, []);
 
     useEffect(() => {
         if (parentId) {
