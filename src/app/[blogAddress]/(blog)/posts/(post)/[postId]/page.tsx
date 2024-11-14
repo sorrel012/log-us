@@ -42,16 +42,7 @@ export default function PostDetailPage() {
 
     return (
         <section>
-            {post && (
-                <>
-                    {post ? (
-                        <PostDetail {...post} />
-                    ) : (
-                        <p>게시글을 불러오는 중입니다...</p>
-                    )}
-                    {/*<PostComments />*/}
-                </>
-            )}
+            {post && <PostDetail {...post} />}
             <Popup
                 show={showPopup}
                 title="에러"
