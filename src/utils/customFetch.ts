@@ -27,13 +27,19 @@ export async function customFetch<T>(
     const controller = new AbortController();
     const { signal } = controller;
 
-    let { method, data, params, headers = {}, options = {} } = config;
+    let { method, body, params, headers = {}, options = {} } = config;
+
+    //TODO 토큰 받아오는 것으로 수정
+    if (true) {
+        headers['Authorization'] =
+            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL2Jsb2cubG9ndXMuY29tLyIsImlzQWRtaW4iOiJmYWxzZSIsInN1YiI6InVzZXIxIiwiaWF0IjoxNzMwOTY5NjgxLCJleHAiOjE3MzYxNTM2ODF9.UlFUJesaNmAVte27M-_xV90TurL0j6vq8v-gWjI0R4Oj8wmlQHSpOv2kkmpKP2JpT7dCnnT4WucTWtPmeepyDg';
+    }
 
     if (!method) {
         method = 'GET';
     }
 
-    if (!(data instanceof FormData) && !headers['Content-Type']) {
+    if (!(body instanceof FormData) && !headers['Content-Type']) {
         headers['Content-Type'] = 'application/json';
     }
 
@@ -54,7 +60,7 @@ export async function customFetch<T>(
     try {
         const response = await fetch(`${baseUrl}${url}`, {
             method,
-            body: data instanceof FormData ? data : JSON.stringify(data),
+            body: body instanceof FormData ? body : JSON.stringify(body),
             headers,
             ...options,
             signal,
