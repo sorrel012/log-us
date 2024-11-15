@@ -6,6 +6,20 @@ import { useParams, useRouter } from 'next/navigation';
 import { HiPhoto } from 'react-icons/hi2';
 import { unescapeSpecialChars } from '@/utils/commonUtil';
 
+export interface Comment {
+    commentId: number;
+    memberId: number;
+    nickname: string;
+    imgUrl?: string;
+    postId: number;
+    parentId?: number;
+    depth: number;
+    content: string;
+    status: string;
+    reportStatus?: string;
+    createDate: Date;
+}
+
 export interface Post {
     postId: number;
     memberId: number;
@@ -28,6 +42,7 @@ export interface Post {
     categoryName: string;
     seriesId?: number;
     seriesName?: string;
+    comments?: Comment[];
 }
 
 export default function PostCard({
@@ -38,7 +53,6 @@ export default function PostCard({
     createDate,
     imgUrl,
     tags,
-    status,
     reportStatus,
     views,
     title,

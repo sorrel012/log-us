@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
 import { customFetch } from '@/utils/customFetch';
 import { Post } from '@/components/blog/post/PostCard';
+import PostDetailComments from '@/components/blog/post/PostDetailComments';
 
 export default function PostDetailPage() {
     const pathname = usePathname();
@@ -42,7 +43,12 @@ export default function PostDetailPage() {
 
     return (
         <section>
-            {post && <PostDetail {...post} />}
+            {post && (
+                <>
+                    <PostDetail {...post} />
+                    <PostDetailComments {...post} />
+                </>
+            )}
             <Popup
                 show={showPopup}
                 title="에러"

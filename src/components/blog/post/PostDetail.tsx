@@ -30,10 +30,7 @@ export default function PostDetail({
     nextId,
     nextTitle,
     views,
-    liked,
-    likeCount,
     createDate,
-    imgUrl,
 }: Post) {
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
@@ -113,7 +110,7 @@ export default function PostDetail({
                 </ul>
             </header>
             <main className="my-10">
-                <div className="content leading-6">
+                <div className="content text-md leading-6">
                     <Viewer initialValue={unescapeSpecialChars(content)} />
                 </div>
             </main>
