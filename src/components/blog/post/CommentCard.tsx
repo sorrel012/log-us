@@ -13,7 +13,7 @@ export default function CommentCard({
         <>
             <div className="flex items-start gap-3">
                 {imgUrl ? (
-                    <div className="relative size-10">
+                    <div className="relative size-12">
                         <Image
                             src={imgUrl}
                             alt={nickname!}
@@ -22,16 +22,16 @@ export default function CommentCard({
                         />
                     </div>
                 ) : (
-                    <PersonIcon size="size-10 " />
+                    <PersonIcon size="size-12 " />
                 )}
-                <div className="flex flex-col text-sm">
+                <div className="flex flex-col gap-1 text-md">
                     {<div className="font-bold">{nickname}</div>}
                     <div className="text-customLightBlue-200">
                         {dateFormatter(createDate!)}
                     </div>
                 </div>
             </div>
-            <div className="mt-2 text-sm">{content}</div>
+            <div className="mt-2 text-md">{content}</div>
         </>
     );
 }

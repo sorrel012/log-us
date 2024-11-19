@@ -16,7 +16,7 @@ export default function PostDetailComments({
     const loginUserNickname = 'user1';
 
     return (
-        <section className="mt-6">
+        <section className="mx-auto mt-10 max-w-screen-2xl">
             <div className="mb-10 flex justify-between border-b border-solid border-customLightBlue-100 pb-2 text-customLightBlue-200">
                 <LikeIcon likes={likeCount} />
                 <CommentIcon comments={commentCount} />
@@ -30,7 +30,7 @@ export default function PostDetailComments({
                             }
                         />
                     )}
-                    <div className="flex w-full flex-col gap-1 text-sm">
+                    <div className="flex w-full flex-col gap-2 text-md">
                         {loginUser && (
                             <div className="font-bold">{loginUserNickname}</div>
                         )}
@@ -48,9 +48,26 @@ export default function PostDetailComments({
             </div>
             {comments && (
                 <div>
-                    {comments.map((comment) => (
-                        <Comments key={comment.commentId} {...comment} />
-                    ))}
+                    {comments.parents &&
+                        comments.parents.map((comment) => (
+                            <div key={comment.commentId}>
+                                <Comments comment={comment} />
+                                {comments.childComments &&
+                                    comments.childComments
+                                        ?.filter(
+                                            (childComment) =>
+                                                childComment.parentId ===
+                                                comment.commentId,
+                                        )
+                                        .map((childComment) => (
+                                            <Comments
+                                                key={childComment.commentId}
+                                                comment={childComment}
+                                                isChild
+                                            />
+                                        ))}
+                            </div>
+                        ))}
                 </div>
             )}
         </section>

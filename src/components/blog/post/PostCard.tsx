@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { HiPhoto } from 'react-icons/hi2';
 import { unescapeSpecialChars } from '@/utils/commonUtil';
 
-export interface Comment {
+interface Comment {
     commentId: number;
     memberId: number;
     nickname: string;
@@ -18,6 +18,11 @@ export interface Comment {
     status: string;
     reportStatus?: string;
     createDate: Date;
+}
+
+export interface Comments {
+    parents?: Comment[];
+    childComments?: Comment[];
 }
 
 export interface Post {
@@ -32,9 +37,9 @@ export interface Post {
     imgUrl?: string;
     tags?: string[];
     preId?: 1;
-    preTitle?: '이전 게시글제목';
+    preTitle?: string;
     nextId?: 3;
-    nextTitle?: '다음 게시글제목';
+    nextTitle?: string;
     status: '';
     reportStatus?: string;
     views: number;
@@ -42,7 +47,7 @@ export interface Post {
     categoryName: string;
     seriesId?: number;
     seriesName?: string;
-    comments?: Comment[];
+    comments?: Comments;
 }
 
 export default function PostCard({

@@ -109,7 +109,7 @@ export default function PostDetail({
                     ))}
                 </ul>
             </header>
-            <main className="my-10">
+            <main className="my-12 mb-16">
                 <div className="content text-md leading-6">
                     <Viewer initialValue={unescapeSpecialChars(content)} />
                 </div>

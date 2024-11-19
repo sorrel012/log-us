@@ -21,7 +21,7 @@ export default function Comments({
     const [isReplyClicked, setIsReplyClicked] = useState(false);
 
     return (
-        <div className="mb-3">
+        <div className="mb-3 border-b border-solid border-customLightBlue-100 pb-4">
             {!parentId && (
                 <>
                     <CommentCard
@@ -31,7 +31,7 @@ export default function Comments({
                         createDate={createDate}
                     />
                     <button
-                        className={`mt-3 rounded-md border border-solid px-2 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
+                        className={`mt-4 rounded-md border border-solid px-2 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
                         onClick={() =>
                             setIsReplyClicked((prevState) => !prevState)
                         }
