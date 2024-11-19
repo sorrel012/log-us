@@ -26,8 +26,14 @@ export default function TextEditor({
     const editorRef = useRef<Editor>();
 
     useEffect(() => {
-        if (contents && !editorRef.current?.getInstance().getHTML()) {
-            editorRef.current?.getInstance().setHTML(contents);
+        if (editorRef.current) {
+            if (editorRef.current instanceof Editor) {
+                const editorInstance = editorRef.current.getInstance();
+
+                if (contents && editorInstance.getHTML() !== contents) {
+                    editorInstance.setHTML(contents);
+                }
+            }
         }
     }, [contents]);
 

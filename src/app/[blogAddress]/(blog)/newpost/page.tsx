@@ -16,6 +16,7 @@ type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
 interface PostPayload {
     blogId: number;
+    postId?: number;
     categoryId?: number;
     seriesId?: number | null;
     title: string;
@@ -31,6 +32,7 @@ type popupIdType =
     | 'SAVE'
     | 'CONTENT_FOCUS'
     | 'TITLE_FOCUS'
+    | 'TMP_REWRITE'
     | '';
 
 export default function NewPostPage() {
@@ -58,6 +60,7 @@ export default function NewPostPage() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [seriesId, setSeriesId] = useState<number>(null);
+    const [postId, setPostId] = useState<number>(null);
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);
@@ -133,18 +136,29 @@ export default function NewPostPage() {
         setPopupId('');
     };
     const handleConfirm = async () => {
-        if (popupId === 'EXIT') {
+        if (popupId === 'EXIT' || popupId === 'TMP_REWRITE') {
             const data = getData('TEMPORARY');
             try {
-                await customFetch('/posts', {
-                    queryKey: ['tmpPost'],
-                    method: 'POST',
-                    body: data,
-                });
+                if (popupId === 'EXIT') {
+                    await customFetch('/posts', {
+                        queryKey: ['tmpPost'],
+                        method: 'POST',
+                        body: data,
+                    });
+                } else {
+                    await customFetch(`/posts/${postId}`, {
+                        queryKey: ['tmpPost', 'rewrite', postId],
+                        method: 'PUT',
+                        body: data,
+                        invalidateCache: true,
+                    });
+                }
 
                 handleClosePopup();
                 setTimeout(() => {
-                    setPopupId('TMP_SAVE_EXIT');
+                    popupId === 'EXIT'
+                        ? setPopupId('TMP_SAVE_EXIT')
+                        : setPopupId('CLOSE');
                     setPopupTitle('작성 중인 글이 저장되었습니다.');
                     setPopupType('alert');
                     setShowPopup(true);
@@ -175,9 +189,11 @@ export default function NewPostPage() {
             const response = await customFetch<PostPayload>('/posts/temp', {
                 queryKey: ['tmpPost'],
                 params: { blogId },
+                invalidateCache: true,
             });
 
             const tmpPost = response.data;
+            setPostId(tmpPost?.postId || 0);
             const hasChange =
                 title.trim() ||
                 (content.trim() && content !== '<p><br></p>') ||
@@ -197,7 +213,7 @@ export default function NewPostPage() {
                         setPopupMessage('저장하시겠습니까?');
                         setPopupType('confirm');
                         setShowPopup(true);
-                        setPopupId('EXIT');
+                        setPopupId('TMP_REWRITE');
                     } else {
                         setPopupTitle('변경 사항이 없습니다.');
                         setShowPopup(true);
@@ -211,9 +227,12 @@ export default function NewPostPage() {
                             method: 'POST',
                             body: data,
                         });
+                        setPopupId('CLOSE');
+                        setPopupTitle('게시글을 임시 저장했습니다.');
+                        setShowPopup(true);
                     } catch (error) {
                         setPopupId('CLOSE');
-                        setPopupTitle('작성 중인 글이 임시 저장되었습니다.');
+                        setPopupTitle('잠시 후 다시 시도해 주세요.');
                         setShowPopup(true);
                     }
                 }
@@ -221,6 +240,7 @@ export default function NewPostPage() {
                 setTitle(tmpPost.title);
                 setContent(tmpPost.content);
                 setSeriesId(tmpPost?.seriesId || 0);
+                setPostId(tmpPost?.postId || 0);
                 setPopupId('CLOSE');
                 setPopupTitle('임시 저장된 글을 불러왔습니다.');
                 setShowPopup(true);
@@ -277,13 +297,24 @@ export default function NewPostPage() {
 
     const handleSavePost = async (post) => {
         const data = getData(post.status, post);
+        let result;
         try {
-            await customFetch('/posts', {
-                queryKey: ['savePost', post.status],
-                method: 'POST',
-                body: data,
-            });
-            handleClosePopup();
+            if (postId) {
+                result = await customFetch(`/posts/${postId}`, {
+                    queryKey: ['savePost', post.status],
+                    method: 'PUT',
+                    body: data,
+                });
+            } else {
+                result = await customFetch('/posts', {
+                    queryKey: ['savePost', post.status],
+                    method: 'POST',
+                    body: data,
+                });
+            }
+            if (result.isError) {
+                throw new Error(result.error);
+            }
             setTimeout(() => {
                 setPopupId('SAVE');
                 setPopupTitle('글이 발행되었습니다.');
