@@ -8,12 +8,6 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Viewer } from '@toast-ui/react-editor';
 
-const POST_EDIT = [
-    { value: 'statics', text: '통계' },
-    { value: 'edit', text: '수정' },
-    { value: 'delete', text: '삭제' },
-];
-
 export default function PostDetail({
     postId,
     memberId,
@@ -43,6 +37,24 @@ export default function PostDetail({
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const handleStatics = () => {
+        console.log('통계 클릭');
+    };
+
+    const handleEdit = () => {
+        console.log('수정 클릭');
+    };
+
+    const handleDelete = () => {
+        console.log('삭제 클릭');
+    };
+
+    const POST_EDIT = [
+        { value: 'statics', text: '통계', fnClick: handleStatics },
+        { value: 'edit', text: '수정', fnClick: handleEdit },
+        { value: 'delete', text: '삭제', fnClick: handleDelete },
+    ];
+
     return (
         <section className="mx-auto max-w-screen-2xl pb-3">
             <header className="border-b border-solid border-customLightBlue-100 pb-6">
@@ -67,6 +79,7 @@ export default function PostDetail({
                                         <div
                                             className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${type.value === 'delete' && 'text-red-600'}`}
                                             key={type.value}
+                                            onClick={type.fnClick}
                                         >
                                             {type.text}
                                         </div>
