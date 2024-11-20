@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Viewer } from '@toast-ui/react-editor';
+import { customFetch } from '@/utils/customFetch';
+import Popup from '@/components/Popup';
 
 export default function PostDetail({
     postId,
@@ -34,6 +36,11 @@ export default function PostDetail({
     const isWriter = memberId === 1;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupText, setPopupText] = useState('');
+    const [popupType, setPopupType] = useState<'confirm' | 'alert'>('alert');
+    const [popupId, setPopupId] = useState('');
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -48,7 +55,45 @@ export default function PostDetail({
     };
 
     const handleDelete = () => {
-        console.log('삭제 클릭');
+        setPopupType('confirm');
+        setPopupTitle('삭제하시겠습니까?');
+        setPopupText('삭제한 글은 복구할 수 없습니다.');
+        setShowPopup(true);
+        setPopupId('DELETE_FETCH');
+    };
+
+    const handlePopupConfirm = async () => {
+        if (popupId === 'DELETE_FETCH') {
+            setShowPopup(false);
+            setPopupText('');
+            setIsDropdownOpen(false);
+            try {
+                const res = await customFetch(`/posts/${postId}`, {
+                    method: 'DELETE',
+                    queryKey: ['deletePost', postId],
+                });
+
+                if (res.isError) {
+                    throw new Error(res.error);
+                }
+
+                setPopupType('alert');
+                setPopupTitle('삭제되었습니다.');
+                setShowPopup(true);
+                setPopupId('DELETE_SUCCESS');
+            } catch (e) {
+                setPopupType('alert');
+                setPopupTitle('게시글을 삭제할 수 없습니다.');
+                setPopupText('잠시 후 다시 시도해 주세요.');
+                setShowPopup(true);
+                setPopupId('DELETE_FAILED');
+            }
+        } else if (popupId === 'DELETE_SUCCESS') {
+            setShowPopup(false);
+            router.push(`/${blogAddress}/posts/series/0&전체보기`);
+        } else if (popupId === 'DELETE_FAILED') {
+            setShowPopup(false);
+        }
     };
 
     const POST_EDIT = [
@@ -163,6 +208,13 @@ export default function PostDetail({
                     )}
                 </div>
             </footer>
+            <Popup
+                show={showPopup}
+                onConfirm={handlePopupConfirm}
+                title={popupTitle}
+                text={popupText}
+                type={popupType}
+            />
         </section>
     );
 }
