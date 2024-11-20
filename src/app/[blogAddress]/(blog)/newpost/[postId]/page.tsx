@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { usePathname, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
@@ -39,6 +39,7 @@ export default function NewPostPage() {
     const router = useRouter();
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
+    const editPostId = pathname.split('/')[3];
     const { blogId } = useBlogStore();
     const { data } = UseSeries();
     const series = data
@@ -52,6 +53,7 @@ export default function NewPostPage() {
               ...data,
           ]
         : [];
+
     const selectedSeries = series.map((item) => ({
         text: item.seriesName,
         value: item.seriesId,
@@ -61,6 +63,36 @@ export default function NewPostPage() {
     const [content, setContent] = useState('');
     const [seriesId, setSeriesId] = useState<number>(null);
     const [postId, setPostId] = useState<number>(null);
+
+    useEffect(() => {
+        (async () => {
+            if (editPostId) {
+                try {
+                    const response = await customFetch(`/posts/${editPostId}`, {
+                        queryKey: ['postEdit', editPostId],
+                        invalidateCache: true,
+                    });
+
+                    if (response.isError) {
+                        throw new Error(
+                            response.error || '게시글을 불러올 수 없습니다.',
+                        );
+                    }
+
+                    const data = response.data;
+                    setTitle(data.title);
+                    setContent(data.content);
+                    setSeriesId(data.seriesId || 0);
+                } catch (error) {
+                    setPopupTitle('게시글을 불러올 수 없습니다.');
+                    setPopupMessage('잠시 후 다시 시도해 주세요.');
+                    setPopupType('alert');
+                    setPopupId('CLOSE');
+                    setShowPopup(true);
+                }
+            }
+        })();
+    }, [editPostId]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);
@@ -299,7 +331,13 @@ export default function NewPostPage() {
         const data = getData(post.status, post);
         let result;
         try {
-            if (postId) {
+            if (editPostId) {
+                result = await customFetch(`/posts/${editPostId}`, {
+                    queryKey: ['savePost', post.status],
+                    method: 'PUT',
+                    body: data,
+                });
+            } else if (postId) {
                 result = await customFetch(`/posts/${postId}`, {
                     queryKey: ['savePost', post.status],
                     method: 'PUT',

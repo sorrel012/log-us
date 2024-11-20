@@ -4,7 +4,7 @@ import { dateFormatter, unescapeSpecialChars } from '@/utils/commonUtil';
 import ViewIcon from '@/components/icons/ViewIcon';
 import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Viewer } from '@toast-ui/react-editor';
 
@@ -26,8 +26,10 @@ export default function PostDetail({
     views,
     createDate,
 }: Post) {
+    const router = useRouter();
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
+
     //TODO zustand에서 받아오기
     const isWriter = memberId === 1;
 
@@ -42,7 +44,7 @@ export default function PostDetail({
     };
 
     const handleEdit = () => {
-        console.log('수정 클릭');
+        router.push(`/${blogAddress}/newpost/${postId}`);
     };
 
     const handleDelete = () => {
