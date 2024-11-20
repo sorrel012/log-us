@@ -13,7 +13,7 @@ export default function PostDetailComments({
 }: Post) {
     //TODO zustand로 수정 필요
     const loginUser = 1;
-    const loginUserNickname = 'user1';
+    const loginUserNickname = '유저1';
 
     return (
         <section className="mx-auto mt-10 max-w-screen-2xl">
@@ -23,6 +23,7 @@ export default function PostDetailComments({
             </div>
             <div className="mb-3">
                 <div className="flex items-start gap-3">
+                    {/* TODO 사용자 프로필 사진 추가 필요*/}
                     {loginUser && (
                         <AiOutlineUser
                             className={
@@ -36,12 +37,16 @@ export default function PostDetailComments({
                         )}
                         <textarea
                             className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 outline-none"
-                            placeholder="댓글을 입력해 주세요."
+                            placeholder={`${loginUser ? '댓글을 입력해 주세요.' : '로그인 후 댓글을 작성할 수 있습니다.'}`}
+                            disabled={!loginUser}
                         />
                     </div>
                 </div>
                 <div className="mt-3 text-right">
-                    <button className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200">
+                    <button
+                        className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200"
+                        disabled={!loginUser}
+                    >
                         등록
                     </button>
                 </div>
@@ -51,21 +56,16 @@ export default function PostDetailComments({
                     {comments.parents &&
                         comments.parents.map((comment) => (
                             <div key={comment.commentId}>
-                                <Comments comment={comment} />
-                                {comments.childComments &&
-                                    comments.childComments
-                                        ?.filter(
+                                <Comments
+                                    parentComment={comment}
+                                    childComments={
+                                        comments.childComments?.filter(
                                             (childComment) =>
                                                 childComment.parentId ===
                                                 comment.commentId,
-                                        )
-                                        .map((childComment) => (
-                                            <Comments
-                                                key={childComment.commentId}
-                                                comment={childComment}
-                                                isChild
-                                            />
-                                        ))}
+                                        )[0].childs
+                                    }
+                                />
                             </div>
                         ))}
                 </div>

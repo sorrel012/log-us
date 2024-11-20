@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { HiPhoto } from 'react-icons/hi2';
 import { unescapeSpecialChars } from '@/utils/commonUtil';
 
-interface Comment {
+export interface Comment {
     commentId: number;
     memberId: number;
     nickname: string;
@@ -22,7 +22,7 @@ interface Comment {
 
 export interface Comments {
     parents?: Comment[];
-    childComments?: Comment[];
+    childComments?: any[];
 }
 
 export interface Post {

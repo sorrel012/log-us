@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import PersonIcon from '@/components/icons/PersonIcon';
-import { dateFormatter } from '@/utils/commonUtil';
 import { Comment } from '@/components/blog/post/PostCard';
+import { dateFormatter } from '@/utils/commonUtil';
 
 export default function CommentCard({
     nickname,
@@ -11,7 +11,7 @@ export default function CommentCard({
 }: Partial<Comment>) {
     return (
         <>
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 pt-3">
                 {imgUrl ? (
                     <div className="relative size-12">
                         <Image
