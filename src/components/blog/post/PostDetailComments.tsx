@@ -6,6 +6,7 @@ import CommentList from '@/components/blog/post/CommentList';
 import { useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
+import { escapeSpecialChars } from '@/utils/commonUtil';
 
 export default function PostDetailComments({
     postId,
@@ -44,7 +45,7 @@ export default function PostDetailComments({
             postId,
             parentId: null,
             depth: 0,
-            content: commentText,
+            content: escapeSpecialChars(commentText),
             status: isPrivateComment ? 'PRIVATE' : 'PUBLIC',
         };
 
@@ -152,6 +153,7 @@ export default function PostDetailComments({
                                                 comment.commentId,
                                         )[0].childs
                                     }
+                                    postId={postId}
                                 />
                             </div>
                         ))}

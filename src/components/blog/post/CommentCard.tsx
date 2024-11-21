@@ -24,14 +24,14 @@ export default function CommentCard({
                 ) : (
                     <PersonIcon size="size-12 " />
                 )}
-                <div className="flex flex-col gap-1 text-md">
+                <div className="flex flex-col gap-2 text-md">
                     {<div className="font-bold">{nickname}</div>}
                     <div className="text-customLightBlue-200">
                         {dateFormatter(createDate!)}
                     </div>
                 </div>
             </div>
-            <div className="mt-2 text-md">{content}</div>
+            <div className="mt-2 text-md leading-6">{content}</div>
         </>
     );
 }
