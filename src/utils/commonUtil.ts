@@ -26,7 +26,7 @@ export function dateFormatter(date: Date | string): string {
         parsedDate.getDate() === today.getDate();
 
     if (isToday) {
-        return timeagoFormat(parsedDate, 'ko'); // 'ko' locale 사용
+        return timeagoFormat(parsedDate, 'ko');
     }
 
     return parsedDate.toLocaleString('ko-KR', {

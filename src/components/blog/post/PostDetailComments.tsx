@@ -2,11 +2,12 @@ import { Post } from '@/components/blog/post/PostCard';
 import LikeIcon from '@/components/icons/LikeIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
 import { AiOutlineUser } from 'react-icons/ai';
-import CommentList from '@/components/blog/post/CommentList';
 import { useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { escapeSpecialChars } from '@/utils/commonUtil';
+import Popup from '@/components/Popup';
+import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailComments({
     postId,
@@ -30,44 +31,6 @@ export default function PostDetailComments({
         setCommentText(event.target.value);
     };
 
-    const handleSaveComment = async () => {
-        if (commentText.trim() === '') {
-            alert('댓글 내용을 입력해 주세요.');
-            return;
-        }
-
-        if (commentText.length > 300) {
-            alert('댓글 내용을 300자 이내로 입력해 주세요.');
-            return;
-        }
-
-        const requestDto = {
-            postId,
-            parentId: null,
-            depth: 0,
-            content: escapeSpecialChars(commentText),
-            status: isPrivateComment ? 'PRIVATE' : 'PUBLIC',
-        };
-
-        const formData = new FormData();
-        formData.append(
-            'requestDto',
-            new Blob([JSON.stringify(requestDto)], {
-                type: 'application/json',
-            }),
-        );
-
-        try {
-            const res = await customFetch('/comments', {
-                method: 'POST',
-                queryKey: ['comment', 'save', commentText],
-                body: formData,
-            });
-        } catch (e) {}
-
-        setCommentText('');
-    };
-
     const handleLikeClick = async () => {
         const res = await customFetch(`/like/${postId}`, {
             method: isLiked ? 'DELETE' : 'POST',
@@ -81,6 +44,65 @@ export default function PostDetailComments({
             );
             setIsLiked((prevState) => !prevState);
         }
+    };
+
+    const handleSaveComment = async () => {
+        if (commentText.trim() === '') {
+            setShowPopup(true);
+            setPopupText('댓글 내용을 입력해 주세요.');
+            return;
+        }
+
+        if (commentText.length > 300) {
+            setShowPopup(true);
+            setPopupText('댓글 내용을 300자 이내로 입력해 주세요.');
+            return;
+        }
+
+        const body = {
+            postId,
+            parentId: null,
+            depth: 0,
+            content: escapeSpecialChars(commentText),
+            status: isPrivateComment ? 'PRIVATE' : 'PUBLIC',
+        };
+
+        try {
+            const res = await customFetch('/comments', {
+                method: 'POST',
+                queryKey: ['comment', 'save', commentText],
+                body,
+            });
+
+            if (res.isError) {
+                throw new Error(res.error || '답글을 작성하지 못했습니다.');
+            }
+
+            comments?.parents.push({
+                commentId: res.data.commentId,
+                content: commentText,
+                createDate: new Date(),
+                memberId: loginUser,
+                nickname: loginUserNickname,
+            });
+
+            comments?.childComments.push({
+                parentId: res.data.commentId,
+                childs: [],
+            });
+        } catch (e) {
+            setShowPopup(true);
+            setPopupText(e);
+        }
+
+        setCommentText('');
+    };
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupText, setPopupText] = useState('');
+
+    const handleConfirm = () => {
+        setShowPopup(false);
     };
 
     return (
@@ -112,6 +134,7 @@ export default function PostDetailComments({
                             className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 leading-6 outline-none"
                             placeholder={`${loginUser ? '댓글을 입력해 주세요.' : '로그인 후 댓글을 작성할 수 있습니다.'}`}
                             disabled={!loginUser}
+                            value={commentText}
                             onChange={handleTextareaChange}
                         />
                     </div>
@@ -159,6 +182,11 @@ export default function PostDetailComments({
                         ))}
                 </div>
             )}
+            <Popup
+                show={showPopup}
+                onConfirm={handleConfirm}
+                text={popupText}
+            />
         </section>
     );
 }

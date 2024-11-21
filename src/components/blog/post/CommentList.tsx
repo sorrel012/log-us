@@ -28,12 +28,14 @@ export default function CommentList({ parentComment, childComments, postId }) {
 
     const handleSaveReply = async () => {
         if (replyText.trim() === '') {
-            alert('딥글 내용을 입력해 주세요.');
+            setShowPopup(true);
+            setPopupText('딥글 내용을 입력해 주세요.');
             return;
         }
 
         if (replyText.length > 300) {
-            alert('답글 내용을 300자 이내로 입력해 주세요.');
+            setShowPopup(true);
+            setPopupText('답글 내용을 300자 이내로 입력해 주세요.');
             return;
         }
 
@@ -56,7 +58,6 @@ export default function CommentList({ parentComment, childComments, postId }) {
                 throw new Error(res.error || '답글을 작성하지 못했습니다.');
             }
 
-            console.log('음?', res.data.commentId);
             childComments.push({
                 commentId: res.data.commentId,
                 content: replyText,
