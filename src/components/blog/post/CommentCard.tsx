@@ -4,18 +4,24 @@ import { Comment } from '@/components/blog/post/PostCard';
 import { dateFormatter } from '@/utils/commonUtil';
 import { useState } from 'react';
 import { IoEllipsisVerticalCircle } from 'react-icons/io5';
-import Popup from '@/components/Popup';
+import Popup, { PopupTypeProps } from '@/components/Popup';
 import { customFetch } from '@/utils/customFetch';
+import { Simulate } from 'react-dom/test-utils';
+import error = Simulate.error;
 
 export default function CommentCard({
     memberId,
+    parentId,
     nickname,
     imgUrl,
     content,
     createDate,
     commentId,
     onEditSuccess,
-}: Partial<Comment> & { onEditSuccess: (updatedContent: string) => void }) {
+    onDeleteSuccess,
+}: Partial<Comment> & { onEditSuccess: (updatedContent: string) => void } & {
+    onDeleteSuccess: (commentId: number) => void;
+}) {
     //TODO 현재 로그인 유저 정보
     const loginUser = 1;
     const isWriter = memberId === loginUser;
@@ -32,12 +38,14 @@ export default function CommentCard({
     const handleSaveEdit = async () => {
         if (editText.trim() === '') {
             setShowPopup(true);
+            setPopupType('alert');
             setPopupText('댓글 내용을 입력해 주세요.');
             return;
         }
 
         if (editText.length > 300) {
             setShowPopup(true);
+            setPopupType('alert');
             setPopupText('댓글 내용을 300자 이내로 입력해 주세요.');
             return;
         }
@@ -58,6 +66,7 @@ export default function CommentCard({
             }
         } catch (error) {
             setShowPopup(true);
+            setPopupType('alert');
             setPopupText(error);
         }
     };
@@ -67,7 +76,14 @@ export default function CommentCard({
         setEditText(content || '');
     };
 
-    const handleDelete = () => {};
+    const handleDelete = () => {
+        setPopupType('confirm');
+        setPopupTitle(`${!parentId ? '댓글' : '답글'}을 삭제하시겠습니까?`);
+        setPopupText(
+            ` 삭제한 ${!parentId ? '댓글' : '답글'}은 다시 복구할 수 없습니다.`,
+        );
+        setShowPopup(true);
+    };
 
     const POST_EDIT = [
         { value: 'edit', text: '수정', fnClick: handleEditClick },
@@ -75,9 +91,37 @@ export default function CommentCard({
     ];
 
     const [showPopup, setShowPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+    const [popupType, setPopupType] = useState<PopupTypeProps>('alert');
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
+        if (popupType === 'confirm') {
+            try {
+                const response = await customFetch(`/comments/${commentId}`, {
+                    method: 'DELETE',
+                    queryKey: ['comment', 'delete', commentId],
+                    invalidateCache: true,
+                });
+
+                if (response.isError) {
+                    throw new Error(
+                        response.error ||
+                            `${!parentId ? '댓글' : '답글'} 삭제에 실패했습니다.`,
+                    );
+                }
+
+                onDeleteSuccess(commentId);
+            } catch (e) {
+                setShowPopup(true);
+                setPopupType('alert');
+                setPopupText(error);
+            }
+
+            setPopupTitle('');
+            setPopupText('');
+        }
+
         setShowPopup(false);
     };
 
@@ -159,6 +203,8 @@ export default function CommentCard({
             <Popup
                 show={showPopup}
                 onConfirm={handleConfirm}
+                type={popupType}
+                title={popupTitle}
                 text={popupText}
             />
         </>

@@ -7,7 +7,7 @@ import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 import SelectBox from '@/components/SelectBox';
 import TextEditor from '@/components/blog/TextEditor';
-import Popup from '@/components/Popup';
+import Popup, { PopupTypeProps } from '@/components/Popup';
 import { escapeSpecialChars, isObjEqual } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { UseSeries } from '@/hooks/useSeries';
@@ -148,7 +148,7 @@ export default function NewPostPage() {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupTitle, setPopupTitle] = useState('');
     const [popupId, setPopupId] = useState<popupIdType>('');
-    const [popupType, setPopupType] = useState<'alert' | 'confirm'>();
+    const [popupType, setPopupType] = useState<PopupTypeProps>();
     const handleBackClick = () => {
         if (content.trim().length > 0 || title.trim().length > 0 || seriesId) {
             setPopupTitle('작성 중인 글을 저장하시겠습니까?');

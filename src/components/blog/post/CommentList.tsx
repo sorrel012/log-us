@@ -7,8 +7,10 @@ import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { escapeSpecialChars } from '@/utils/commonUtil';
 import Popup from '@/components/Popup';
 import { customFetch } from '@/utils/customFetch';
+import { useRouter } from 'next/navigation';
 
 export default function CommentList({ parentComment, childComments, postId }) {
+    const router = useRouter();
     //TODO zustand로 수정 필요
     const loginUser = 1;
     const loginUserNickname = '유저1';
@@ -20,6 +22,7 @@ export default function CommentList({ parentComment, childComments, postId }) {
         imgUrl,
         createDate,
         memberId,
+        parentId,
     }: Comment = parentComment;
 
     const [parentContent, setParentContent] = useState(content);
@@ -37,13 +40,13 @@ export default function CommentList({ parentComment, childComments, postId }) {
     const handleSaveReply = async () => {
         if (replyText.trim() === '') {
             setShowPopup(true);
-            setPopupText('딥글 내용을 입력해 주세요.');
+            setPopupTitle('딥글 내용을 입력해 주세요.');
             return;
         }
 
         if (replyText.length > 300) {
             setShowPopup(true);
-            setPopupText('답글 내용을 300자 이내로 입력해 주세요.');
+            setPopupTitle('답글 내용을 300자 이내로 입력해 주세요.');
             return;
         }
 
@@ -75,13 +78,13 @@ export default function CommentList({ parentComment, childComments, postId }) {
             });
         } catch (e) {
             setShowPopup(true);
-            setPopupText(e);
+            setPopupTitle(e);
         }
         setReplyText('');
     };
 
     const [showPopup, setShowPopup] = useState(false);
-    const [popupText, setPopupText] = useState('');
+    const [popupTitle, setPopupTitle] = useState('');
 
     const handleConfirm = () => {
         setShowPopup(false);
@@ -102,10 +105,23 @@ export default function CommentList({ parentComment, childComments, postId }) {
         });
     };
 
+    const handleDeleteComment = () => {
+        router.refresh();
+    };
+
+    const handleDeleteReply = (deletedReplyId: number) => {
+        setChildCommentsState((prevState) => {
+            return prevState.filter(
+                (reply) => reply.commentId !== deletedReplyId,
+            );
+        });
+    };
+
     return (
         <div className="mb-3 border-b border-solid border-customLightBlue-100 pb-4">
             <CommentCard
                 nickname={nickname}
+                parentId={parentId}
                 content={parentContent}
                 imgUrl={imgUrl}
                 createDate={createDate}
@@ -113,6 +129,9 @@ export default function CommentList({ parentComment, childComments, postId }) {
                 commentId={commentId}
                 onEditSuccess={(updatedContent) => {
                     handleEditComment(updatedContent);
+                }}
+                onDeleteSuccess={(deletedCommentId) => {
+                    handleDeleteComment(deletedCommentId);
                 }}
             />
             <button
@@ -133,6 +152,7 @@ export default function CommentList({ parentComment, childComments, postId }) {
                                 <div className="w-full">
                                     <CommentCard
                                         nickname={childComment.nickname}
+                                        parentId={childComment.parentId}
                                         content={childComment.content}
                                         imgUrl={childComment.imgUrl}
                                         createDate={childComment.createDate}
@@ -141,6 +161,12 @@ export default function CommentList({ parentComment, childComments, postId }) {
                                         onEditSuccess={(updatedContent) => {
                                             handleEditReply(
                                                 updatedContent,
+                                                index,
+                                            );
+                                        }}
+                                        onDeleteSuccess={(deletedCommentId) => {
+                                            handleDeleteReply(
+                                                deletedCommentId,
                                                 index,
                                             );
                                         }}
@@ -207,7 +233,7 @@ export default function CommentList({ parentComment, childComments, postId }) {
             <Popup
                 show={showPopup}
                 onConfirm={handleConfirm}
-                text={popupText}
+                title={popupTitle}
             />
         </div>
     );

@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
+export type PopupTypeProps = 'alert' | 'confirm';
+
 interface PopupProps {
     show: boolean;
     title?: string;
     text?: string;
     onConfirm: () => void;
     onCancel?: () => void;
-    type?: 'alert' | 'confirm';
+    type?: PopupTypeProps;
 }
 
 const popupVariants = {
