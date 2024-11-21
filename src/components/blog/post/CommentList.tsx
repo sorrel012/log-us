@@ -4,7 +4,7 @@ import { Comment } from '@/components/blog/post/PostCard';
 import { BsArrowReturnRight } from 'react-icons/bs';
 import { AiOutlineUser } from 'react-icons/ai';
 
-export default function Comments({ parentComment, childComments }) {
+export default function CommentList({ parentComment, childComments }) {
     //TODO zustand로 수정 필요
     const loginUser = 1;
     const loginUserNickname = '유저1';
@@ -64,7 +64,7 @@ export default function Comments({ parentComment, childComments }) {
                                         </div>
                                     )}
                                     <textarea
-                                        className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 outline-none"
+                                        className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 leading-6 outline-none"
                                         placeholder={`${loginUser ? '답글을 입력해 주세요.' : '로그인 후 답글을 작성할 수 있습니다.'}`}
                                         disabled={!loginUser}
                                     />

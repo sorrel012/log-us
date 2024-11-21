@@ -2,7 +2,10 @@ import { Post } from '@/components/blog/post/PostCard';
 import LikeIcon from '@/components/icons/LikeIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
 import { AiOutlineUser } from 'react-icons/ai';
-import Comments from '@/components/blog/post/Comments';
+import CommentList from '@/components/blog/post/CommentList';
+import { useState } from 'react';
+import { customFetch } from '@/utils/customFetch';
+import { BiLock, BiLockOpen } from 'react-icons/bi';
 
 export default function PostDetailComments({
     postId,
@@ -15,10 +18,79 @@ export default function PostDetailComments({
     const loginUser = 1;
     const loginUserNickname = '유저1';
 
+    const [commentText, setCommentText] = useState('');
+    const [isPrivateComment, setIsPrivateComment] = useState(false);
+    const [likesCnt, setLikesCnt] = useState(likeCount);
+    const [isLiked, setIsLiked] = useState(liked);
+
+    const handleTextareaChange = (
+        event: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
+        setCommentText(event.target.value);
+    };
+
+    const handleSaveComment = async () => {
+        if (commentText.trim() === '') {
+            alert('댓글 내용을 입력해 주세요.');
+            return;
+        }
+
+        if (commentText.length > 300) {
+            alert('댓글 내용을 300자 이내로 입력해 주세요.');
+            return;
+        }
+
+        const requestDto = {
+            postId,
+            parentId: null,
+            depth: 0,
+            content: commentText,
+            status: isPrivateComment ? 'PRIVATE' : 'PUBLIC',
+        };
+
+        const formData = new FormData();
+        formData.append(
+            'requestDto',
+            new Blob([JSON.stringify(requestDto)], {
+                type: 'application/json',
+            }),
+        );
+
+        try {
+            const res = await customFetch('/comments', {
+                method: 'POST',
+                queryKey: ['comment', 'save', commentText],
+                body: formData,
+            });
+        } catch (e) {}
+
+        setCommentText('');
+    };
+
+    const handleLikeClick = async () => {
+        const res = await customFetch(`/like/${postId}`, {
+            method: isLiked ? 'DELETE' : 'POST',
+            queryKey: ['liked', isLiked],
+            invalidateCache: true,
+        });
+
+        if (!res.isError) {
+            setLikesCnt((prevState) =>
+                isLiked ? prevState - 1 : prevState + 1,
+            );
+            setIsLiked((prevState) => !prevState);
+        }
+    };
+
     return (
         <section className="mx-auto mt-10 max-w-screen-2xl">
             <div className="mb-10 flex justify-between border-b border-solid border-customLightBlue-100 pb-2 text-customLightBlue-200">
-                <LikeIcon likes={likeCount} />
+                <LikeIcon
+                    likes={likesCnt}
+                    isClick={true}
+                    liked={isLiked}
+                    onClick={handleLikeClick}
+                />
                 <CommentIcon comments={commentCount} />
             </div>
             <div className="mb-3">
@@ -36,16 +108,31 @@ export default function PostDetailComments({
                             <div className="font-bold">{loginUserNickname}</div>
                         )}
                         <textarea
-                            className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 outline-none"
+                            className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 leading-6 outline-none"
                             placeholder={`${loginUser ? '댓글을 입력해 주세요.' : '로그인 후 댓글을 작성할 수 있습니다.'}`}
                             disabled={!loginUser}
+                            onChange={handleTextareaChange}
                         />
                     </div>
                 </div>
-                <div className="mt-3 text-right">
+                <div className="mt-3 flex items-center justify-end gap-3">
+                    {loginUser && (
+                        <button
+                            onClick={() =>
+                                setIsPrivateComment((prevState) => !prevState)
+                            }
+                        >
+                            {isPrivateComment ? (
+                                <BiLock className="size-6 text-customLightBlue-200" />
+                            ) : (
+                                <BiLockOpen className="popup-bounce size-6 text-customLightBlue-200" />
+                            )}
+                        </button>
+                    )}
                     <button
                         className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200"
                         disabled={!loginUser}
+                        onClick={handleSaveComment}
                     >
                         등록
                     </button>
@@ -56,7 +143,7 @@ export default function PostDetailComments({
                     {comments.parents &&
                         comments.parents.map((comment) => (
                             <div key={comment.commentId}>
-                                <Comments
+                                <CommentList
                                     parentComment={comment}
                                     childComments={
                                         comments.childComments?.filter(

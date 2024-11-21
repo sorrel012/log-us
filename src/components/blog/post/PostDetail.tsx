@@ -46,10 +46,6 @@ export default function PostDetail({
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleStatics = () => {
-        console.log('통계 클릭');
-    };
-
     const handleEdit = () => {
         router.push(`/${blogAddress}/newpost/${postId}`);
     };
@@ -74,7 +70,9 @@ export default function PostDetail({
                 });
 
                 if (res.isError) {
-                    throw new Error(res.error);
+                    throw new Error(
+                        res.error || '게시글을 삭제할 수 없습니다.',
+                    );
                 }
 
                 setPopupType('alert');
@@ -97,7 +95,6 @@ export default function PostDetail({
     };
 
     const POST_EDIT = [
-        { value: 'statics', text: '통계', fnClick: handleStatics },
         { value: 'edit', text: '수정', fnClick: handleEdit },
         { value: 'delete', text: '삭제', fnClick: handleDelete },
     ];
