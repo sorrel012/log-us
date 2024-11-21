@@ -13,9 +13,17 @@ export default function CommentList({ parentComment, childComments, postId }) {
     const loginUser = 1;
     const loginUserNickname = '유저1';
 
-    const { commentId, nickname, content, imgUrl, createDate }: Comment =
-        parentComment;
+    let {
+        commentId,
+        nickname,
+        content,
+        imgUrl,
+        createDate,
+        memberId,
+    }: Comment = parentComment;
 
+    const [parentContent, setParentContent] = useState(content);
+    const [childCommentsState, setChildCommentsState] = useState(childComments);
     const [isReplyClicked, setIsReplyClicked] = useState(false);
     const [isPrivateReply, setIsPrivateReply] = useState(false);
     const [replyText, setReplyText] = useState('');
@@ -79,13 +87,33 @@ export default function CommentList({ parentComment, childComments, postId }) {
         setShowPopup(false);
     };
 
+    const handleEditComment = (editCommentText: string) => {
+        setParentContent(editCommentText);
+    };
+
+    const handleEditReply = (editReplyText: string, index: number) => {
+        setChildCommentsState((prevState) => {
+            const updatedReplies = [...prevState];
+            updatedReplies[index] = {
+                ...updatedReplies[index],
+                content: editReplyText,
+            };
+            return updatedReplies;
+        });
+    };
+
     return (
         <div className="mb-3 border-b border-solid border-customLightBlue-100 pb-4">
             <CommentCard
                 nickname={nickname}
-                content={content}
+                content={parentContent}
                 imgUrl={imgUrl}
                 createDate={createDate}
+                memberId={memberId}
+                commentId={commentId}
+                onEditSuccess={(updatedContent) => {
+                    handleEditComment(updatedContent);
+                }}
             />
             <button
                 className={`mt-4 rounded-md border border-solid px-2 py-0.5 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
@@ -95,22 +123,32 @@ export default function CommentList({ parentComment, childComments, postId }) {
             </button>
             {isReplyClicked && (
                 <div className="w-full">
-                    {childComments.map((childComment: Comment) => (
-                        <div
-                            key={childComment.commentId}
-                            className="mb-3 flex items-center gap-3"
-                        >
-                            <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
-                            <div>
-                                <CommentCard
-                                    nickname={childComment.nickname}
-                                    content={childComment.content}
-                                    imgUrl={childComment.imgUrl}
-                                    createDate={childComment.createDate}
-                                />
+                    {childCommentsState.map(
+                        (childComment: Comment, index: number) => (
+                            <div
+                                key={childComment.commentId}
+                                className="mb-3 flex items-center gap-3"
+                            >
+                                <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
+                                <div className="w-full">
+                                    <CommentCard
+                                        nickname={childComment.nickname}
+                                        content={childComment.content}
+                                        imgUrl={childComment.imgUrl}
+                                        createDate={childComment.createDate}
+                                        memberId={childComment.memberId}
+                                        commentId={childComment.commentId}
+                                        onEditSuccess={(updatedContent) => {
+                                            handleEditReply(
+                                                updatedContent,
+                                                index,
+                                            );
+                                        }}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ),
+                    )}
                     <div className="mb-2 mt-5 flex gap-3">
                         <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
                         <div className="w-full">
