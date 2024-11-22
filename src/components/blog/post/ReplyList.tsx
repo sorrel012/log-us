@@ -7,11 +7,15 @@ import { useState } from 'react';
 import { escapeSpecialChars } from '@/utils/commonUtil';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
+import { IoLockClosedOutline } from 'react-icons/io5';
 
 export default function ReplyList({
     loginUser,
     loginUserNickname,
     postId,
+    postWriterId,
+    isMember,
+    commentWriterId,
     parentId,
     childComments,
 }) {
@@ -28,7 +32,6 @@ export default function ReplyList({
         setReplyText(event.target.value);
     };
 
-    // 답글 저장
     const handleSaveReply = async () => {
         if (replyText.trim() === '') {
             setShowPopup(true);
@@ -78,7 +81,6 @@ export default function ReplyList({
         setReplyText('');
     };
 
-    // 답글 수정
     const handleEditReply = (
         editReplyText: string,
         updatedReplyStatus: string,
@@ -95,7 +97,6 @@ export default function ReplyList({
         });
     };
 
-    // 답글 삭제
     const handleDeleteReply = (deletedReplyId: number) => {
         setChildCommentsState((prevState) => {
             return prevState.filter(
@@ -114,31 +115,48 @@ export default function ReplyList({
                             className="mb-3 flex items-center gap-3"
                         >
                             <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
-                            <div className="w-full">
-                                <CommentCard
-                                    nickname={childComment.nickname}
-                                    parentId={childComment.parentId}
-                                    content={childComment.content}
-                                    imgUrl={childComment.imgUrl}
-                                    createDate={childComment.createDate}
-                                    memberId={childComment.memberId}
-                                    status={childComment.status}
-                                    commentId={childComment.commentId}
-                                    onEditSuccess={(
-                                        updatedContent,
-                                        updatedStatus,
-                                    ) => {
-                                        handleEditReply(
-                                            updatedContent,
-                                            updatedStatus,
-                                            index,
-                                        );
-                                    }}
-                                    onDeleteSuccess={(deletedCommentId) => {
-                                        handleDeleteReply(deletedCommentId);
-                                    }}
-                                />
-                            </div>
+                            {
+                                <div className="w-full">
+                                    {childComment.status !== 'SECRET' ||
+                                    postWriterId === loginUser ||
+                                    isMember ||
+                                    commentWriterId === loginUser ||
+                                    childComment.memberId === loginUser ? (
+                                        <CommentCard
+                                            nickname={childComment.nickname}
+                                            parentId={childComment.parentId}
+                                            content={childComment.content}
+                                            imgUrl={childComment.imgUrl}
+                                            createDate={childComment.createDate}
+                                            memberId={childComment.memberId}
+                                            status={childComment.status}
+                                            commentId={childComment.commentId}
+                                            onEditSuccess={(
+                                                updatedContent,
+                                                updatedStatus,
+                                            ) => {
+                                                handleEditReply(
+                                                    updatedContent,
+                                                    updatedStatus,
+                                                    index,
+                                                );
+                                            }}
+                                            onDeleteSuccess={(
+                                                deletedCommentId,
+                                            ) => {
+                                                handleDeleteReply(
+                                                    deletedCommentId,
+                                                );
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="mb-2 mt-2 flex items-center gap-2 text-customLightBlue-200">
+                                            <IoLockClosedOutline />
+                                            <span>비밀 답글입니다.</span>
+                                        </div>
+                                    )}
+                                </div>
+                            }
                         </div>
                     ),
                 )}

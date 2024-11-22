@@ -9,8 +9,13 @@ import CommentCard from '@/components/blog/post/CommentCard';
 import ReplyList from '@/components/blog/post/ReplyList';
 import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter } from 'next/navigation';
+import { IoLockClosedOutline } from 'react-icons/io5';
 
-export default function CommentList({ postId, comments }: Post) {
+export default function CommentList({
+    postId,
+    memberId: postWriterId,
+    comments,
+}: Post) {
     const router = useRouter();
     const { blogInfo } = useBlogStore();
     //TODO zustand로 수정 필요
@@ -21,14 +26,15 @@ export default function CommentList({ postId, comments }: Post) {
         blogInfo?.members.filter((member) => member.memberId === loginUser)
             .length === 1;
 
-    // 댓글 관련 상태
     const [commentText, setCommentText] = useState('');
     const [isPrivateComment, setIsPrivateComment] = useState(false);
-
     const [parentCommentsState, setParentCommentsState] = useState(
         comments?.parents,
     );
-    const [isReplyClicked, setIsReplyClicked] = useState(false);
+
+    const [replyVisibility, setReplyVisibility] = useState<
+        Record<number, boolean>
+    >({});
 
     const handleTextareaChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -180,94 +186,98 @@ export default function CommentList({ postId, comments }: Post) {
                                     status,
                                 },
                                 index,
-                            ) => (
-                                <div
-                                    className="border-b border-solid border-customLightBlue-100 pb-2 pt-4"
-                                    key={commentId}
-                                >
-                                    {status === 'SECRET' && !isMember ? (
-                                        // <div className="mt-2 flex items-center gap-2 text-customLightBlue-200">
-                                        //     <IoLockClosedOutline />
-                                        //     <span>비밀 댓글입니다.</span>
-                                        // </div>
+                            ) => {
+                                const canViewComment =
+                                    status !== 'SECRET' ||
+                                    postWriterId === loginUser ||
+                                    isMember ||
+                                    memberId === loginUser;
 
-                                        <CommentCard
-                                            nickname={nickname}
-                                            parentId={parentId}
-                                            content={content}
-                                            imgUrl={imgUrl}
-                                            createDate={createDate}
-                                            memberId={memberId}
-                                            commentId={commentId}
-                                            status={status}
-                                            onEditSuccess={(
-                                                updatedContent,
-                                                updatedStatus,
-                                            ) => {
-                                                handleEditComment(
-                                                    updatedContent,
-                                                    updatedStatus,
-                                                    index,
-                                                );
-                                            }}
-                                            onDeleteSuccess={
-                                                handleDeleteComment
-                                            }
-                                        />
-                                    ) : (
-                                        <CommentCard
-                                            nickname={nickname}
-                                            parentId={parentId}
-                                            content={content}
-                                            imgUrl={imgUrl}
-                                            createDate={createDate}
-                                            memberId={memberId}
-                                            commentId={commentId}
-                                            status={status}
-                                            onEditSuccess={(
-                                                updatedContent,
-                                                updatedStatus,
-                                            ) => {
-                                                handleEditComment(
-                                                    updatedContent,
-                                                    updatedStatus,
-                                                    index,
-                                                );
-                                            }}
-                                            onDeleteSuccess={
-                                                handleDeleteComment
-                                            }
-                                        />
-                                    )}
-                                    <button
-                                        className={`mb-2 mt-4 rounded-md border border-solid px-2 py-0.5 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
-                                        onClick={() =>
-                                            setIsReplyClicked(
-                                                (prevState) => !prevState,
-                                            )
-                                        }
+                                return (
+                                    <div
+                                        className="border-b border-solid border-customLightBlue-100 pb-2 pt-4"
+                                        key={commentId}
                                     >
-                                        답글
-                                    </button>
-                                    {isReplyClicked && (
-                                        <ReplyList
-                                            childComments={
-                                                comments.childComments?.filter(
-                                                    (childComment) =>
-                                                        childComment.parentId ===
-                                                        commentId,
-                                                )[0].childs
-                                            }
-                                            loginUser={loginUser}
-                                            loginUserNickname={
-                                                loginUserNickname
-                                            }
-                                            parentId={commentId}
-                                            postId={postId}
-                                        />
-                                    )}
-                                </div>
-                            ),
+                                        {canViewComment ? (
+                                            <>
+                                                <CommentCard
+                                                    nickname={nickname}
+                                                    parentId={parentId}
+                                                    content={content}
+                                                    imgUrl={imgUrl}
+                                                    createDate={createDate}
+                                                    memberId={memberId}
+                                                    commentId={commentId}
+                                                    status={status}
+                                                    onEditSuccess={(
+                                                        updatedContent,
+                                                        updatedStatus,
+                                                    ) => {
+                                                        handleEditComment(
+                                                            updatedContent,
+                                                            updatedStatus,
+                                                            index,
+                                                        );
+                                                    }}
+                                                    onDeleteSuccess={
+                                                        handleDeleteComment
+                                                    }
+                                                />
+                                                <button
+                                                    className={`mb-2 mt-4 rounded-md border border-solid px-2 py-0.5 text-sm ${
+                                                        replyVisibility[
+                                                            commentId
+                                                        ]
+                                                            ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white'
+                                                            : 'border-customLightBlue-200 text-customLightBlue-200'
+                                                    }`}
+                                                    onClick={() =>
+                                                        setReplyVisibility(
+                                                            (prevState) => ({
+                                                                ...prevState,
+                                                                [commentId]:
+                                                                    !prevState[
+                                                                        commentId
+                                                                    ],
+                                                            }),
+                                                        )
+                                                    }
+                                                >
+                                                    답글
+                                                </button>
+                                                {replyVisibility[commentId] && (
+                                                    <ReplyList
+                                                        childComments={
+                                                            comments.childComments?.filter(
+                                                                (
+                                                                    childComment,
+                                                                ) =>
+                                                                    childComment.parentId ===
+                                                                    commentId,
+                                                            )[0]?.childs
+                                                        }
+                                                        loginUser={loginUser}
+                                                        loginUserNickname={
+                                                            loginUserNickname
+                                                        }
+                                                        isMember={isMember}
+                                                        commentWriterId={
+                                                            memberId
+                                                        }
+                                                        parentId={commentId}
+                                                        postId={postId}
+                                                    />
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div className="mb-2 mt-2 flex items-center gap-2 text-customLightBlue-200">
+                                                <IoLockClosedOutline />
+                                                <span>비밀 댓글입니다.</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            },
                         )}
                 </div>
             )}

@@ -218,7 +218,7 @@ export default function CommentCard({
                     </div>
                 </div>
             ) : (
-                <div className="mt-2 text-md leading-6">{content}</div>
+                <div className="mt-3 text-md leading-6">{content}</div>
             )}
 
             <AlertPopup
