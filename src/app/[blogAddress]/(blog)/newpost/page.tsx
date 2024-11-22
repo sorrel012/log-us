@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { usePathname, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
@@ -40,11 +40,10 @@ type popupIdType =
     | 'TMP_REWRITE'
     | '';
 
-export default function NewPostEditPage() {
+export default function NewPostPage() {
     const router = useRouter();
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
-    const editPostId = pathname.split('/')[3];
     const { blogId } = useBlogStore();
     const { data } = UseSeries();
     const series = data
@@ -74,35 +73,6 @@ export default function NewPostEditPage() {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupTitle, setPopupTitle] = useState('');
     const [popupId, setPopupId] = useState<popupIdType>('');
-
-    useEffect(() => {
-        (async () => {
-            if (editPostId) {
-                try {
-                    const response = await customFetch(`/posts/${editPostId}`, {
-                        queryKey: ['postEdit', editPostId],
-                        invalidateCache: true,
-                    });
-
-                    if (response.isError) {
-                        throw new Error(
-                            response.error || '게시글을 불러올 수 없습니다.',
-                        );
-                    }
-
-                    const data = response.data;
-                    setTitle(unescapeSpecialChars(data.title));
-                    setContent(data.content);
-                    setSeriesId(data.seriesId || 0);
-                } catch (error) {
-                    setPopupTitle(error);
-                    setPopupMessage('잠시 후 다시 시도해 주세요.');
-                    setPopupId('CLOSE');
-                    setShowPopup(true);
-                }
-            }
-        })();
-    }, [editPostId]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);
@@ -204,6 +174,7 @@ export default function NewPostEditPage() {
                     queryKey: ['tmpPost', 'rewrite', postId],
                     method: 'PUT',
                     body: data,
+                    invalidateCache: true,
                 });
             }
 
@@ -272,7 +243,7 @@ export default function NewPostEditPage() {
                     }
                 }
             } else if (tmpPost) {
-                setTitle(tmpPost.title);
+                setTitle(unescapeSpecialChars(tmpPost.title));
                 setContent(tmpPost.content);
                 setSeriesId(tmpPost?.seriesId || 0);
                 setPostId(tmpPost?.postId || 0);
@@ -334,11 +305,19 @@ export default function NewPostEditPage() {
         const data = getData(post.status, post);
         let result;
         try {
-            result = await customFetch(`/posts/${editPostId}`, {
-                queryKey: ['savePost', post.status],
-                method: 'PUT',
-                body: data,
-            });
+            if (postId) {
+                result = await customFetch(`/posts/${postId}`, {
+                    queryKey: ['saveFromTmpPost', post.status],
+                    method: 'PUT',
+                    body: data,
+                });
+            } else {
+                result = await customFetch('/posts', {
+                    queryKey: ['savePost', post.status],
+                    method: 'POST',
+                    body: data,
+                });
+            }
 
             if (result.isError) {
                 throw new Error(result.error);
@@ -346,7 +325,7 @@ export default function NewPostEditPage() {
 
             setTimeout(() => {
                 setPopupId('SAVE');
-                setPopupTitle('글이 수정되었습니다.');
+                setPopupTitle('글이 발행되었습니다.');
                 setShowPopup(true);
             }, 300);
         } catch (error) {
