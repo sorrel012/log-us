@@ -6,6 +6,7 @@ import AlertPopup from '@/components/AlertPopup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoClose } from 'react-icons/io5';
+import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -31,6 +32,7 @@ const sidebarVariants = {
 };
 
 export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
+    const blogAddress = usePathname().split('/')[1];
     const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
         UseSeries();
     const series = data
@@ -81,7 +83,10 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                                     {series && (
                                         <PanelModule
                                             title="시리즈"
-                                            contents={series}
+                                            contents={series.map((item) => ({
+                                                value: item.seriesName,
+                                                link: `/${blogAddress}/posts/series/${item.seriesId}&${item.seriesName}`,
+                                            }))}
                                         />
                                     )}
                                     {isLoading && (
