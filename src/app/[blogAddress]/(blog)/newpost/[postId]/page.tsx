@@ -7,7 +7,7 @@ import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 import SelectBox from '@/components/SelectBox';
 import TextEditor from '@/components/blog/TextEditor';
-import Popup, { PopupTypeProps } from '@/components/Popup';
+import AlertPopup, { PopupTypeProps } from '@/components/AlertPopup';
 import { escapeSpecialChars, isObjEqual } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { UseSeries } from '@/hooks/useSeries';
@@ -413,7 +413,7 @@ export default function NewPostPage() {
                     </div>
                 </div>
             </div>
-            <Popup
+            <AlertPopup
                 show={showPopup}
                 title={popupTitle}
                 text={popupMessage}

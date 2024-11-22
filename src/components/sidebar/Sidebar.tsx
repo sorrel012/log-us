@@ -2,7 +2,7 @@ import { BsList } from 'react-icons/bs';
 import UserProfile from '@/components/sidebar/UserProfile';
 import PanelModule from '@/components/sidebar/PanelModule';
 import { UseSeries } from '@/hooks/useSeries';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoClose } from 'react-icons/io5';
@@ -91,10 +91,9 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                                     )}
                                 </div>
                             </motion.section>
-                            <Popup
+                            <AlertPopup
                                 show={showPopup}
-                                title="에러"
-                                text={popupMessage}
+                                title={popupMessage}
                                 onConfirm={handleClosePopup}
                             />
                         </motion.section>

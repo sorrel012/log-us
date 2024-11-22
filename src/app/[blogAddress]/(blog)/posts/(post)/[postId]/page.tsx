@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
 import { customFetch } from '@/utils/customFetch';
@@ -49,10 +49,9 @@ export default function PostDetailPage() {
                     <PostDetailComments {...post} />
                 </>
             )}
-            <Popup
+            <AlertPopup
                 show={showPopup}
-                title="에러"
-                text={popupMessage}
+                title={popupMessage}
                 onConfirm={handleClosePopup}
             />
         </section>

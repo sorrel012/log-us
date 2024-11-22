@@ -5,7 +5,7 @@ import { useBlogStore } from '@/store/useBlogStore';
 import { useEffect, useMemo, useState } from 'react';
 import Pagination from '@/components/Pagination';
 import { Post } from '@/components/blog/post/PostCard';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
@@ -153,10 +153,9 @@ export default function PostListPage() {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
             />
-            <Popup
+            <AlertPopup
                 show={showPopup}
-                title="에러"
-                text={popupMessage}
+                title={popupMessage}
                 onConfirm={handleClosePopup}
             />
         </section>

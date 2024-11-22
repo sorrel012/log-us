@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { escapeSpecialChars } from '@/utils/commonUtil';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailComments({
@@ -182,7 +182,7 @@ export default function PostDetailComments({
                         ))}
                 </div>
             )}
-            <Popup
+            <AlertPopup
                 show={showPopup}
                 onConfirm={handleConfirm}
                 text={popupText}

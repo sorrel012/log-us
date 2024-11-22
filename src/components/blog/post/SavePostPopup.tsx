@@ -6,7 +6,7 @@ import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import Image from 'next/image';
 import SelectBox from '@/components/SelectBox';
 import { customFetch } from '@/utils/customFetch';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { useBlogStore } from '@/store/useBlogStore';
 
 const STATUS = [
@@ -287,9 +287,9 @@ export default function SavePostPopup({
                     </button>
                 </div>
             </div>
-            <Popup
+            <AlertPopup
                 show={showPopup}
-                text={popupMessage}
+                title={popupMessage}
                 onConfirm={handleConfirm}
             />
         </section>

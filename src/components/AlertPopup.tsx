@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export type PopupTypeProps = 'alert' | 'confirm';
-
-interface PopupProps {
+export interface PopupProps {
     show: boolean;
     title?: string;
     text?: string;
     onConfirm: () => void;
     onCancel?: () => void;
-    type?: PopupTypeProps;
 }
 
 const popupVariants = {
@@ -33,13 +30,12 @@ const popupVariants = {
     },
 };
 
-export default function Popup({
+export default function AlertPopup({
     show,
     title,
     text,
     onConfirm,
     onCancel,
-    type = 'alert',
 }: PopupProps) {
     const [isClient, setIsClient] = useState(false);
     const [modalContainer, setModalContainer] = useState<HTMLElement | null>(
@@ -77,11 +73,6 @@ export default function Popup({
                             {text && <p>{text}</p>}
                         </div>
                         <div className="button">
-                            {type === 'confirm' && (
-                                <button className="confirm" onClick={onCancel}>
-                                    취소
-                                </button>
-                            )}
                             <button className="close" onClick={onConfirm}>
                                 확인
                             </button>

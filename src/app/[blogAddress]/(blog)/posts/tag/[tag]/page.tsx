@@ -9,7 +9,7 @@ import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import PostList from '@/components/blog/post/PostList';
 import Pagination from '@/components/Pagination';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 
 export default function TagList() {
@@ -118,10 +118,9 @@ export default function TagList() {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
             />
-            <Popup
+            <AlertPopup
                 show={showPopup}
-                title="에러"
-                text={popupMessage}
+                title={popupMessage}
                 onConfirm={handleClosePopup}
             />
         </section>

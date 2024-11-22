@@ -1,6 +1,6 @@
 import SeriesCard from '@/components/blog/series/SeriesCard';
 import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { useState } from 'react';
 import { UseSeries } from '@/hooks/useSeries';
 
@@ -42,10 +42,9 @@ export default function SeriesGrid() {
                 </div>
             )}
 
-            <Popup
+            <AlertPopup
                 show={showPopup}
-                title="에러"
-                text={popupMessage}
+                title={popupMessage}
                 onConfirm={handleClosePopup}
             />
         </section>

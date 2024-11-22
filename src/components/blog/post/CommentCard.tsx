@@ -4,10 +4,9 @@ import { Comment } from '@/components/blog/post/PostCard';
 import { dateFormatter } from '@/utils/commonUtil';
 import { useState } from 'react';
 import { IoEllipsisVerticalCircle } from 'react-icons/io5';
-import Popup, { PopupTypeProps } from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
-import { Simulate } from 'react-dom/test-utils';
-import error = Simulate.error;
+import ConfirmPopup from '@/components/ConfirmPopup';
 
 export default function CommentCard({
     memberId,
@@ -29,6 +28,10 @@ export default function CommentCard({
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editText, setEditText] = useState(content || '');
+    const [showPopup, setShowPopup] = useState(false);
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupText, setPopupText] = useState('');
 
     const handleEditClick = () => {
         setIsEditMode(true);
@@ -38,14 +41,12 @@ export default function CommentCard({
     const handleSaveEdit = async () => {
         if (editText.trim() === '') {
             setShowPopup(true);
-            setPopupType('alert');
             setPopupText('댓글 내용을 입력해 주세요.');
             return;
         }
 
         if (editText.length > 300) {
             setShowPopup(true);
-            setPopupType('alert');
             setPopupText('댓글 내용을 300자 이내로 입력해 주세요.');
             return;
         }
@@ -66,7 +67,6 @@ export default function CommentCard({
             }
         } catch (error) {
             setShowPopup(true);
-            setPopupType('alert');
             setPopupText(error);
         }
     };
@@ -77,12 +77,11 @@ export default function CommentCard({
     };
 
     const handleDelete = () => {
-        setPopupType('confirm');
         setPopupTitle(`${!parentId ? '댓글' : '답글'}을 삭제하시겠습니까?`);
         setPopupText(
             ` 삭제한 ${!parentId ? '댓글' : '답글'}은 다시 복구할 수 없습니다.`,
         );
-        setShowPopup(true);
+        setShowConfirmPopup(true);
     };
 
     const POST_EDIT = [
@@ -90,39 +89,31 @@ export default function CommentCard({
         { value: 'delete', text: '삭제', fnClick: handleDelete },
     ];
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupTitle, setPopupTitle] = useState('');
-    const [popupText, setPopupText] = useState('');
-    const [popupType, setPopupType] = useState<PopupTypeProps>('alert');
-
     const handleConfirm = async () => {
-        if (popupType === 'confirm') {
-            try {
-                const response = await customFetch(`/comments/${commentId}`, {
-                    method: 'DELETE',
-                    queryKey: ['comment', 'delete', commentId],
-                    invalidateCache: true,
-                });
+        try {
+            const response = await customFetch(`/comments/${commentId}`, {
+                method: 'DELETE',
+                queryKey: ['comment', 'delete', commentId],
+                invalidateCache: true,
+            });
 
-                if (response.isError) {
-                    throw new Error(
-                        response.error ||
-                            `${!parentId ? '댓글' : '답글'} 삭제에 실패했습니다.`,
-                    );
-                }
-
-                onDeleteSuccess(commentId);
-            } catch (e) {
-                setShowPopup(true);
-                setPopupType('alert');
-                setPopupText(error);
+            if (response.isError) {
+                throw new Error(
+                    response.error ||
+                        `${!parentId ? '댓글' : '답글'} 삭제에 실패했습니다.`,
+                );
             }
 
-            setPopupTitle('');
-            setPopupText('');
+            onDeleteSuccess(commentId!);
+        } catch (e) {
+            setPopupText(e);
+            setShowPopup(true);
         }
 
-        setShowPopup(false);
+        setPopupTitle('');
+        setPopupText('');
+
+        setShowConfirmPopup(false);
     };
 
     return (
@@ -200,10 +191,17 @@ export default function CommentCard({
                 <div className="mt-2 text-md leading-6">{content}</div>
             )}
 
-            <Popup
+            <AlertPopup
                 show={showPopup}
+                onConfirm={() => setShowPopup((prevState) => !prevState)}
+                title={popupTitle}
+                text={popupText}
+            />
+
+            <ConfirmPopup
+                show={showConfirmPopup}
                 onConfirm={handleConfirm}
-                type={popupType}
+                onCancel={() => setShowConfirmPopup((prevState) => !prevState)}
                 title={popupTitle}
                 text={popupText}
             />

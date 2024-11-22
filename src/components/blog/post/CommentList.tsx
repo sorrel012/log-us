@@ -5,7 +5,7 @@ import { BsArrowReturnRight } from 'react-icons/bs';
 import { AiOutlineUser } from 'react-icons/ai';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { escapeSpecialChars } from '@/utils/commonUtil';
-import Popup from '@/components/Popup';
+import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import { useRouter } from 'next/navigation';
 
@@ -230,7 +230,7 @@ export default function CommentList({ parentComment, childComments, postId }) {
                     </div>
                 </div>
             )}
-            <Popup
+            <AlertPopup
                 show={showPopup}
                 onConfirm={handleConfirm}
                 title={popupTitle}
