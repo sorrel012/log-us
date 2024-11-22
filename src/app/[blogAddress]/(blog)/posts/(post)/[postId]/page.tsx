@@ -27,10 +27,16 @@ export default function PostDetailPage() {
                             queryKey: ['post', postId],
                         },
                     );
+
+                    if (response.isError) {
+                        throw new Error(
+                            response.error || '게시글을 불러올 수 없습니다.',
+                        );
+                    }
                     setPost(response.data);
                 } catch (error) {
                     setShowPopup(true);
-                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
+                    setPopupMessage(error);
                 }
             }
         })();
