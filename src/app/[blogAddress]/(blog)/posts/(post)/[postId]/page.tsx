@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
 import { customFetch } from '@/utils/customFetch';
 import { Post } from '@/components/blog/post/PostCard';
-import PostDetailComments from '@/components/blog/post/PostDetailComments';
+import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailPage() {
     const pathname = usePathname();
@@ -36,7 +36,7 @@ export default function PostDetailPage() {
                     setPost(response.data);
                 } catch (error) {
                     setShowPopup(true);
-                    setPopupMessage(error);
+                    setPopupMessage(error.message);
                 }
             }
         })();
@@ -52,7 +52,7 @@ export default function PostDetailPage() {
             {post && (
                 <>
                     <PostDetail {...post} />
-                    <PostDetailComments {...post} />
+                    <CommentList {...post} />
                 </>
             )}
             <AlertPopup

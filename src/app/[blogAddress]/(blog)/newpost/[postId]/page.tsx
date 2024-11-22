@@ -95,7 +95,7 @@ export default function NewPostEditPage() {
                     setContent(data.content);
                     setSeriesId(data.seriesId || 0);
                 } catch (error) {
-                    setPopupTitle(error);
+                    setPopupTitle(error.message);
                     setPopupMessage('잠시 후 다시 시도해 주세요.');
                     setPopupId('CLOSE');
                     setShowPopup(true);

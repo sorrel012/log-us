@@ -1,107 +1,114 @@
-import { useState } from 'react';
-import CommentCard from '@/components/blog/post/CommentCard';
-import { Comment } from '@/components/blog/post/PostCard';
-import { BsArrowReturnRight } from 'react-icons/bs';
+import { Post } from '@/components/blog/post/PostCard';
 import { AiOutlineUser } from 'react-icons/ai';
+import { useState } from 'react';
+import { customFetch } from '@/utils/customFetch';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { escapeSpecialChars } from '@/utils/commonUtil';
 import AlertPopup from '@/components/AlertPopup';
-import { customFetch } from '@/utils/customFetch';
+import CommentCard from '@/components/blog/post/CommentCard';
+import ReplyList from '@/components/blog/post/ReplyList';
+import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter } from 'next/navigation';
 
-export default function CommentList({ parentComment, childComments, postId }) {
+export default function CommentList({ postId, comments }: Post) {
     const router = useRouter();
+    const { blogInfo } = useBlogStore();
     //TODO zustand로 수정 필요
     const loginUser = 1;
     const loginUserNickname = '유저1';
+    const isMember =
+        blogInfo?.shareYn === 'Y' &&
+        blogInfo?.members.filter((member) => member.memberId === loginUser)
+            .length === 1;
 
-    let {
-        commentId,
-        nickname,
-        content,
-        imgUrl,
-        createDate,
-        memberId,
-        parentId,
-    }: Comment = parentComment;
+    // 댓글 관련 상태
+    const [commentText, setCommentText] = useState('');
+    const [isPrivateComment, setIsPrivateComment] = useState(false);
 
-    const [parentContent, setParentContent] = useState(content);
-    const [childCommentsState, setChildCommentsState] = useState(childComments);
+    const [parentCommentsState, setParentCommentsState] = useState(
+        comments?.parents,
+    );
     const [isReplyClicked, setIsReplyClicked] = useState(false);
-    const [isPrivateReply, setIsPrivateReply] = useState(false);
-    const [replyText, setReplyText] = useState('');
 
     const handleTextareaChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>,
     ) => {
-        setReplyText(event.target.value);
+        setCommentText(event.target.value);
     };
 
-    const handleSaveReply = async () => {
-        if (replyText.trim() === '') {
+    const handleSaveComment = async () => {
+        if (commentText.trim() === '') {
             setShowPopup(true);
-            setPopupTitle('딥글 내용을 입력해 주세요.');
+            setPopupText('댓글 내용을 입력해 주세요.');
             return;
         }
 
-        if (replyText.length > 300) {
+        if (commentText.length > 300) {
             setShowPopup(true);
-            setPopupTitle('답글 내용을 300자 이내로 입력해 주세요.');
+            setPopupText('댓글 내용을 300자 이내로 입력해 주세요.');
             return;
         }
 
         const body = {
             postId,
-            parentId: commentId,
-            depth: 1,
-            content: escapeSpecialChars(replyText),
-            status: isPrivateReply ? 'PRIVATE' : 'PUBLIC',
+            parentId: null,
+            depth: 0,
+            content: escapeSpecialChars(commentText),
+            status: isPrivateComment ? 'SECRET' : 'PUBLIC',
         };
 
         try {
             const res = await customFetch('/comments', {
                 method: 'POST',
-                queryKey: ['reply', 'save', replyText],
+                queryKey: ['comment', 'save', commentText],
                 body,
             });
 
             if (res.isError) {
-                throw new Error(res.error || '답글을 작성하지 못했습니다.');
+                throw new Error(res.error || '댓글을 작성하지 못했습니다.');
             }
 
-            childComments.push({
+            comments?.parents.push({
                 commentId: res.data.commentId,
-                content: replyText,
+                content: commentText,
                 createDate: new Date(),
                 memberId: loginUser,
                 nickname: loginUserNickname,
+                status: isPrivateComment ? 'SECRET' : 'PUBLIC',
+            });
+
+            comments?.childComments.push({
+                parentId: res.data.commentId,
+                childs: [],
             });
         } catch (e) {
             setShowPopup(true);
-            setPopupTitle(e);
+            setPopupText(e.message);
         }
-        setReplyText('');
+
+        setCommentText('');
     };
 
     const [showPopup, setShowPopup] = useState(false);
-    const [popupTitle, setPopupTitle] = useState('');
+    const [popupText, setPopupText] = useState('');
 
     const handleConfirm = () => {
         setShowPopup(false);
     };
 
-    const handleEditComment = (editCommentText: string) => {
-        setParentContent(editCommentText);
-    };
-
-    const handleEditReply = (editReplyText: string, index: number) => {
-        setChildCommentsState((prevState) => {
-            const updatedReplies = [...prevState];
-            updatedReplies[index] = {
-                ...updatedReplies[index],
-                content: editReplyText,
+    const handleEditComment = (
+        editCommentText: string,
+        updatedStatus: string,
+        index: number,
+    ) => {
+        setParentCommentsState((prevState) => {
+            const updatedComments = [...prevState];
+            updatedComments[index] = {
+                ...updatedComments[index],
+                content: editCommentText,
+                status: updatedStatus,
             };
-            return updatedReplies;
+            return updatedComments;
         });
     };
 
@@ -109,132 +116,166 @@ export default function CommentList({ parentComment, childComments, postId }) {
         router.refresh();
     };
 
-    const handleDeleteReply = (deletedReplyId: number) => {
-        setChildCommentsState((prevState) => {
-            return prevState.filter(
-                (reply) => reply.commentId !== deletedReplyId,
-            );
-        });
-    };
-
     return (
-        <div className="mb-3 border-b border-solid border-customLightBlue-100 pb-4">
-            <CommentCard
-                nickname={nickname}
-                parentId={parentId}
-                content={parentContent}
-                imgUrl={imgUrl}
-                createDate={createDate}
-                memberId={memberId}
-                commentId={commentId}
-                onEditSuccess={(updatedContent) => {
-                    handleEditComment(updatedContent);
-                }}
-                onDeleteSuccess={(deletedCommentId) => {
-                    handleDeleteComment(deletedCommentId);
-                }}
-            />
-            <button
-                className={`mt-4 rounded-md border border-solid px-2 py-0.5 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
-                onClick={() => setIsReplyClicked((prevState) => !prevState)}
-            >
-                답글
-            </button>
-            {isReplyClicked && (
-                <div className="w-full">
-                    {childCommentsState.map(
-                        (childComment: Comment, index: number) => (
-                            <div
-                                key={childComment.commentId}
-                                className="mb-3 flex items-center gap-3"
-                            >
-                                <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
-                                <div className="w-full">
-                                    <CommentCard
-                                        nickname={childComment.nickname}
-                                        parentId={childComment.parentId}
-                                        content={childComment.content}
-                                        imgUrl={childComment.imgUrl}
-                                        createDate={childComment.createDate}
-                                        memberId={childComment.memberId}
-                                        commentId={childComment.commentId}
-                                        onEditSuccess={(updatedContent) => {
-                                            handleEditReply(
-                                                updatedContent,
-                                                index,
-                                            );
-                                        }}
-                                        onDeleteSuccess={(deletedCommentId) => {
-                                            handleDeleteReply(
-                                                deletedCommentId,
-                                                index,
-                                            );
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ),
+        <section className="mx-auto mt-5 max-w-screen-2xl">
+            <div className="mb-5">
+                <div className="flex items-start gap-3">
+                    {/* TODO 사용자 프로필 사진 추가 필요*/}
+                    {loginUser && (
+                        <AiOutlineUser
+                            className={
+                                'size-16 rounded-full bg-fuchsia-100 p-1'
+                            }
+                        />
                     )}
-                    <div className="mb-2 mt-5 flex gap-3">
-                        <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
-                        <div className="w-full">
-                            <div className="flex items-start gap-3">
-                                {/* TODO 사용자 프로필 사진 추가 필요*/}
-                                {loginUser && (
-                                    <AiOutlineUser
-                                        className={
-                                            'size-12 rounded-full bg-fuchsia-100 p-1'
-                                        }
-                                    />
-                                )}
-                                <div className="flex w-full flex-col gap-2 text-md">
-                                    {loginUser && (
-                                        <div className="font-bold">
-                                            {loginUserNickname}
-                                        </div>
+                    <div className="flex w-full flex-col gap-2 text-md">
+                        {loginUser && (
+                            <div className="font-bold">{loginUserNickname}</div>
+                        )}
+                        <textarea
+                            className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 leading-6 outline-none"
+                            placeholder={`${loginUser ? '댓글을 입력해 주세요.' : '로그인 후 댓글을 작성할 수 있습니다.'}`}
+                            disabled={!loginUser}
+                            value={commentText}
+                            onChange={handleTextareaChange}
+                        />
+                    </div>
+                </div>
+                <div className="mt-4 flex items-center justify-end gap-3">
+                    {loginUser && (
+                        <button
+                            onClick={() =>
+                                setIsPrivateComment((prevState) => !prevState)
+                            }
+                        >
+                            {isPrivateComment ? (
+                                <BiLock className="size-6 text-customLightBlue-200" />
+                            ) : (
+                                <BiLockOpen className="popup-bounce size-6 text-customLightBlue-200" />
+                            )}
+                        </button>
+                    )}
+                    <button
+                        className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200"
+                        disabled={!loginUser}
+                        onClick={handleSaveComment}
+                    >
+                        등록
+                    </button>
+                </div>
+            </div>
+            {comments && (
+                <div>
+                    {parentCommentsState &&
+                        parentCommentsState.map(
+                            (
+                                {
+                                    commentId,
+                                    nickname,
+                                    content,
+                                    imgUrl,
+                                    createDate,
+                                    memberId,
+                                    parentId,
+                                    status,
+                                },
+                                index,
+                            ) => (
+                                <div
+                                    className="border-b border-solid border-customLightBlue-100 pb-2 pt-4"
+                                    key={commentId}
+                                >
+                                    {status === 'SECRET' && !isMember ? (
+                                        // <div className="mt-2 flex items-center gap-2 text-customLightBlue-200">
+                                        //     <IoLockClosedOutline />
+                                        //     <span>비밀 댓글입니다.</span>
+                                        // </div>
+
+                                        <CommentCard
+                                            nickname={nickname}
+                                            parentId={parentId}
+                                            content={content}
+                                            imgUrl={imgUrl}
+                                            createDate={createDate}
+                                            memberId={memberId}
+                                            commentId={commentId}
+                                            status={status}
+                                            onEditSuccess={(
+                                                updatedContent,
+                                                updatedStatus,
+                                            ) => {
+                                                handleEditComment(
+                                                    updatedContent,
+                                                    updatedStatus,
+                                                    index,
+                                                );
+                                            }}
+                                            onDeleteSuccess={
+                                                handleDeleteComment
+                                            }
+                                        />
+                                    ) : (
+                                        <CommentCard
+                                            nickname={nickname}
+                                            parentId={parentId}
+                                            content={content}
+                                            imgUrl={imgUrl}
+                                            createDate={createDate}
+                                            memberId={memberId}
+                                            commentId={commentId}
+                                            status={status}
+                                            onEditSuccess={(
+                                                updatedContent,
+                                                updatedStatus,
+                                            ) => {
+                                                handleEditComment(
+                                                    updatedContent,
+                                                    updatedStatus,
+                                                    index,
+                                                );
+                                            }}
+                                            onDeleteSuccess={
+                                                handleDeleteComment
+                                            }
+                                        />
                                     )}
-                                    <textarea
-                                        className="min-h-[70px] w-full resize-none rounded-md border border-solid border-customLightBlue-100 p-2 leading-6 outline-none"
-                                        placeholder={`${loginUser ? '답글을 입력해 주세요.' : '로그인 후 답글을 작성할 수 있습니다.'}`}
-                                        disabled={!loginUser}
-                                        value={replyText}
-                                        onChange={handleTextareaChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="mt-3 flex items-center justify-end gap-2">
-                                {loginUser && (
                                     <button
+                                        className={`mb-2 mt-4 rounded-md border border-solid px-2 py-0.5 text-sm ${isReplyClicked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-200 text-customLightBlue-200'}`}
                                         onClick={() =>
-                                            setIsPrivateReply(
+                                            setIsReplyClicked(
                                                 (prevState) => !prevState,
                                             )
                                         }
                                     >
-                                        {isPrivateReply ? (
-                                            <BiLock className="size-5 text-customLightBlue-200" />
-                                        ) : (
-                                            <BiLockOpen className="popup-bounce size-5 text-customLightBlue-200" />
-                                        )}
+                                        답글
                                     </button>
-                                )}
-                                <button
-                                    className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200"
-                                    disabled={!loginUser}
-                                    onClick={handleSaveReply}
-                                >
-                                    등록
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                                    {isReplyClicked && (
+                                        <ReplyList
+                                            childComments={
+                                                comments.childComments?.filter(
+                                                    (childComment) =>
+                                                        childComment.parentId ===
+                                                        commentId,
+                                                )[0].childs
+                                            }
+                                            loginUser={loginUser}
+                                            loginUserNickname={
+                                                loginUserNickname
+                                            }
+                                            parentId={commentId}
+                                            postId={postId}
+                                        />
+                                    )}
+                                </div>
+                            ),
+                        )}
                 </div>
             )}
             <AlertPopup
                 show={showPopup}
                 onConfirm={handleConfirm}
-                title={popupTitle}
+                title={popupText}
             />
-        </div>
+        </section>
     );
 }

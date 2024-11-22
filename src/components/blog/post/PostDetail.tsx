@@ -10,6 +10,8 @@ import { Viewer } from '@toast-ui/react-editor';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import ConfirmPopup from '@/components/ConfirmPopup';
+import LikeIcon from '@/components/icons/LikeIcon';
+import CommentIcon from '@/components/icons/CommentIcon';
 
 export default function PostDetail({
     postId,
@@ -26,8 +28,11 @@ export default function PostDetail({
     preTitle,
     nextId,
     nextTitle,
+    liked,
+    likeCount,
     views,
     createDate,
+    commentCount,
 }: Post) {
     const router = useRouter();
     const pathname = usePathname();
@@ -35,6 +40,10 @@ export default function PostDetail({
 
     //TODO zustand에서 받아오기
     const isWriter = memberId === 1;
+
+    // 좋아요 관련 상태
+    const [likesCnt, setLikesCnt] = useState(likeCount);
+    const [isLiked, setIsLiked] = useState(liked);
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -88,6 +97,20 @@ export default function PostDetail({
             setPopupText('잠시 후 다시 시도해 주세요.');
             setPopupId('DELETE_FAILED');
             setShowPopup(true);
+        }
+    };
+
+    const handleLikeClick = async () => {
+        const res = await customFetch(`/like/${postId}`, {
+            method: isLiked ? 'DELETE' : 'POST',
+            queryKey: ['liked', isLiked],
+        });
+
+        if (!res.isError) {
+            setLikesCnt((prevState) =>
+                isLiked ? prevState - 1 : prevState + 1,
+            );
+            setIsLiked((prevState) => !prevState);
         }
     };
 
@@ -200,6 +223,15 @@ export default function PostDetail({
                             <GrLinkNext className="size-14 rounded-full bg-customBrown-100 p-2 text-white" />
                         </Link>
                     )}
+                </div>
+                <div className="mt-10 flex justify-between border-b border-solid border-customLightBlue-100 pb-2 text-customLightBlue-200">
+                    <LikeIcon
+                        likes={likesCnt}
+                        isClick={true}
+                        liked={isLiked}
+                        onClick={handleLikeClick}
+                    />
+                    <CommentIcon comments={commentCount} />
                 </div>
             </footer>
             <AlertPopup

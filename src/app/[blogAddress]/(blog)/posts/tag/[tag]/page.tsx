@@ -54,7 +54,9 @@ export default function TagList() {
                 .catch((error) => {
                     setIsError(true);
                     setShowPopup(true);
-                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
+                    setPopupMessage(
+                        error.message || '게시글을 불러올 수 없습니다.',
+                    );
                     setIsLoading(false);
                 });
         }

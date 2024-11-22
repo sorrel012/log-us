@@ -3,10 +3,11 @@ import PersonIcon from '@/components/icons/PersonIcon';
 import { Comment } from '@/components/blog/post/PostCard';
 import { dateFormatter } from '@/utils/commonUtil';
 import { useState } from 'react';
-import { IoEllipsisVerticalCircle } from 'react-icons/io5';
+import { IoEllipsisVerticalCircle, IoLockClosedOutline } from 'react-icons/io5';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import ConfirmPopup from '@/components/ConfirmPopup';
+import { BiLock, BiLockOpen } from 'react-icons/bi';
 
 export default function CommentCard({
     memberId,
@@ -16,9 +17,12 @@ export default function CommentCard({
     content,
     createDate,
     commentId,
+    status,
     onEditSuccess,
     onDeleteSuccess,
-}: Partial<Comment> & { onEditSuccess: (updatedContent: string) => void } & {
+}: Partial<Comment> & {
+    onEditSuccess: (updatedContent: string, updatedStatus: string) => void;
+} & {
     onDeleteSuccess: (commentId: number) => void;
 }) {
     //TODO 현재 로그인 유저 정보
@@ -28,14 +32,23 @@ export default function CommentCard({
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editText, setEditText] = useState(content || '');
+    const [editStatus, setEditStatus] = useState(status || 'PUBLIC');
     const [showPopup, setShowPopup] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+    const [isPrivate, setIsPrivate] = useState(status === 'SECRET');
 
     const handleEditClick = () => {
         setIsEditMode(true);
         setIsDropdownOpen(false);
+    };
+
+    const handlePrivate = () => {
+        setIsPrivate((prevState) => {
+            setEditStatus(prevState ? 'PUBLIC' : 'SECRET');
+            return !prevState;
+        });
     };
 
     const handleSaveEdit = async () => {
@@ -55,24 +68,28 @@ export default function CommentCard({
             const response = await customFetch(`/comments/${commentId}`, {
                 method: 'PUT',
                 queryKey: ['comment', 'edit', commentId],
-                body: { content: editText },
+                body: {
+                    content: editText,
+                    status: editStatus,
+                },
             });
 
             if (!response.isError) {
                 setIsEditMode(false);
-                onEditSuccess(editText);
+                onEditSuccess(editText, editStatus);
             } else {
                 throw new Error(response.error || '댓글 수정에 실패했습니다.');
             }
         } catch (error) {
             setShowPopup(true);
-            setPopupText(error);
+            setPopupText(error.message);
         }
     };
 
     const handleCancelEdit = () => {
         setIsEditMode(false);
         setEditText(content || '');
+        setEditStatus(status || 'PUBLIC');
     };
 
     const handleDelete = () => {
@@ -104,7 +121,7 @@ export default function CommentCard({
 
             onDeleteSuccess(commentId!);
         } catch (e) {
-            setPopupText(e);
+            setPopupText(e.message);
             setShowPopup(true);
         }
 
@@ -131,7 +148,10 @@ export default function CommentCard({
                 )}
                 <div className="flex flex-col gap-2 text-md">
                     <div className="flex items-center gap-2">
-                        <div className="font-bold">{nickname}</div>
+                        <div className="flex items-center gap-1">
+                            <div className="font-bold">{nickname}</div>
+                            {status === 'SECRET' && <IoLockClosedOutline />}
+                        </div>
                         {isWriter && (
                             <div className="relative">
                                 <IoEllipsisVerticalCircle
@@ -146,7 +166,10 @@ export default function CommentCard({
                                     <div className="absolute right-1/2 mt-2 w-[80px] translate-x-1/2 transform select-none rounded-lg border border-gray-300 bg-white p-2 shadow-2xl">
                                         {POST_EDIT.map((type) => (
                                             <div
-                                                className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${type.value === 'delete' && 'text-red-600'}`}
+                                                className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${
+                                                    type.value === 'delete' &&
+                                                    'text-red-600'
+                                                }`}
                                                 key={type.value}
                                                 onClick={type.fnClick}
                                             >
@@ -171,6 +194,15 @@ export default function CommentCard({
                         onChange={(e) => setEditText(e.target.value)}
                     />
                     <div className="mt-3 flex justify-end gap-2">
+                        {isWriter && (
+                            <button onClick={handlePrivate}>
+                                {isPrivate ? (
+                                    <BiLock className="size-5 text-customLightBlue-200" />
+                                ) : (
+                                    <BiLockOpen className="popup-bounce size-5 text-customLightBlue-200" />
+                                )}
+                            </button>
+                        )}
                         <button
                             className="rounded-md border border-solid border-customLightBlue-200 px-2 py-1 text-customLightBlue-200"
                             onClick={handleCancelEdit}
@@ -191,7 +223,7 @@ export default function CommentCard({
 
             <AlertPopup
                 show={showPopup}
-                onConfirm={() => setShowPopup((prevState) => !prevState)}
+                onConfirm={() => setShowPopup(false)}
                 title={popupTitle}
                 text={popupText}
             />
@@ -199,7 +231,7 @@ export default function CommentCard({
             <ConfirmPopup
                 show={showConfirmPopup}
                 onConfirm={handleConfirm}
-                onCancel={() => setShowConfirmPopup((prevState) => !prevState)}
+                onCancel={() => setShowConfirmPopup(false)}
                 title={popupTitle}
                 text={popupText}
             />
