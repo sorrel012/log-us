@@ -174,7 +174,6 @@ export default function NewPostPage() {
                     queryKey: ['tmpPost', 'rewrite', postId],
                     method: 'PUT',
                     body: data,
-                    invalidateCache: true,
                 });
             }
 

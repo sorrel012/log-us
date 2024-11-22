@@ -47,7 +47,7 @@ export async function customFetch<T>(
     const cachedData = getCacheData(cacheKey);
     const staleTime = config.staleTime || 120;
 
-    if (cachedData && !config.invalidateCache) {
+    if (method === 'GET' && cachedData && !config.invalidateCache) {
         return { data: cachedData, isLoading: false, isError: false };
     }
 
@@ -94,7 +94,12 @@ export async function customFetch<T>(
         state.data = resultData.data;
         state.isLoading = false;
 
-        if (state.data && !state.isError && config.queryKey[0] !== 'post') {
+        if (
+            method === 'GET' &&
+            state.data &&
+            !state.isError &&
+            config.queryKey[0] !== 'post'
+        ) {
             document.cookie = `${cacheKey}=${encodeURIComponent(
                 JSON.stringify(state.data),
             )}; max-age=${staleTime}`;

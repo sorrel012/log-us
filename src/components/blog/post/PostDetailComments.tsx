@@ -35,7 +35,6 @@ export default function PostDetailComments({
         const res = await customFetch(`/like/${postId}`, {
             method: isLiked ? 'DELETE' : 'POST',
             queryKey: ['liked', isLiked],
-            invalidateCache: true,
         });
 
         if (!res.isError) {

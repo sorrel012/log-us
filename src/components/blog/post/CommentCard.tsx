@@ -56,7 +56,6 @@ export default function CommentCard({
                 method: 'PUT',
                 queryKey: ['comment', 'edit', commentId],
                 body: { content: editText },
-                invalidateCache: true,
             });
 
             if (!response.isError) {
@@ -94,7 +93,6 @@ export default function CommentCard({
             const response = await customFetch(`/comments/${commentId}`, {
                 method: 'DELETE',
                 queryKey: ['comment', 'delete', commentId],
-                invalidateCache: true,
             });
 
             if (response.isError) {
