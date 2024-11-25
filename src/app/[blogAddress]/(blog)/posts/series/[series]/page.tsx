@@ -48,7 +48,7 @@ export default function PostListPage() {
     const { series } = useParams();
 
     const [size, setSize] = useState(10);
-    const [currPage, setCurrPage] = useState(1);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
     const [posts, setPosts] = useState<Post[]>(null);
@@ -66,9 +66,9 @@ export default function PostListPage() {
             blogId,
             ...(seriesId != null && seriesId !== '0' && { seriesId }),
             size,
-            currPage: currPage - 1,
+            page: page - 1,
         }),
-        [blogId, seriesId, size, currPage],
+        [blogId, seriesId, size, page],
     );
 
     const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +77,7 @@ export default function PostListPage() {
     useEffect(() => {
         if (blogId) {
             customFetch<any>('/posts', {
-                queryKey: ['posts', blogId, seriesId, currPage, size],
+                queryKey: ['posts', blogId, seriesId, page, size],
                 params,
             })
                 .then((response) => {
@@ -93,14 +93,15 @@ export default function PostListPage() {
                     setIsLoading(false);
                 });
         }
-    }, [blogId, currPage, seriesId, size, params]);
+    }, [blogId, page, seriesId, size, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
+        setPage(1);
     };
 
     const handlePageChange = (page: number) => {
-        setCurrPage(page);
+        setPage(page);
     };
 
     const handleClosePopup = () => {
@@ -149,7 +150,7 @@ export default function PostListPage() {
             )}
 
             <Pagination
-                currentPage={currPage}
+                currentPage={page}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
             />

@@ -21,7 +21,7 @@ export default function TagList() {
     const { blogId } = useBlogStore();
 
     const [size, setSize] = useState(10);
-    const [currPage, setCurrPage] = useState(1);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
     const [posts, setPosts] = useState<Post[]>(null);
@@ -31,9 +31,9 @@ export default function TagList() {
             blogId,
             tag: tagName,
             size,
-            currPage: currPage - 1,
+            page: page - 1,
         }),
-        [blogId, tagName, size, currPage],
+        [blogId, tagName, size, page],
     );
 
     const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +42,7 @@ export default function TagList() {
     useEffect(() => {
         if (blogId) {
             customFetch<any>('/posts/tag-search', {
-                queryKey: ['posts', blogId, tagName, currPage, size],
+                queryKey: ['posts', blogId, tagName, page, size],
                 params,
             })
                 .then((response) => {
@@ -60,14 +60,15 @@ export default function TagList() {
                     setIsLoading(false);
                 });
         }
-    }, [blogId, currPage, size, tagName, params]);
+    }, [blogId, page, size, tagName, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
+        setPage(1);
     };
 
     const handlePageChange = (page: number) => {
-        setCurrPage(page);
+        setPage(page);
     };
 
     const [showPopup, setShowPopup] = useState(false);
@@ -116,7 +117,7 @@ export default function TagList() {
             )}
 
             <Pagination
-                currentPage={currPage}
+                currentPage={page}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
             />
