@@ -70,7 +70,14 @@ export default function AlertPopup({
                     >
                         <div>
                             <h2>{title}</h2>
-                            {text && <p>{text}</p>}
+                            {text && (
+                                <p
+                                    className="leading-5"
+                                    dangerouslySetInnerHTML={{
+                                        __html: text,
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="button">
                             <button className="close" onClick={onConfirm}>

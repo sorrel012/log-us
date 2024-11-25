@@ -1,23 +1,25 @@
 'use client';
 
-import Pagination from '@/components/Pagination';
 import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
-import FollowingList from '@/components/blog/setting/FollowingList';
 import { FollowingsType } from '@/components/blog/setting/FollowingCard';
+import FollowingList from '@/components/blog/setting/FollowingList';
+import Pagination from '@/components/Pagination';
 
 export default function FollowingPage() {
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(12);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [isLoading, setIsLoading] = useState(true);
     const [followings, setFollowings] = useState<FollowingsType[]>();
 
     const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         (async () => {
+            setIsLoading(true);
             const res = await customFetch('/follow', {
                 queryKey: ['follow', page, size],
                 params: { page: page - 1, size },
@@ -29,6 +31,7 @@ export default function FollowingPage() {
 
             setFollowings(res?.data.content);
             setTotalPages(Math.ceil(res?.data.totalElements / size));
+            setIsLoading(false);
         })();
     }, [page]);
 
@@ -39,18 +42,19 @@ export default function FollowingPage() {
     return (
         <section>
             <h2 className="mb-8 text-lg font-bold">구독 블로그 목록</h2>
-            {followings && followings.length >= 1 ? (
-                <>
-                    <FollowingList followings={followings} />
-                    <Pagination
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                </>
-            ) : (
-                <div>구독 블로그가 존재하지 않습니다.</div>
-            )}
+            {!isLoading &&
+                (followings && followings.length >= 1 ? (
+                    <>
+                        <FollowingList followings={followings} />
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
+                ) : (
+                    <div>구독 블로그가 존재하지 않습니다.</div>
+                ))}
             <AlertPopup
                 show={showPopup}
                 onConfirm={() => setShowPopup(false)}

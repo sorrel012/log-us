@@ -18,6 +18,7 @@ interface FetchState<T> {
     isLoading: boolean;
     isError: boolean;
     error?: string;
+    code?: number;
 }
 
 export function getCacheData(key: string) {
@@ -85,12 +86,14 @@ export async function customFetch<T>(
 
         clearTimeout(timeoutId);
 
+        const resultData = (await response.json()) as T;
+
         if (!response.ok) {
             state.isError = true;
             state.error = `서버 오류가 발생하였습니다. ${response.statusText}`;
+            state.code = resultData.code;
         }
 
-        const resultData = (await response.json()) as T;
         state.data = resultData.data;
         state.isLoading = false;
 

@@ -2,13 +2,43 @@
 
 import PanelModule from '@/components/sidebar/PanelModule';
 import { usePathname } from 'next/navigation';
+import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
+import { useEffect } from 'react';
+import { customFetch } from '@/utils/customFetch';
 
 export default function SettingSidebar() {
     const pathName = usePathname();
     const isOurLogPath = pathName.includes('/our-log');
-    const blogAddresss = pathName.split('/')[1];
+    const blogAddress = pathName.split('/')[1];
+    const { blogId, setBlogId, setBlogInfo } = useBlogStore();
 
-    const basePath = `/${blogAddresss}/setting`;
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await customFetch('/blog-id', {
+                    params: { blogAddress },
+                    queryKey: ['blogId', blogAddress],
+                });
+
+                if (response && response.data && response.data.blogId) {
+                    setBlogId(response.data.blogId);
+                }
+            } catch (error) {}
+        })();
+    }, [blogAddress, setBlogId]);
+
+    useEffect(() => {
+        if (blogId) {
+            customFetch<BlogInfo>('/blog-info', {
+                queryKey: ['memberInfo'],
+                params: { blogId },
+            }).then((response) => {
+                setBlogInfo(response.data!);
+            });
+        }
+    }, [blogId, setBlogInfo]);
+
+    const basePath = `/${blogAddress}/setting`;
     const PROFILE = [
         { value: '회원정보 변경', link: `${basePath}` },
         { value: '구독 블로그 관리', link: `${basePath}/following` },
@@ -26,7 +56,7 @@ export default function SettingSidebar() {
         { value: '블로그 개설', link: `${basePath}/new-blog` },
     ];
 
-    const ourLogBasePath = `/${blogAddresss}/setting/our-log`;
+    const ourLogBasePath = `/${blogAddress}/setting/our-log`;
     const OUR_LOG_DTL = [
         { value: '글 관리', link: `${ourLogBasePath}/posts` },
         { value: '댓글 관리', link: `${ourLogBasePath}/comments` },

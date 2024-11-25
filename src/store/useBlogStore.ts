@@ -3,6 +3,7 @@ import { Member } from '@/components/sidebar/UserProfile';
 
 export interface BlogInfo {
     shareYn: string;
+    blogName: string;
     blogAddress: string;
     introduce?: string;
     members: Member[];
