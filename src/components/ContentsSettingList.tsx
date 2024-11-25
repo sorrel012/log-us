@@ -4,7 +4,7 @@ import ContentSetting, {
     ContentsButtonProps,
     ContentsProps,
 } from '@/components/ContentSetting';
-import PostSettingSubText from '@/components/setting/PostSettingSubText';
+import PostSettingSubText from '@/components/blog/setting/PostSettingSubText';
 import { useEffect, useState } from 'react';
 
 interface ContentsSettingListProps {

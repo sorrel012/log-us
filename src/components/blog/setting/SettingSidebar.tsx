@@ -11,14 +11,14 @@ export default function SettingSidebar() {
     const basePath = `/${blogAddresss}/setting`;
     const PROFILE = [
         { value: '회원정보 변경', link: `${basePath}` },
-        { value: '구독 블로그 관리', link: `${basePath}/subscribe` },
+        { value: '구독 블로그 관리', link: `${basePath}/following` },
     ];
     const MY_LOG = [
         { value: '블로그 정보 변경', link: `${basePath}/info` },
         { value: '글 관리', link: `${basePath}/posts` },
         { value: '댓글 관리', link: `${basePath}/comments` },
         { value: '시리즈 관리', link: `${basePath}/series` },
-        { value: '구독자 관리', link: `${basePath}/subscribers` },
+        { value: '구독자 관리', link: `${basePath}/follower` },
         { value: '통계', link: `${basePath}/statistics` },
     ];
     const OUR_LOG = [
