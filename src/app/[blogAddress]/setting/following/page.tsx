@@ -40,8 +40,8 @@ export default function FollowingPage() {
     };
 
     return (
-        <section>
-            <h2 className="mb-8 text-lg font-bold">구독 블로그 목록</h2>
+        <filedset>
+            <legend className="mb-8 text-lg font-bold">구독 블로그 목록</legend>
             {!isLoading &&
                 (followings && followings.length >= 1 ? (
                     <>
@@ -61,6 +61,6 @@ export default function FollowingPage() {
                 title="구독 블로그를 불러오지 못했습니다."
                 text="잠시 후 다시 시도해 주세요."
             />
-        </section>
+        </filedset>
     );
 }

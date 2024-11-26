@@ -7,11 +7,11 @@ export default function DeleteBlog({ onDelete }: { onDelete: () => void }) {
 
     return (
         <filedset className="select-none">
-            <legend className="mb-4 text-lg font-bold">블로그 삭제</legend>
+            <legend className="mb-4 text-lg font-bold">블로그 초기화</legend>
             <div className="text-sm leading-6">
-                <p>블로그를 삭제할 경우 블로그의 모든 내용이 삭제됩니다.</p>
-                <p>삭제된 블로그는 다시 복구할 수 없습니다.</p>
-                <p>동의할 경우 삭제 버튼을 눌러 블로그를 삭제해 주세요</p>
+                <p>블로그를 초기화할 경우 블로그의 모든 내용이 삭제됩니다.</p>
+                <p>초기화된 블로그는 다시 복구할 수 없습니다.</p>
+                <p>동의할 경우 초기화 버튼을 눌러 블로그를 삭제해 주세요</p>
             </div>
             <div className="mt-2 flex items-center text-sm text-customLightBlue-200">
                 <input
@@ -22,7 +22,7 @@ export default function DeleteBlog({ onDelete }: { onDelete: () => void }) {
                     id="deleteBlog"
                 />
                 <label htmlFor="deleteBlog" className="ml-1 cursor-pointer">
-                    유의사항을 모두 확인하였으며, 삭제를 희망합니다.
+                    유의사항을 모두 확인하였으며, 초기화를 희망합니다.
                 </label>
             </div>
             <div className="-mt-2 text-right">
@@ -31,7 +31,7 @@ export default function DeleteBlog({ onDelete }: { onDelete: () => void }) {
                     disabled={!wantDelete}
                     onClick={onDelete}
                 >
-                    삭제
+                    초기화
                 </button>
             </div>
         </filedset>

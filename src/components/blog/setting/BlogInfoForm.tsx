@@ -72,7 +72,7 @@ export default function BlogInfoForm({
 
     return (
         <filedset>
-            <h2 className="mb-8 text-lg font-bold">블로그 정보 변경</h2>
+            <legend className="mb-8 text-lg font-bold">블로그 정보 변경</legend>
             <div className="*:mb-10">
                 <div>
                     <label htmlFor="blogName" className="font-semibold">
