@@ -5,11 +5,6 @@ import MemberInfoForm from '@/components/blog/setting/MemberInfoForm';
 import AlertPopup from '@/components/AlertPopup';
 
 export default function SettingMain() {
-    const [id, setId] = useState('');
-    const [nickname, setNickname] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');

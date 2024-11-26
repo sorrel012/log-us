@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import emailjs from 'emailjs-com';
 import AlertPopup from '@/components/AlertPopup';
 import { FcCancel, FcOk } from 'react-icons/fc';
+import { customFetch } from '@/utils/customFetch';
 
 export default function MemberInfoForm() {
     // TODO zustand로 변경
-    const loginUserNickname = 'hana';
+    const [orgData, setOrgData] = useState({ email: '', nickname: '' });
+    const [loginId, setLoginId] = useState('');
+
+    const [newNickname, setNewNickname] = useState('');
 
     const [newEmail, setNewEmail] = useState('');
     const [emailCode, setEmailCode] = useState('');
@@ -17,6 +21,24 @@ export default function MemberInfoForm() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+
+    useEffect(() => {
+        (async () => {
+            const res = await customFetch('/user', { queryKey: ['user-info'] });
+
+            if (res.isError) {
+                setPopupTitle('회원정보를 불러오지 못했습니다.');
+                setPopupText('잠시 후 다시 시도해 주세요.');
+                setShowPopup(true);
+                return;
+            }
+
+            setLoginId(res.data.loginId);
+            setOrgData({ email: res.data.email, nickname: res.data.nickname });
+            setNewNickname(res.data.nickname);
+            setNewEmail(res.data.email);
+        })();
+    }, []);
 
     const handleSetEmail = (e) => {
         setIsCodeSent(false);
@@ -40,7 +62,7 @@ export default function MemberInfoForm() {
                 process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID,
                 {
                     to_email: newEmail,
-                    to_name: loginUserNickname,
+                    to_name: newNickname,
                     message: code,
                 },
                 process.env.NEXT_PUBLIC_EMAIL_USER_ID,
@@ -55,6 +77,13 @@ export default function MemberInfoForm() {
     };
 
     const handleEmailChange = async () => {
+        if (newEmail === orgData.email) {
+            setPopupTitle('변경사항이 없습니다.');
+            setPopupText('');
+            setShowPopup(true);
+            return;
+        }
+
         if (!newEmail || newEmail.trim().length <= 0) {
             setPopupTitle('이메일 주소를 입력해주세요.');
             setPopupText('');
@@ -83,6 +112,39 @@ export default function MemberInfoForm() {
         }
     };
 
+    const handleSaveInfo = async () => {
+        if (orgData.email === newEmail && orgData.nickname === newNickname) {
+            setPopupTitle('변경사항이 없습니다.');
+            setPopupText('');
+            setShowPopup(true);
+            return;
+        }
+
+        if (orgData.email !== newEmail && !isEmailVerified) {
+            setPopupTitle('이메일 인증이 필요합니다.');
+            setPopupText('인증 후 다시 시도해 주세요.');
+            setShowPopup(true);
+            return;
+        }
+
+        const res = await customFetch('/user', {
+            queryKey: ['edit-user-info', newEmail, newNickname, loginId],
+            method: 'PUT',
+            body: { nickname: newNickname, email: newEmail },
+        });
+
+        if (res.isError) {
+            setPopupTitle('회원정보 변경에 실패하였습니다.');
+            setPopupText('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+            return;
+        }
+
+        setPopupTitle('회원정보를 변경하였습니다.');
+        setPopupText('');
+        setShowPopup(true);
+    };
+
     return (
         <section>
             <div className="flex items-center gap-8">
@@ -102,13 +164,16 @@ export default function MemberInfoForm() {
                         type="text"
                         id="id"
                         className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                        placeholder="영소문자, 숫자, 특수문자(-,_)를 사용하여 입력해주세요.(최소 5자, 최대 20자)"
+                        disabled
+                        value={loginId}
                     />
                     <input
                         type="text"
                         id="nickname"
                         className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
                         placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해주세요.(최소 1자, 최대 20자)"
+                        value={newNickname}
+                        onChange={(e) => setNewNickname(e.target.value)}
                     />
                     <div className="flex">
                         <input
@@ -159,8 +224,11 @@ export default function MemberInfoForm() {
                     </>
                 )}
             </div>
-            <div className="mt-8 text-right">
-                <button className="rounded bg-customBeige-100 px-4 py-2 text-md text-customBrown-100">
+            <div className="mt-4 text-right">
+                <button
+                    className="rounded bg-customBeige-100 px-4 py-2 text-md text-customBrown-100"
+                    onClick={handleSaveInfo}
+                >
                     저장
                 </button>
             </div>
