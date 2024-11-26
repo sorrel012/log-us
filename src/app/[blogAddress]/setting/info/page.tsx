@@ -5,10 +5,13 @@ import { useBlogStore } from '@/store/useBlogStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { FcCancel, FcOk } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
 export default function BlogInfo() {
+    const router = useRouter();
     const { blogId, blogInfo } = useBlogStore();
 
+    const [isLoading, setIsLoading] = useState(true);
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
     const [introduce, setIntroduce] = useState('');
@@ -26,11 +29,13 @@ export default function BlogInfo() {
     const [wantDelete, setWantDelete] = useState<boolean>(false);
 
     useEffect(() => {
+        setIsLoading(true);
         if (blogInfo) {
             setBlogName(blogInfo.blogName);
             setBlogAddress(blogInfo.blogAddress);
             setIntroduce(blogInfo.introduce!);
         }
+        setIsLoading(false);
     }, [blogInfo]);
 
     const handleConfirm = () => {
@@ -180,7 +185,22 @@ export default function BlogInfo() {
         }
     };
 
-    const handleDeleteBlog = () => {};
+    const handleDeleteBlog = async () => {
+        const res = await customFetch(`/blog/setting?blogId=${blogId}`, {
+            queryKey: ['delete-blog', blogAddress, blogName, introduce],
+            method: 'DELETE',
+        });
+
+        if (res.isError) {
+            setPopupTitle('블로그를 삭제하지 못했습니다');
+            setPopupText('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+        }
+
+        //TODO 기본 블로그 삭제 처리
+
+        router.push('/setting');
+    };
 
     return (
         <section>
@@ -197,6 +217,7 @@ export default function BlogInfo() {
                         value={blogName}
                         onChange={(e) => setBlogName(e.target.value)}
                         placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해주세요.(최소 2자, 최대 20자)"
+                        disabled={isLoading}
                     />
                 </div>
                 <div>
@@ -211,11 +232,12 @@ export default function BlogInfo() {
                             placeholder="한글, 영문, 숫자, 하이픈(-)을 사용하여 입력해주세요.(최소 4자, 최대 32자)"
                             value={blogAddress}
                             onChange={handleBlogAddressChange}
+                            disabled={isLoading}
                         />
                         <button
                             className={`rounded-r border-b border-r border-t px-2 py-1.5 ${isDuplicateChecked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-100 text-customDarkBlue-200'}`}
                             onClick={handleDuplicateCheck}
-                            disabled={isDuplicateChecked}
+                            disabled={isDuplicateChecked || isLoading}
                         >
                             중복 확인
                         </button>
@@ -246,6 +268,7 @@ export default function BlogInfo() {
                         value={introduce}
                         onChange={(e) => setIntroduce(e.target.value)}
                         placeholder="100자 이내로 입력해 주세요."
+                        disabled={isLoading}
                     />
                 </div>
                 <div className="-mt-2 text-right">
@@ -260,7 +283,7 @@ export default function BlogInfo() {
             </div>
             <div>
                 <h2 className="mb-4 text-lg font-bold">블로그 삭제</h2>
-                <div className="text-md leading-6">
+                <div className="text-sm leading-6">
                     <p>블로그를 삭제할 경우 블로그의 모든 내용이 삭제됩니다.</p>
                     <p>삭제된 블로그는 다시 복구할 수 없습니다.</p>
                     <p>동의할 경우 삭제 버튼을 눌러 블로그를 삭제해 주세요</p>
@@ -270,7 +293,7 @@ export default function BlogInfo() {
                         type="checkbox"
                         checked={wantDelete || false}
                         onChange={(e) => setWantDelete(e.target.checked)}
-                        className="scale-75"
+                        className="-ml-2 scale-50"
                         id="deleteBlog"
                     />
                     <label htmlFor="deleteBlog" className="ml-1 cursor-pointer">
