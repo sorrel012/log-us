@@ -1,12 +1,31 @@
 'use client';
 
+import { useState } from 'react';
+import MemberInfoForm from '@/components/blog/setting/MemberInfoForm';
+import AlertPopup from '@/components/AlertPopup';
+
 export default function SettingMain() {
+    const [id, setId] = useState('');
+    const [nickname, setNickname] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupText, setPopupText] = useState('');
+
+    const handleConfirm = () => {};
+
     return (
-        <section className="mx-auto max-w-screen-2xl p-3">
-            <div className="mb-3 flex h-full items-center justify-between">
-                <h2 className="font-bold">회원정보 변경</h2>
-                <section></section>
-            </div>
-        </section>
+        <filedset>
+            <legend className="mb-8 text-lg font-bold">회원정보 변경</legend>
+            <MemberInfoForm />
+            <AlertPopup
+                show={showPopup}
+                onConfirm={handleConfirm}
+                title={popupTitle}
+                text={popupText}
+            />
+        </filedset>
     );
 }
