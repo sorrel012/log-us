@@ -1,4 +1,4 @@
-const TIMEOUT = 30 * 1000;
+const TIMEOUT = 60 * 1000;
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
