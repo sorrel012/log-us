@@ -18,7 +18,7 @@ const config: Config = {
                     200: '#506b87',
                 },
                 customBeige: {
-                    100: 'rgba(239, 236, 231, 0.7)',
+                    100: '#F7F5F3',
                 },
                 customGray: {
                     100: '#CDCAC5',
