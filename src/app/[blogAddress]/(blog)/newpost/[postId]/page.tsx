@@ -332,16 +332,15 @@ export default function NewPostEditPage() {
 
     const handleSavePost = async (post) => {
         const data = getData(post.status, post);
-        let result;
         try {
-            result = await customFetch(`/posts/${editPostId}`, {
+            const result = await customFetch(`/posts/${editPostId}`, {
                 queryKey: ['savePost', post.status],
                 method: 'PUT',
                 body: data,
             });
 
             if (result.isError) {
-                throw new Error(result.error);
+                throw new Error(result.error || '잠시 후 다시 시도해 주세요.');
             }
 
             setTimeout(() => {
