@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import emailjs from 'emailjs-com';
 import AlertPopup from '@/components/AlertPopup';
-import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
+import { FcCancel, FcOk } from 'react-icons/fc';
 
 export default function MemberInfoForm() {
     // TODO zustand로 변경
@@ -40,7 +40,7 @@ export default function MemberInfoForm() {
         })();
     }, []);
 
-    const handleSetEmail = (e) => {
+    const handleSetEmail = (e: ChangeEvent<HTMLInputElement>) => {
         setIsCodeSent(false);
         setIsEmailVerified(false);
         setEmailMessage('');
@@ -85,7 +85,7 @@ export default function MemberInfoForm() {
         }
 
         if (!newEmail || newEmail.trim().length <= 0) {
-            setPopupTitle('이메일 주소를 입력해주세요.');
+            setPopupTitle('이메일 주소를 입력해 주세요.');
             setPopupText('');
             setShowPopup(true);
             return;
@@ -94,7 +94,7 @@ export default function MemberInfoForm() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(newEmail)) {
             setPopupTitle('유효하지 않은 이메일형식입니다.');
-            setPopupText('이메일 주소를 다시 입력해주세요.');
+            setPopupText('이메일 주소를 다시 입력해 주세요.');
             setShowPopup(true);
             return;
         }
@@ -146,35 +146,37 @@ export default function MemberInfoForm() {
     };
 
     return (
-        <section>
-            <div className="flex items-center gap-8">
-                <div className="flex flex-col gap-10">
-                    <label htmlFor="id" className="font-semibold">
-                        아이디
-                    </label>
-                    <label htmlFor="nickname" className="font-semibold">
-                        닉네임
-                    </label>
-                    <label htmlFor="email" className="font-semibold">
-                        이메일
-                    </label>
-                </div>
-                <div className="flex flex-1 flex-col gap-6">
-                    <input
-                        type="text"
-                        id="id"
-                        className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                        disabled
-                        value={loginId}
-                    />
-                    <input
-                        type="text"
-                        id="nickname"
-                        className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                        placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해주세요.(최소 1자, 최대 20자)"
-                        value={newNickname}
-                        onChange={(e) => setNewNickname(e.target.value)}
-                    />
+        <section className="border-b border-solid border-customBrown-100 pb-10">
+            <div className="mb-10 flex gap-5">
+                <label htmlFor="id" className="mt-1.5 w-24 font-semibold">
+                    아이디
+                </label>
+                <input
+                    type="text"
+                    id="id"
+                    className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
+                    disabled
+                    value={loginId}
+                />
+            </div>
+            <div className="mb-10 flex gap-5">
+                <label htmlFor="nickname" className="mt-1.5 w-24 font-semibold">
+                    닉네임
+                </label>
+                <input
+                    type="text"
+                    id="nickname"
+                    className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
+                    placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해 주세요.(최소 1자, 최대 20자)"
+                    value={newNickname}
+                    onChange={(e) => setNewNickname(e.target.value)}
+                />
+            </div>
+            <div className="flex gap-5">
+                <label htmlFor="email" className="mt-1.5 w-24 font-semibold">
+                    이메일
+                </label>
+                <div className="flex flex-1 flex-col">
                     <div className="flex">
                         <input
                             type="email"
@@ -192,37 +194,37 @@ export default function MemberInfoForm() {
                             인증 요청
                         </button>
                     </div>
-                </div>
-            </div>
-            {isCodeSent && (
-                <div className="ml-[4.6rem] mt-2 flex">
-                    <input
-                        type="text"
-                        className="rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                        placeholder="인증번호를 입력해 주세요."
-                        value={userCode}
-                        onChange={(e) => setUserCode(e.target.value)}
-                    />
-                    <button
-                        className={`${isEmailVerified ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-100 text-customLightBlue-200'} rounded-r border-b border-r border-t px-2 py-1.5`}
-                        onClick={handleVerifyCode}
-                        disabled={isEmailVerified}
+                    {isCodeSent && (
+                        <div className="mt-2 flex">
+                            <input
+                                type="text"
+                                className="rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
+                                placeholder="인증번호를 입력해 주세요."
+                                value={userCode}
+                                onChange={(e) => setUserCode(e.target.value)}
+                            />
+                            <button
+                                className={`${isEmailVerified ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-100 text-customLightBlue-200'} rounded-r border-b border-r border-t px-2 py-1.5`}
+                                onClick={handleVerifyCode}
+                                disabled={isEmailVerified}
+                            >
+                                인증
+                            </button>
+                        </div>
+                    )}
+                    <div
+                        className={`${
+                            isEmailVerified ? 'text-green-500' : 'text-red-600'
+                        } mt-2 flex gap-1`}
                     >
-                        인증
-                    </button>
+                        {emailMessage && (
+                            <>
+                                {isEmailVerified ? <FcOk /> : <FcCancel />}
+                                <span>{emailMessage}</span>
+                            </>
+                        )}
+                    </div>
                 </div>
-            )}
-            <div
-                className={`${
-                    isEmailVerified ? 'text-green-500' : 'text-red-600'
-                } ml-[4.6rem] mt-2 flex gap-1`}
-            >
-                {emailMessage && (
-                    <>
-                        {isEmailVerified ? <FcOk /> : <FcCancel />}
-                        <span>{emailMessage}</span>
-                    </>
-                )}
             </div>
             <div className="mt-4 text-right">
                 <button

@@ -88,7 +88,6 @@ export default function BlogInfo() {
         }
 
         const body = {
-            blogId,
             blogName: updatedInfo.blogName,
             blogAddress: updatedInfo.blogAddress,
             introduce: updatedInfo.introduce,
@@ -107,10 +106,15 @@ export default function BlogInfo() {
         });
 
         if (res.isError) {
-            setPopupTitle('블로그 정보를 수정하지 못했습니다');
+            setPopupTitle('블로그 정보를 변경하지 못했습니다');
             setPopupText('잠시 후 다시 시도해 주세요.');
             setShowPopup(true);
+            return;
         }
+
+        setPopupTitle('블로그 정보를 변경했습니다');
+        setPopupText('잠시 후 다시 시도해 주세요.');
+        setShowPopup(true);
     };
 
     const handleDeleteBlog = async () => {
