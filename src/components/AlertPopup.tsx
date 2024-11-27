@@ -35,7 +35,6 @@ export default function AlertPopup({
     title,
     text,
     onConfirm,
-    onCancel,
 }: PopupProps) {
     const [isClient, setIsClient] = useState(false);
     const [modalContainer, setModalContainer] = useState<HTMLElement | null>(
@@ -69,7 +68,14 @@ export default function AlertPopup({
                         variants={popupVariants}
                     >
                         <div>
-                            <h2>{title}</h2>
+                            {title && (
+                                <h2
+                                    className="leading-7"
+                                    dangerouslySetInnerHTML={{
+                                        __html: title,
+                                    }}
+                                />
+                            )}
                             {text && (
                                 <p
                                     className="leading-5"
