@@ -3,10 +3,11 @@
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 
-interface SeriesGridProps {
+export interface SeriesGridProps {
     seriesId: number;
     seriesName: string;
-    imgUrl: string;
+    imgUrl?: string;
+    seriesOrder?: number;
 }
 
 export default function SeriesCard({
