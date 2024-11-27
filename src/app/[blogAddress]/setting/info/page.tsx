@@ -16,10 +16,12 @@ export default function BlogInfo() {
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
     const [introduce, setIntroduce] = useState('');
+    const [newBlogAddress, setNewBlogAddress] = useState('');
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+    const [popupId, setPopupId] = useState('CLOSE');
 
     useEffect(() => {
         setIsLoading(true);
@@ -32,7 +34,12 @@ export default function BlogInfo() {
     }, [blogInfo]);
 
     const handleConfirm = () => {
-        setShowPopup(false);
+        if (popupId === 'CLOSE') {
+            setShowPopup(false);
+        } else {
+            setShowPopup(false);
+            router.push(`/${newBlogAddress}/setting/info`);
+        }
     };
 
     const validateBlogName = (name: string): boolean => {
@@ -41,6 +48,7 @@ export default function BlogInfo() {
             setPopupText(
                 '블로그 이름은 최소 2자, 최대 20자까지 입력할 수 있습니다.',
             );
+            setPopupId('CLOSE');
             setShowPopup(true);
             return false;
         }
@@ -51,6 +59,7 @@ export default function BlogInfo() {
             setPopupText(
                 '블로그 이름은 한글, 영문, 숫자, 특수문자(-, _)만 사용 가능합니다.',
             );
+            setPopupId('CLOSE');
             setShowPopup(true);
             return false;
         }
@@ -66,6 +75,7 @@ export default function BlogInfo() {
 
         if (isSameData) {
             setPopupTitle('변경사항이 없습니다.');
+            setPopupId('CLOSE');
             setShowPopup(true);
             return false;
         }
@@ -76,6 +86,8 @@ export default function BlogInfo() {
 
         if (!updatedInfo.isDuplicateChecked) {
             setPopupTitle('블로그 주소 중복확인을 해주세요.');
+            setPopupText('');
+            setPopupId('CLOSE');
             setShowPopup(true);
             return false;
         }
@@ -83,6 +95,7 @@ export default function BlogInfo() {
         if (updatedInfo.introduce.length > 100) {
             setPopupTitle('블로그 소개를 다시 입력해 주세요.');
             setPopupText('블로그 소개는 최대 100자까지 입력할 수 있습니다.');
+            setPopupId('CLOSE');
             setShowPopup(true);
             return false;
         }
@@ -106,14 +119,17 @@ export default function BlogInfo() {
         });
 
         if (res.isError) {
-            setPopupTitle('블로그 정보를 변경하지 못했습니다');
+            setPopupTitle('블로그 정보를 변경하지 못했습니다.');
             setPopupText('잠시 후 다시 시도해 주세요.');
+            setPopupId('CLOSE');
             setShowPopup(true);
             return;
         }
 
-        setPopupTitle('블로그 정보를 변경했습니다');
-        setPopupText('잠시 후 다시 시도해 주세요.');
+        setNewBlogAddress(updatedInfo.blogAddress);
+        setPopupTitle('블로그 정보를 변경했습니다.');
+        setPopupText('');
+        setPopupId('MOVE');
         setShowPopup(true);
     };
 
@@ -126,11 +142,10 @@ export default function BlogInfo() {
         if (res.isError) {
             setPopupTitle('블로그를 삭제하지 못했습니다');
             setPopupText('잠시 후 다시 시도해 주세요.');
+            setPopupId('CLOSE');
             setShowPopup(true);
             return;
         }
-
-        //TODO 기본 블로그 삭제 처리
 
         router.push(`/${blogAddress}/setting`);
     };
@@ -142,7 +157,10 @@ export default function BlogInfo() {
                 onSave={(updatedInfo) => handleSaveBlogInfo(updatedInfo)}
                 isLoading={isLoading}
             />
-            <DeleteBlog onDelete={handleDeleteBlog} />
+            <DeleteBlog
+                onDelete={handleDeleteBlog}
+                shareYn={blogInfo?.shareYn!}
+            />
             <AlertPopup
                 show={showPopup}
                 onConfirm={handleConfirm}
