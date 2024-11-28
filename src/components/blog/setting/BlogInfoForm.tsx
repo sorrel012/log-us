@@ -71,7 +71,7 @@ export default function BlogInfoForm({
     };
 
     return (
-        <filedset>
+        <fieldset>
             <legend className="mb-8 text-lg font-bold">블로그 정보 변경</legend>
             <div className="*:mb-10">
                 <div>
@@ -84,7 +84,7 @@ export default function BlogInfoForm({
                         className="mt-4 w-full rounded border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
                         value={blogName}
                         onChange={(e) => setBlogName(e.target.value)}
-                        placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해주세요.(최소 2자, 최대 20자)"
+                        placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해 주세요.(최소 2자, 최대 20자)"
                         disabled={isLoading}
                     />
                 </div>
@@ -97,7 +97,7 @@ export default function BlogInfoForm({
                             type="text"
                             id="blogAddress"
                             className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                            placeholder="한글, 영문, 숫자, 하이픈(-)을 사용하여 입력해주세요.(최소 4자, 최대 32자)"
+                            placeholder="한글, 영문, 숫자, 하이픈(-)을 사용하여 입력해 주세요.(최소 4자, 최대 32자)"
                             value={blogAddress}
                             onChange={handleBlogAddressChange}
                             disabled={isLoading}
@@ -156,6 +156,6 @@ export default function BlogInfoForm({
                     </button>
                 </div>
             </div>
-        </filedset>
+        </fieldset>
     );
 }
