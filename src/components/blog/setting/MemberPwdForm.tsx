@@ -32,12 +32,17 @@ export default function MemberPwdForm() {
         }
     };
 
-    const handleCurrPwdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleCurrPwdChange = async (e: ChangeEvent<HTMLInputElement>) => {
         setCurrPwd(e.target.value);
 
         //TODO 현재 비밀번호 api
-        const password = 'a1s2d3f4!';
-        if (password === e.target.value) {
+        const res = await customFetch('/user/pwd', {
+            method: 'POST',
+            queryKey: ['password', e.target.value],
+            body: { password: e.target.value },
+        });
+
+        if (res.data.isValid) {
             setIsCorrectCurrPwd(true);
             setCurrPwdMessage('현재 비밀번호와 일치합니다.');
         } else {
