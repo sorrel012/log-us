@@ -9,8 +9,11 @@ import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
 import PostSettingList from '@/components/blog/setting/PostSettingList';
 import Pagination from '@/components/Pagination';
+import ConfirmPopup from '@/components/ConfirmPopup';
+import { useRouter } from 'next/navigation';
 
 export default function PostsManagePage() {
+    const router = useRouter();
     const { blogId } = useBlogStore();
 
     const [isLoading, setIsLoading] = useState(true);
@@ -22,8 +25,10 @@ export default function PostsManagePage() {
     const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
 
     const [showPopup, setShowPopup] = useState(false);
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+    const [popupId, setPopupId] = useState('CLOSE');
 
     const params = useMemo(
         () => ({
@@ -48,12 +53,15 @@ export default function PostsManagePage() {
                     setTotalPosts(response.data.totalElements || 0);
                 })
                 .catch(() => {
-                    setShowPopup(true);
                     setPopupTitle('게시글을 불러올 수 없습니다.');
                     setPopupText('잠시 후 다시 시도해 주세요.');
+                    setPopupId('CLOSE');
+                    setShowPopup(true);
                 })
                 .finally(() => {
-                    setIsLoading(false);
+                    setTimeout(() => {
+                        setIsLoading(false);
+                    }, 500);
                 });
         }
     }, [blogId, page, size, params]);
@@ -68,6 +76,49 @@ export default function PostsManagePage() {
 
     const handlePageChange = (page: number) => {
         setPage(page);
+    };
+
+    const handleConfirm = () => {
+        if (popupId === 'CLOSE') {
+            setShowPopup(false);
+        } else {
+            router.refresh();
+        }
+    };
+
+    const handleDeleteConfirm = async () => {
+        for (const post of selectedPosts) {
+            try {
+                const res = await customFetch(`/posts/${post.postId}`, {
+                    method: 'DELETE',
+                    queryKey: ['deletePost', post.postId],
+                });
+
+                if (res.isError) {
+                    throw new Error(
+                        res.error || '게시글을 삭제할 수 없습니다.',
+                    );
+                }
+
+                setShowConfirmPopup(false);
+                setPopupTitle('삭제되었습니다.');
+                setPopupText('');
+                setPopupId('REFRESH');
+                setShowPopup(true);
+            } catch (e) {
+                setShowConfirmPopup(false);
+                setPopupTitle('게시글을 삭제할 수 없습니다.');
+                setPopupText('잠시 후 다시 시도해 주세요.');
+                setPopupId('CLOSE');
+                setShowPopup(true);
+            }
+        }
+    };
+
+    const handleDelete = async () => {
+        setPopupTitle(`${selectedPosts.length}건의 글을 삭제하시겠습니까?`);
+        setPopupText('삭제한 글은 복구할 수 없습니다.');
+        setShowConfirmPopup(true);
     };
 
     return (
@@ -91,6 +142,7 @@ export default function PostsManagePage() {
                         <button
                             className="rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100"
                             disabled={selectedPosts.length < 1}
+                            onClick={handleDelete}
                         >
                             삭제
                         </button>
@@ -113,7 +165,14 @@ export default function PostsManagePage() {
 
             <AlertPopup
                 show={showPopup}
-                onConfirm={() => setShowPopup(false)}
+                onConfirm={handleConfirm}
+                title={popupTitle}
+                text={popupText}
+            />
+            <ConfirmPopup
+                show={showConfirmPopup}
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => setShowConfirmPopup(false)}
                 title={popupTitle}
                 text={popupText}
             />
