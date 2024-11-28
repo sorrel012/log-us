@@ -14,7 +14,7 @@ import {
     unescapeSpecialChars,
 } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
-import { UseSeries } from '@/hooks/useSeries';
+import { useSeries } from '@/hooks/useSeries';
 import ConfirmPopup from '@/components/ConfirmPopup';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
@@ -46,7 +46,7 @@ export default function NewPostEditPage() {
     const blogAddress = pathname.split('/')[1];
     const editPostId = pathname.split('/')[3];
     const { blogId } = useBlogStore();
-    const { data } = UseSeries();
+    const { data } = useSeries();
     const series = data
         ? [
               {

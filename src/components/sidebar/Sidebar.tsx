@@ -1,7 +1,7 @@
 import { BsList } from 'react-icons/bs';
 import UserProfile from '@/components/sidebar/UserProfile';
 import PanelModule from '@/components/sidebar/PanelModule';
-import { UseSeries } from '@/hooks/useSeries';
+import { useSeries } from '@/hooks/useSeries';
 import AlertPopup from '@/components/AlertPopup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -34,7 +34,7 @@ const sidebarVariants = {
 export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
     const blogAddress = usePathname().split('/')[1];
     const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
-        UseSeries();
+        useSeries();
     const series = data
         ? [
               {

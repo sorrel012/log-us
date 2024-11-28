@@ -4,7 +4,6 @@ import ContentSetting, {
     ContentsButtonProps,
     ContentsProps,
 } from '@/components/ContentSetting';
-import PostSettingSubText from '@/components/blog/setting/PostSettingSubText';
 import { useEffect, useState } from 'react';
 
 interface ContentsSettingListProps {
@@ -54,9 +53,7 @@ export default function ContentsSettingList({
                     isLast={index === contents.length - 1}
                     onSelect={handleCheckboxChange}
                     buttons={buttons}
-                >
-                    <PostSettingSubText {...content} />
-                </ContentSetting>
+                ></ContentSetting>
             ))}
         </section>
     );

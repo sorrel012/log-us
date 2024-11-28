@@ -2,10 +2,10 @@ import SeriesCard from '@/components/blog/series/SeriesCard';
 import SeriesSkeleton from '@/components/blog/series/SeriesSkeleton';
 import AlertPopup from '@/components/AlertPopup';
 import { useState } from 'react';
-import { UseSeries } from '@/hooks/useSeries';
+import { useSeries } from '@/hooks/useSeries';
 
 export default function SeriesGrid() {
-    const { data: series, isLoading, isError, error } = UseSeries();
+    const { data: series, isLoading, isError, error } = useSeries();
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');

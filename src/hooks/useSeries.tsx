@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 
-export const UseSeries = () => {
+export const useSeries = () => {
     const { blogId } = useBlogStore();
     const [data, setData] = useState<any | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -14,6 +14,7 @@ export const UseSeries = () => {
             customFetch<any>('/series', {
                 queryKey: ['series', blogId],
                 params: { blogId },
+                invalidateCache: true,
             })
                 .then((response) => {
                     setData(response.data);

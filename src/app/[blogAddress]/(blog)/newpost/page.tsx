@@ -14,7 +14,7 @@ import {
     unescapeSpecialChars,
 } from '@/utils/commonUtil';
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
-import { UseSeries } from '@/hooks/useSeries';
+import { useSeries } from '@/hooks/useSeries';
 import ConfirmPopup from '@/components/ConfirmPopup';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
@@ -45,7 +45,7 @@ export default function NewPostPage() {
     const pathname = usePathname();
     const blogAddress = pathname.split('/')[1];
     const { blogId } = useBlogStore();
-    const { data } = UseSeries();
+    const { data } = useSeries();
     const series = data
         ? [
               {
