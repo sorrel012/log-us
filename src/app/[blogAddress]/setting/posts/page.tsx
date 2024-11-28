@@ -6,7 +6,7 @@ export default function PostsManagePage() {
     const [totalPosts, setTotalPosts] = useState(0);
 
     return (
-        <filedset>
+        <fieldset>
             <div>
                 <legend className="mb-8 text-lg font-bold">글 관리</legend>
                 <span
@@ -17,6 +17,6 @@ export default function PostsManagePage() {
                 </span>
             </div>
             {/*<ContentsSettingList contents={} buttons={} onChange={} />*/}
-        </filedset>
+        </fieldset>
     );
 }
