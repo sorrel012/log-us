@@ -1,28 +1,30 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UseSeries } from '@/hooks/useSeries';
 import { BsList } from 'react-icons/bs';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { SeriesGridProps } from '@/components/blog/series/SeriesCard';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
-import { useRouter } from 'next/navigation';
+import ConfirmPopup from '@/components/ConfirmPopup';
 
 export default function SeriesList({
+    data,
     onEdit,
     onAdd,
+    onResetSeries,
 }: {
+    data: SeriesGridProps[];
     onEdit: (seriesId: number) => void;
     onAdd: (isAddMode: boolean) => void;
+    onResetSeries: (newSeriesId: number, mode: string, body?: {}) => void;
 }) {
-    const router = useRouter();
-    const { data } = UseSeries();
     const [seriesList, setSeriesList] = useState<SeriesGridProps[]>(data);
     const [clickedSeriesId, setClickedSeriesId] = useState(0);
     const [isAddMode, setIsAddMode] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
 
@@ -79,24 +81,16 @@ export default function SeriesList({
         setIsAddMode((prevState) => !prevState);
     };
 
-    const handleDelete = async (e, seriesId: number) => {
+    const handleDeleteConfirm = () => {
+        setShowConfirmPopup(false);
+        onResetSeries(clickedSeriesId, 'DELETE');
+    };
+
+    const handleDelete = async (e) => {
         e.stopPropagation();
-        const res = await customFetch('/series/' + seriesId, {
-            method: 'DELETE',
-            queryKey: ['series', 'delete', seriesId],
-        });
-
-        if (res.isError) {
-            setPopupTitle('시리즈를 삭제하는 중 오류가<br> 발생했습니다.');
-            setPopupText('잠시 후 다시 시도해 주세요.');
-            setShowPopup(true);
-            return;
-        }
-
-        setPopupTitle('시리즈가 삭제되었습니다.');
-        setPopupText('');
-        setShowPopup(true);
-        router.refresh();
+        setPopupTitle('시리즈를 삭제하시겠습니까?');
+        setPopupText('삭제 후 복구할 수 없습니다.');
+        setShowConfirmPopup(true);
     };
 
     return (
@@ -179,6 +173,13 @@ export default function SeriesList({
                 onConfirm={() => setShowPopup(false)}
                 title={popupTitle}
                 text={popupText}
+            />
+            <ConfirmPopup
+                show={showConfirmPopup}
+                onConfirm={handleDeleteConfirm}
+                title={popupTitle}
+                text={popupText}
+                onCancel={() => setShowConfirmPopup(false)}
             />
         </>
     );
