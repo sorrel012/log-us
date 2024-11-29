@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function MemberWithdrawalForm() {
     const router = useRouter();
-    const { blogAddress } = useParams();
+    //TODO zustand에서 받아오는 것으로 수정
+    const loginUser = 4;
 
     const [wantWithdrawal, setWantWithdrawal] = useState(false);
 
@@ -18,12 +19,12 @@ export default function MemberWithdrawalForm() {
         if (popupId === 'CLOSE') {
             setShowPopup(false);
         } else {
-            router.push(`/${blogAddress}/main`);
+            router.push('/main');
         }
     };
 
     const handleWithdrawal = async () => {
-        const res = await customFetch('/user', {
+        const res = await customFetch(`/user/${loginUser}`, {
             queryKey: ['withdrawal'],
             method: 'DELETE',
         });
@@ -36,7 +37,7 @@ export default function MemberWithdrawalForm() {
             return;
         }
 
-        setPopupTitle('탈퇴했습니다');
+        setPopupTitle('탈퇴되었습니다.');
         setPopupText('그동안 이용해 주셔서 감사합니다.');
         setPopupId('MOVE');
         setShowPopup(true);
@@ -63,7 +64,7 @@ export default function MemberWithdrawalForm() {
                     id="withdrawal"
                 />
                 <label htmlFor="withdrawal" className="ml-1 cursor-pointer">
-                    유의사항을 모두 확인하였으며, 탈퇴 희망합니다.
+                    유의사항을 모두 확인하였으며, 탈퇴를 희망합니다.
                 </label>
             </div>
             <div className="-mt-2 text-right">
