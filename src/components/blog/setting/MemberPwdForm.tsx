@@ -152,7 +152,7 @@ export default function MemberPwdForm() {
     };
 
     return (
-        <section className="mt-10">
+        <section className="mb-12">
             <div className="mb-8 flex gap-5">
                 <label htmlFor="currPwd" className="mt-1.5 w-24 font-semibold">
                     현재 비밀번호
@@ -236,7 +236,7 @@ export default function MemberPwdForm() {
             </div>
             <div className="mt-4 text-right">
                 <button
-                    className="rounded bg-customBeige-100 px-4 py-2 text-md text-customBrown-100"
+                    className="rounded border border-solid border-customBeige-100 bg-customBeige-100 px-4 py-2 text-md text-customBrown-100"
                     onClick={handleChangePwd}
                 >
                     저장
