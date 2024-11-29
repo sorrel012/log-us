@@ -13,7 +13,7 @@ export default function FollowingPage() {
     const [totalPages, setTotalPages] = useState(1);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [followings, setFollowings] = useState<FollowingsType[]>();
+    const [followings, setFollowings] = useState<FollowingsType[] | null>(null);
 
     const [showPopup, setShowPopup] = useState(false);
 
@@ -29,7 +29,7 @@ export default function FollowingPage() {
                 setShowPopup(true);
             }
 
-            setFollowings(res?.data.content);
+            setFollowings(res?.data.content || []);
             setTotalPages(Math.ceil(res?.data.totalElements / size));
             setIsLoading(false);
         })();
