@@ -54,9 +54,7 @@ export default function TagList() {
                 .catch((error) => {
                     setIsError(true);
                     setShowPopup(true);
-                    setPopupMessage(
-                        error.message || '게시글을 불러올 수 없습니다.',
-                    );
+                    setPopupMessage('게시글을 불러올 수 없습니다.');
                     setIsLoading(false);
                 });
         }
@@ -113,14 +111,16 @@ export default function TagList() {
             ) : posts?.length === 0 ? (
                 <div className="mt-4">게시글이 존재하지 않습니다.</div>
             ) : (
-                <PostList posts={posts} />
+                <>
+                    <PostList posts={posts} />
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </>
             )}
 
-            <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-            />
             <AlertPopup
                 show={showPopup}
                 title={popupMessage}

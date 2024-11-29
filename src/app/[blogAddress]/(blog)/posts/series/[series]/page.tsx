@@ -143,17 +143,19 @@ export default function PostListPage() {
                     <div>잠시 후 다시 시도해주세요.</div>
                 </div>
             )}
-            {!isLoading && posts ? (
-                <PostList posts={posts} />
+            {!isLoading && posts && posts.length > 0 ? (
+                <>
+                    <PostList posts={posts} />
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </>
             ) : (
                 <div className="mt-4">게시글이 존재하지 않습니다.</div>
             )}
 
-            <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-            />
             <AlertPopup
                 show={showPopup}
                 title={popupMessage}

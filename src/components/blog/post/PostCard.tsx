@@ -77,7 +77,7 @@ export default function PostCard({
     return (
         <article className="rounded-xl border border-solid border-customLightBlue-100 p-5">
             <header
-                className="hover-area flex cursor-pointer flex-col gap-3 lg:flex-row"
+                className="hover-area flex cursor-pointer flex-col gap-5 lg:flex-row"
                 onClick={handlePostClick}
             >
                 <div className="size-[150px]">
@@ -96,8 +96,9 @@ export default function PostCard({
                 </div>
                 <div className="flex w-full flex-col justify-between">
                     <div>
-                        <div className="mb-1 flex flex-col items-center justify-between sm:flex-row">
-                            <h3 className="hover-text-color text-lg font-bold">
+                        {/*<div className="mb-1 flex flex-col items-center justify-between sm:flex-row">*/}
+                        <div className="mb-1 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <h3 className="hover-text-color w-[40vw] truncate text-lg font-bold">
                                 {unescapeSpecialChars(title)}
                             </h3>
                             <time className="text-customLightBlue-200">
