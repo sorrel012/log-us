@@ -6,7 +6,7 @@ import AlertPopup from '@/components/AlertPopup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoClose } from 'react-icons/io5';
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -32,7 +32,7 @@ const sidebarVariants = {
 };
 
 export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
-    const blogAddress = usePathname().split('/')[1];
+    const { blogAddress } = useParams();
     const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
         useSeries();
     const series = data

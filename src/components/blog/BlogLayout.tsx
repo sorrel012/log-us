@@ -3,7 +3,7 @@
 import BlogHeader from '@/components/header/blogHeader';
 import React, { useEffect, useState } from 'react';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { customFetch } from '@/utils/customFetch';
 
@@ -14,9 +14,8 @@ export default function BlogLayout({
 }>) {
     const { blogId, setBlogId, setBlogInfo } = useBlogStore();
     const pathname = usePathname();
-    const blogAddress = pathname.split('/')[1];
-
     const isShow = !pathname.includes('newpost');
+    const { blogAddress } = useParams();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {

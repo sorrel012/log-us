@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
 import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
@@ -9,8 +9,7 @@ import { Post } from '@/components/blog/post/PostCard';
 import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailPage() {
-    const pathname = usePathname();
-    const postId = pathname?.split('/')[3];
+    const { postId } = useParams();
 
     const [post, setPost] = useState<Post>();
 

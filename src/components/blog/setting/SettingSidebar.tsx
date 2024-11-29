@@ -1,7 +1,7 @@
 'use client';
 
 import PanelModule from '@/components/sidebar/PanelModule';
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
@@ -11,8 +11,8 @@ export default function SettingSidebar() {
     const router = useRouter();
     const pathName = usePathname();
     const isOurLogPath = pathName.includes('/our-log');
-    const blogAddress = pathName.split('/')[1];
-    const { blogId, setBlogId, setBlogInfo } = useBlogStore();
+    const { blogAddress } = useParams();
+    const { setBlogId, setBlogInfo } = useBlogStore();
     //TODO zustand에서 받아오는 걸로 수정
     const loginUser = 1;
 

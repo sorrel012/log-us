@@ -4,7 +4,7 @@ import { dateFormatter, unescapeSpecialChars } from '@/utils/commonUtil';
 import ViewIcon from '@/components/icons/ViewIcon';
 import { GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Viewer } from '@toast-ui/react-editor';
 import { customFetch } from '@/utils/customFetch';
@@ -35,8 +35,7 @@ export default function PostDetail({
     commentCount,
 }: Post) {
     const router = useRouter();
-    const pathname = usePathname();
-    const blogAddress = pathname.split('/')[1];
+    const { blogAddress } = useParams();
 
     //TODO zustand에서 받아오기
     const isWriter = memberId === 1;

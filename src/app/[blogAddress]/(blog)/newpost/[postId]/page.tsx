@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 import SelectBox from '@/components/SelectBox';
@@ -42,9 +42,7 @@ type popupIdType =
 
 export default function NewPostEditPage() {
     const router = useRouter();
-    const pathname = usePathname();
-    const blogAddress = pathname.split('/')[1];
-    const editPostId = pathname.split('/')[3];
+    const { blogAddress, postId: editPostId } = useParams();
     const { blogId } = useBlogStore();
     const { data } = useSeries();
     const series = data
