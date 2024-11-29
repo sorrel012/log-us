@@ -59,20 +59,28 @@ export default function SavePostPopup({
     };
 
     useEffect(() => {
-        customFetch('/category', {
-            queryKey: ['parent', 'category'],
-        }).then((res) => {
-            const selectBoxCategory = res.data.map((parent) => ({
-                text: parent.categoryName,
-                value: parent.categoryId,
-            }));
-            if (selectBoxCategory?.length > 0) {
-                setParentCategory([
-                    { text: '1차 카테고리', value: 0 },
-                    ...selectBoxCategory,
-                ]);
+        (async () => {
+            try {
+                const res = await customFetch('/category', {
+                    queryKey: ['parent', 'category'],
+                });
+
+                const selectBoxCategory = res.data.map((parent) => ({
+                    text: parent.categoryName,
+                    value: parent.categoryId,
+                }));
+
+                if (selectBoxCategory?.length > 0) {
+                    setParentCategory([
+                        { text: '1차 카테고리', value: 0 },
+                        ...selectBoxCategory,
+                    ]);
+                }
+            } catch (e) {
+                setShowPopup(true);
+                setPopupMessage('카테고리를 불러오는 중 오류가 발생했습니다.');
             }
-        });
+        })();
     }, []);
 
     useEffect(() => {

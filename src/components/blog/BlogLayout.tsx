@@ -26,23 +26,22 @@ export default function BlogLayout({
                     queryKey: ['blogId', blogAddress],
                 });
 
-                if (response && response.data && response.data.blogId) {
+                if (response.data.blogId) {
                     setBlogId(response.data.blogId);
+
+                    const blogInfoRes = await customFetch<BlogInfo>(
+                        '/blog-info',
+                        {
+                            queryKey: ['memberInfo'],
+                            params: { blogId: response.data.blogId },
+                        },
+                    );
+
+                    setBlogInfo(blogInfoRes.data!);
                 }
             } catch (error) {}
         })();
-    }, [blogAddress, setBlogId]);
-
-    useEffect(() => {
-        if (blogId) {
-            customFetch<BlogInfo>('/blog-info', {
-                queryKey: ['memberInfo'],
-                params: { blogId },
-            }).then((response) => {
-                setBlogInfo(response.data!);
-            });
-        }
-    }, [blogId, setBlogInfo]);
+    }, [blogAddress, setBlogId, setBlogInfo]);
 
     const handleSidebarClick = () => {
         setIsSidebarOpen((prev) => !prev);

@@ -75,24 +75,26 @@ export default function PostListPage() {
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        if (blogId) {
-            customFetch<any>('/posts', {
-                queryKey: ['posts', blogId, seriesId, page, size],
-                params,
-            })
-                .then((response) => {
+        (async () => {
+            if (blogId) {
+                try {
+                    const response = await customFetch<any>('/posts', {
+                        queryKey: ['posts', blogId, seriesId, page, size],
+                        params,
+                    });
+
                     setPosts(response.data.content);
                     setTotalPages(response.data.totalPages || 1);
                     setTotalPosts(response.data.totalElements || 0);
                     setIsLoading(false);
-                })
-                .catch((error) => {
+                } catch (error) {
                     setIsError(true);
                     setShowPopup(true);
                     setPopupMessage(error || '게시글을 불러올 수 없습니다.');
                     setIsLoading(false);
-                });
-        }
+                }
+            }
+        })();
     }, [blogId, page, seriesId, size, params]);
 
     const handleItemsPerValueChange = (value: number) => {

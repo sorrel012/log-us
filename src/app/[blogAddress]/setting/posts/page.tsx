@@ -40,30 +40,32 @@ export default function PostsManagePage() {
     );
 
     useEffect(() => {
-        if (blogId) {
-            setIsLoading(true);
-            customFetch<any>('/posts', {
-                queryKey: ['posts', 'setting', blogId, page, size],
-                params,
-                invalidateCache: true,
-            })
-                .then((response) => {
+        (async () => {
+            if (blogId) {
+                setIsLoading(true);
+
+                try {
+                    const response = await customFetch<any>('/posts', {
+                        queryKey: ['posts', 'setting', blogId, page, size],
+                        params,
+                        invalidateCache: true,
+                    });
+
                     setPosts(response.data.content);
                     setTotalPages(response.data.totalPages || 1);
                     setTotalPosts(response.data.totalElements || 0);
-                })
-                .catch(() => {
+                } catch (error) {
                     setPopupTitle('게시글을 불러올 수 없습니다.');
                     setPopupText('잠시 후 다시 시도해 주세요.');
                     setPopupId('CLOSE');
                     setShowPopup(true);
-                })
-                .finally(() => {
+                } finally {
                     setTimeout(() => {
                         setIsLoading(false);
                     }, 500);
-                });
-        }
+                }
+            }
+        })();
     }, [blogId, page, size, params]);
 
     const handleItemsPerValueChange = (value: number) => {

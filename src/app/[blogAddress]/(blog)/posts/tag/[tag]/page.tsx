@@ -40,25 +40,30 @@ export default function TagList() {
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        if (blogId) {
-            customFetch<any>('/posts/tag-search', {
-                queryKey: ['posts', blogId, tagName, page, size],
-                params,
-            })
-                .then((response) => {
+        (async () => {
+            if (blogId) {
+                try {
+                    const response = await customFetch<any>(
+                        '/posts/tag-search',
+                        {
+                            queryKey: ['posts', blogId, tagName, page, size],
+                            params,
+                        },
+                    );
+
                     setPosts(response.data.content);
                     setTotalPages(response.data.totalPages || 1);
                     setTotalPosts(response.data.totalElements || 0);
                     setIsLoading(false);
-                })
-                .catch((error) => {
+                } catch (error) {
                     setIsError(true);
                     setShowPopup(true);
-                    setPopupMessage('게시글을 불러올 수 없습니다.');
+                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
                     setIsLoading(false);
-                });
-        }
-    }, [blogId, page, size, tagName, params]);
+                }
+            }
+        })();
+    }, [blogId, page, tagName, size, params]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
