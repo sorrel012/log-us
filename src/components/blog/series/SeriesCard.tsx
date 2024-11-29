@@ -30,14 +30,16 @@ export default function SeriesCard({
             onClick={handleClick}
         >
             {imgUrl ? (
-                <Image
-                    src={imgUrl}
-                    alt={seriesName}
-                    className="aspect-square rounded-md object-cover"
-                    priority
-                    width={150}
-                    height={150}
-                />
+                <div className="flex h-[150px] w-[150px] justify-center">
+                    <Image
+                        src={imgUrl}
+                        alt={seriesName}
+                        className="aspect-square rounded-md object-cover"
+                        priority
+                        width={150}
+                        height={150}
+                    />
+                </div>
             ) : (
                 <div className="flex h-[150px] w-[150px] justify-center">
                     <HiPhoto className="aspect-square size-full text-customLightBlue-100" />

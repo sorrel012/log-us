@@ -30,7 +30,7 @@ export default function SeriesGrid() {
             ) : series?.length === 0 ? (
                 <div>시리즈가 존재하지 않습니다.</div>
             ) : (
-                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-8 4xl:grid-cols-10">
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8">
                     {series.map((item) => (
                         <SeriesCard
                             key={item.seriesId}
