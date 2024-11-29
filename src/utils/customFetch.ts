@@ -101,7 +101,8 @@ export async function customFetch<T>(
             method === 'GET' &&
             state.data &&
             !state.isError &&
-            config.queryKey[0] !== 'post'
+            config.queryKey[0] !== 'post' &&
+            !config.invalidateCache
         ) {
             document.cookie = `${cacheKey}=${encodeURIComponent(
                 JSON.stringify(state.data),

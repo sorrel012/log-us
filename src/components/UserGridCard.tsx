@@ -1,44 +1,63 @@
-import Image from 'next/image';
-import PersonIcon from '@/components/icons/PersonIcon';
-import Link from 'next/link';
 import { GridType, UserGridProps } from '@/components/UserGrid';
+import Link from 'next/link';
+import PersonIcon from '@/components/icons/PersonIcon';
+import Image from 'next/image';
 
 export default function UserGridCard({
-    image,
-    nickName,
-    blogs,
+    followId,
+    imgUrl,
+    nickname,
+    blogList,
     type,
-}: UserGridProps) {
+    onButtonClick,
+}: UserGridProps & {
+    onButtonClick: (followId: number) => void;
+}) {
     return (
-        <article className={`${getCardStyle(type)} `}>
-            <div className="mb-3 flex items-center justify-between border-b border-solid border-customLightBlue-100 pb-2 pt-3">
+        <article className={`${getCardStyle(type)} h-[150px] w-[320px]`}>
+            <div
+                className={
+                    'mb-3 flex items-center justify-between border-b border-solid border-customLightBlue-100 pb-2 pt-3'
+                }
+            >
                 <div className="flex items-center">
                     <>
-                        {image && (
-                            <Image src={image} alt={`${nickName}'s photo`} />
+                        {imgUrl && (
+                            <div className="relative h-10 w-10">
+                                <Image
+                                    src={imgUrl}
+                                    alt={`${nickname}'s photo`}
+                                    fill
+                                />
+                            </div>
                         )}
-                        {!image && <PersonIcon size="size-10" />}
+                        {!imgUrl && <PersonIcon size="size-10" />}
                     </>
                     <p className="ml-2 max-w-[220px] truncate text-xl font-bold">
-                        {nickName}
+                        {nickname}
                     </p>
                 </div>
-                <button className={`${getButtonStyle(type)} `}>
+                <button
+                    className={`${getButtonStyle(type)} `}
+                    onClick={() => onButtonClick(followId!)}
+                >
                     {type === 'BLOG' ? '취소' : '구독'}
                 </button>
             </div>
             <div>
-                {blogs.map((blog, index) => (
-                    <p key={index} className="ml-0.5 leading-8">
-                        <div
+                {blogList.map((blog, index) => (
+                    <div key={index} className="ml-0.5 leading-8">
+                        <p
                             className={`${blog.shareYn === 'N' ? 'font-bold' : ''}`}
                         >
                             <span className="mr-1">
                                 {blog.shareYn === 'N' ? '[기본]' : '[참여]'}
                             </span>
-                            <Link href={blog.blogAddress}>{blog.blogName}</Link>
-                        </div>
-                    </p>
+                            <Link href={`/${blog.blogAddress}`}>
+                                {blog.blogName}
+                            </Link>
+                        </p>
+                    </div>
                 ))}
             </div>
         </article>

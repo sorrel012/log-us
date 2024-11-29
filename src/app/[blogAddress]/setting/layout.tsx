@@ -8,7 +8,10 @@ export default async function SettingLayout({
     return (
         <div className="font-default flex">
             <SettingSidebar />
-            <div className="ml-[20%] h-screen w-[80%] overflow-y-auto p-10 lg:ml-[16.6667%] lg:w-[83.3333%]">
+            <div
+                className="ml-[20%] h-screen w-[80%] overflow-y-auto p-10 lg:ml-[16.6667%] lg:w-[83.3333%]"
+                id="scroll-container"
+            >
                 <div className="mx-auto max-w-screen-3xl">{children}</div>
             </div>
         </div>
