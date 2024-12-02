@@ -50,7 +50,7 @@ export default function FollowingCard({
                         {blogName}
                     </Link>
                     <button
-                        className="shrink-0 rounded-md bg-customBeige-100 px-3 py-0.5 text-sm text-customBrown-100"
+                        className="ml-1 shrink-0 rounded-md bg-customBeige-100 px-3 py-0.5 text-sm text-customBrown-100"
                         onClick={handleCancel}
                     >
                         {isCancel ? '취소' : '구독'}
