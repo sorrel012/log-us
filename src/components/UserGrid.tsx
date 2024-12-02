@@ -12,6 +12,7 @@ export interface Blog {
     blogId: number;
     blogName: string;
     blogAddress: string;
+    introduce?: string;
     shareYn: 'Y' | 'N';
 }
 

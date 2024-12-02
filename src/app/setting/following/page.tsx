@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { FollowingsType } from '@/components/blog/setting/FollowingCard';
-import FollowingList from '@/components/blog/setting/FollowingList';
+import FollowingGrid from '@/components/blog/setting/FollowingGrid';
 import Pagination from '@/components/Pagination';
 
 export default function FollowingPage() {
@@ -46,7 +46,7 @@ export default function FollowingPage() {
                 (followings && followings.length >= 1 ? (
                     <>
                         <div className="min-h-[40vh]">
-                            <FollowingList followings={followings} />
+                            <FollowingGrid followings={followings} />
                         </div>
                         <Pagination
                             currentPage={page}

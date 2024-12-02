@@ -14,7 +14,7 @@ export default function SettingSidebar() {
         { value: '구독 블로그 관리', link: `${basePath}/following` },
     ];
     const OUR_LOG = [
-        { value: '블로그 목록', link: `${basePath}/lists` },
+        { value: '블로그 목록', link: `${basePath}/blogs` },
         { value: '블로그 개설', link: `${basePath}/new-blog` },
     ];
 
