@@ -40,7 +40,7 @@ export default function FollowingCard({
     };
 
     return (
-        <article className="rounded-md border border-solid border-customGray-100 px-5 py-4">
+        <article className="h-[100px] w-[320px] rounded-md border border-solid border-customGray-100 px-5 py-4">
             <div>
                 <div className="mb-2 flex items-center justify-between">
                     <Link
@@ -56,7 +56,7 @@ export default function FollowingCard({
                         {isCancel ? '취소' : '구독'}
                     </button>
                 </div>
-                <p className="text-sm leading-5">{introduce}</p>
+                <p className="truncate text-sm leading-5">{introduce}</p>
             </div>
         </article>
     );
