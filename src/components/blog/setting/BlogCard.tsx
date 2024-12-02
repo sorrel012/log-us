@@ -26,7 +26,7 @@ export default function BlogCard({
                     관리
                 </Link>
             </div>
-            <p>{introduce}</p>
+            <p className="leading-5">{introduce}</p>
         </article>
     );
 }
