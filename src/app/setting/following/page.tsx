@@ -45,7 +45,9 @@ export default function FollowingPage() {
             {!isLoading &&
                 (followings && followings.length >= 1 ? (
                     <>
-                        <FollowingList followings={followings} />
+                        <div className="min-h-[40vh]">
+                            <FollowingList followings={followings} />
+                        </div>
                         <Pagination
                             currentPage={page}
                             totalPages={totalPages}

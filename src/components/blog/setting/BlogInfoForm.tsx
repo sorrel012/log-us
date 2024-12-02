@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
+import { useParams } from 'next/navigation';
 
 export default function BlogInfoForm({
     blogInfo,
@@ -13,6 +14,8 @@ export default function BlogInfoForm({
     onSave: (data: any) => void;
     isLoading: boolean;
 }) {
+    const { blogAddress: orgBlogAddress } = useParams();
+
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
     const [introduce, setIntroduce] = useState('');
@@ -141,8 +144,16 @@ export default function BlogInfoForm({
                 </div>
                 <div className="-mt-2 text-right">
                     <button
-                        className={`rounded px-4 py-2 text-md ${isDuplicateChecked ? 'bg-customBeige-100 text-customBrown-100' : 'bg-neutral-300 text-neutral-700'}`}
-                        disabled={!isDuplicateChecked}
+                        className={`rounded px-4 py-2 text-md ${
+                            orgBlogAddress !== blogAddress &&
+                            !isDuplicateChecked
+                                ? 'bg-neutral-300 text-neutral-700'
+                                : 'bg-customBeige-100 text-customBrown-100'
+                        }`}
+                        disabled={
+                            orgBlogAddress !== blogAddress &&
+                            !isDuplicateChecked
+                        }
                         onClick={() =>
                             onSave({
                                 blogName,

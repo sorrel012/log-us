@@ -1,7 +1,7 @@
 'use client';
 
 import UserGrid from '@/components/UserGrid';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBlogStore } from '@/store/useBlogStore';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
@@ -9,8 +9,6 @@ import { IoIosArrowDown } from 'react-icons/io';
 
 export default function FollowerPage() {
     const { blogId } = useBlogStore();
-
-    const userGridRef = useRef<HTMLDivElement | null>(null);
 
     const [size, setSize] = useState(30);
     const [page, setPage] = useState(1);
@@ -85,7 +83,7 @@ export default function FollowerPage() {
     return (
         <fieldset>
             <legend className="mb-8 text-lg font-bold">구독자 관리</legend>
-            <div className="min-h-[40vh]" ref={userGridRef}>
+            <div className="min-h-[40vh]">
                 <UserGrid
                     users={users}
                     type="BLOG"
