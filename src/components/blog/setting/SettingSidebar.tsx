@@ -13,17 +13,19 @@ export default function SettingSidebar() {
         { value: '회원정보 변경', link: `${basePath}` },
         { value: '구독 블로그 관리', link: `${basePath}/following` },
     ];
-    const MY_LOG = [
-        { value: '블로그 정보 변경', link: `${basePath}/info` },
-        { value: '글 관리', link: `${basePath}/posts` },
-        { value: '댓글 관리', link: `${basePath}/comments` },
-        { value: '시리즈 관리', link: `${basePath}/series` },
-        { value: '구독자 관리', link: `${basePath}/follower` },
-        { value: '통계', link: `${basePath}/statistics` },
-    ];
     const OUR_LOG = [
         { value: '블로그 목록', link: `${basePath}/lists` },
         { value: '블로그 개설', link: `${basePath}/new-blog` },
+    ];
+
+    const myLogBasePath = '/setting/my-log';
+    const MY_LOG = [
+        { value: '블로그 정보 변경', link: `${myLogBasePath}` },
+        { value: '글 관리', link: `${myLogBasePath}/posts` },
+        { value: '댓글 관리', link: `${myLogBasePath}/comments` },
+        { value: '시리즈 관리', link: `${myLogBasePath}/series` },
+        { value: '구독자 관리', link: `${myLogBasePath}/follower` },
+        { value: '통계', link: `${myLogBasePath}/statistics` },
     ];
 
     const ourLogBasePath = '/setting/our-log';
