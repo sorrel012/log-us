@@ -72,7 +72,7 @@ export default function SeriesManagePage() {
                 {
                     seriesName: requestDto.seriesName,
                     seriesId: res.data.seriesId,
-                    img: res.data.img,
+                    imgUrl: res.data.imgUrl,
                 },
             ];
         }

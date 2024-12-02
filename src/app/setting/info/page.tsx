@@ -84,7 +84,10 @@ export default function BlogInfo() {
             return;
         }
 
-        if (!updatedInfo.isDuplicateChecked) {
+        if (
+            updatedInfo.blogAddress !== blogAddress &&
+            !updatedInfo.isDuplicateChecked
+        ) {
             setPopupTitle('블로그 주소 중복확인을 해주세요.');
             setPopupText('');
             setPopupId('CLOSE');
@@ -140,7 +143,7 @@ export default function BlogInfo() {
         });
 
         if (res.isError) {
-            setPopupTitle('블로그를 삭제하지 못했습니다');
+            setPopupTitle(res.error || '블로그를 삭제하지 못했습니다.');
             setPopupText('잠시 후 다시 시도해 주세요.');
             setPopupId('CLOSE');
             setShowPopup(true);
