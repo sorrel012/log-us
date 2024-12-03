@@ -12,7 +12,7 @@ export default function BlogLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { blogId, setBlogId, setBlogInfo } = useBlogStore();
+    const { setBlogId, setBlogInfo } = useBlogStore();
     const pathname = usePathname();
     const isShow = !pathname.includes('newpost');
     const { blogAddress } = useParams();
