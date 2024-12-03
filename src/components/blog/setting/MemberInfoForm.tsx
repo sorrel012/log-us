@@ -1,12 +1,19 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import emailjs from 'emailjs-com';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import { FcCancel, FcOk } from 'react-icons/fc';
+import Image from 'next/image';
+import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
+import imageCompression from 'browser-image-compression';
 
 export default function MemberInfoForm() {
     // TODO zustand로 변경
-    const [orgData, setOrgData] = useState({ email: '', nickname: '' });
+    const [orgData, setOrgData] = useState({
+        email: '',
+        nickname: '',
+        imgUrl: '',
+    });
     const [loginId, setLoginId] = useState('');
 
     const [newNickname, setNewNickname] = useState('');
@@ -17,6 +24,10 @@ export default function MemberInfoForm() {
     const [userCode, setUserCode] = useState('');
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [emailMessage, setEmailMessage] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
+    const [memberImg, setMemberImg] = useState<File>();
+    const [imagePreview, setImagePreview] = useState<string>('');
+    const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
@@ -34,9 +45,14 @@ export default function MemberInfoForm() {
             }
 
             setLoginId(res.data.loginId);
-            setOrgData({ email: res.data.email, nickname: res.data.nickname });
+            setOrgData({
+                email: res.data.email,
+                nickname: res.data.nickname,
+                imgUrl: res.data.imgUrl,
+            });
             setNewNickname(res.data.nickname);
             setNewEmail(res.data.email);
+            setImagePreview(res.data.imgUrl);
         })();
     }, []);
 
@@ -112,8 +128,44 @@ export default function MemberInfoForm() {
         }
     };
 
+    const handleImageChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        setIsUploading(true);
+        const file = e.target.files?.[0];
+        if (file) {
+            const options = {
+                maxSizeMB: 1,
+                useWebWorker: true,
+            };
+
+            try {
+                const compressedFile = await imageCompression(file, options);
+                setMemberImg(compressedFile);
+                setImagePreview(URL.createObjectURL(compressedFile));
+            } catch (e) {
+                setMemberImg(file);
+                setImagePreview(URL.createObjectURL(file));
+            }
+        }
+        setIsUploading(false);
+    };
+
+    const handleImageClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleImageDelete = () => {
+        setMemberImg(null);
+        setImagePreview(null);
+    };
+
     const handleSaveInfo = async () => {
-        if (orgData.email === newEmail && orgData.nickname === newNickname) {
+        if (
+            orgData.email === newEmail &&
+            orgData.nickname === newNickname &&
+            orgData.imgUrl === imagePreview
+        ) {
             setPopupTitle('변경사항이 없습니다.');
             setPopupText('');
             setShowPopup(true);
@@ -127,10 +179,29 @@ export default function MemberInfoForm() {
             return;
         }
 
+        const formData = new FormData();
+        if (memberImg) {
+            formData.append('memberImg', memberImg);
+        }
+        if (
+            (memberImg && orgData.imgUrl) ||
+            (!memberImg && orgData.imgUrl && true + '')
+        ) {
+            formData.append('deleteImg', 'true');
+        }
+
+        const requestDto = { nickname: newNickname, email: newEmail };
+        formData.append(
+            'requestDto',
+            new Blob([JSON.stringify(requestDto)], {
+                type: 'application/json',
+            }),
+        );
+
         const res = await customFetch('/user', {
             queryKey: ['edit-user-info', newEmail, newNickname, loginId],
             method: 'PUT',
-            body: { nickname: newNickname, email: newEmail },
+            body: formData,
         });
 
         if (res.isError) {
@@ -146,7 +217,7 @@ export default function MemberInfoForm() {
     };
 
     return (
-        <section className="border-b border-solid border-customBrown-100 pb-10">
+        <section className="mb-12">
             <div className="mb-10 flex gap-5">
                 <label htmlFor="id" className="mt-1.5 w-24 font-semibold">
                     아이디
@@ -226,9 +297,53 @@ export default function MemberInfoForm() {
                     </div>
                 </div>
             </div>
+            <div className="mt-10 flex gap-5">
+                <div className={`flex gap-1 ${imagePreview ? 'w-24' : 'w-20'}`}>
+                    <div className="flex">
+                        <label htmlFor="profileImg" className="font-semibold">
+                            프로필 사진
+                        </label>
+                        {imagePreview && (
+                            <MdDelete
+                                className="popup-bounce cursor-pointer text-customBrown-100"
+                                onClick={handleImageDelete}
+                            />
+                        )}
+                    </div>
+                </div>
+                {isUploading ? (
+                    <div className="ml-5 flex">
+                        <div className="spinner-brown" />
+                    </div>
+                ) : imagePreview ? (
+                    <div className="relative flex size-[12.4rem]">
+                        <Image
+                            src={imagePreview}
+                            alt="미리보기"
+                            className="rounded border object-cover"
+                            fill
+                            priority={true}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            style={{ display: 'none' }}
+                            accept="image/*"
+                        />
+                        <MdOutlineAddPhotoAlternate
+                            className="size-[12.4rem] cursor-pointer text-customGray-100"
+                            onClick={handleImageClick}
+                        />
+                    </>
+                )}
+            </div>
             <div className="mt-4 text-right">
                 <button
-                    className="rounded bg-customBeige-100 px-4 py-2 text-md text-customBrown-100"
+                    className="rounded border border-solid border-customBeige-100 bg-customBeige-100 px-4 py-2 text-md text-customBrown-100"
                     onClick={handleSaveInfo}
                 >
                     저장
