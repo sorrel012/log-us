@@ -10,24 +10,31 @@ export const useSeries = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
         (async () => {
             if (blogId) {
-                try {
-                    const response = await customFetch<any>('/series', {
-                        queryKey: ['series', blogId],
-                        params: { blogId },
-                        invalidateCache: true,
-                    });
+                const response = await customFetch<any>('/series', {
+                    queryKey: ['series', blogId],
+                    params: { blogId },
+                    invalidateCache: true,
+                });
 
-                    setData(response.data);
-                    setIsLoading(false);
-                } catch (error) {
+                if (!isMounted) return;
+
+                if (response.isError) {
                     setIsError(true);
                     setError(error || '시리즈를 불러올 수 없습니다.');
                     setIsLoading(false);
                 }
+
+                setData(response.data);
+                setIsLoading(false);
             }
         })();
+
+        return () => {
+            isMounted = false;
+        };
     }, [blogId]);
 
     return {
