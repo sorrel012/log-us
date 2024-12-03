@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { FollowingsType } from '@/components/blog/setting/FollowingCard';
@@ -42,21 +42,24 @@ export default function FollowingPage() {
     return (
         <fieldset>
             <legend className="mb-8 text-lg font-bold">구독 블로그 목록</legend>
-            {!isLoading &&
-                (followings && followings.length >= 1 ? (
-                    <>
-                        <div className="min-h-[40vh]">
-                            <FollowingGrid followings={followings} />
-                        </div>
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                        />
-                    </>
-                ) : (
-                    <div>구독 블로그가 존재하지 않습니다.</div>
-                ))}
+            {isLoading ? (
+                <div className="flex h-24 items-center justify-center">
+                    <div className="spinner-brown" />
+                </div>
+            ) : followings && followings.length >= 1 ? (
+                <>
+                    <div className="min-h-[40vh]">
+                        <FollowingGrid followings={followings} />
+                    </div>
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            ) : (
+                <div>구독 블로그가 존재하지 않습니다.</div>
+            )}
             <AlertPopup
                 show={showPopup}
                 onConfirm={() => setShowPopup(false)}

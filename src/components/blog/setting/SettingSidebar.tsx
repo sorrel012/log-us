@@ -18,7 +18,7 @@ export default function SettingSidebar() {
         { value: '블로그 개설', link: `${basePath}/new-blog` },
     ];
 
-    const myLogBasePath = '/setting/my-log';
+    const myLogBasePath = `/setting/my-log/${blogInfo?.blogAddress}`;
     const MY_LOG = [
         { value: '블로그 정보 변경', link: `${myLogBasePath}` },
         { value: '글 관리', link: `${myLogBasePath}/posts` },
@@ -37,6 +37,25 @@ export default function SettingSidebar() {
         { value: '통계', link: `${ourLogBasePath}/statistics` },
         { value: '블로그 탈퇴', link: `${ourLogBasePath}/delete-blog` },
     ];
+
+    useEffect(() => {
+        (async () => {
+            const res = await customFetch('/blog/my-log', {
+                queryKey: ['my-log'],
+            });
+
+            if (res.data.blogId) {
+                setBlogId(res.data.blogId);
+
+                const blogInfoRes = await customFetch<BlogInfo>('/blog-info', {
+                    queryKey: ['memberInfo'],
+                    params: { blogId: res.data.blogId },
+                });
+
+                setBlogInfo(blogInfoRes.data!);
+            }
+        })();
+    }, [setBlogId, setBlogInfo]);
 
     return (
         <aside className="fixed flex h-[100vh] w-1/5 flex-col gap-12 overflow-y-auto border-r border-solid border-customLightBlue-100 p-5 pt-14 lg:w-1/6">

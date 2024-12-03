@@ -1,7 +1,7 @@
 'use client';
 
 import UserGrid from '@/components/UserGrid';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useBlogStore } from '@/store/useBlogStore';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
@@ -14,12 +14,21 @@ export default function FollowerPage() {
     const [page, setPage] = useState(1);
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
 
     useEffect(() => {
+        setUsers([]);
+        setPage(1);
+    }, [blogId]);
+
+    useEffect(() => {
+        let isMounted = true;
+        setIsLoading(true);
+
         if (blogId) {
             (async () => {
                 const params = {
@@ -31,8 +40,9 @@ export default function FollowerPage() {
                 const res = await customFetch('/follower', {
                     queryKey: ['follower', blogId, size, page],
                     params: params,
-                    invalidateCache: true,
                 });
+
+                if (!isMounted) return;
 
                 if (res.isError) {
                     setPopupTitle('구독자 목록을 불러오지 못했습니다.');
@@ -42,11 +52,19 @@ export default function FollowerPage() {
                 }
 
                 const userData = res.data.content;
-
-                setUsers((prevState) => [...prevState, ...userData]);
+                if (page === 1) {
+                    setUsers(userData);
+                } else {
+                    setUsers((prevState) => [...prevState, ...userData]);
+                }
                 setTotalPages(res.data.totalPages);
+                setIsLoading(false);
             })();
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [blogId, page, size]);
 
     const handleScroll = () => {
@@ -83,23 +101,34 @@ export default function FollowerPage() {
     return (
         <fieldset>
             <legend className="mb-8 text-lg font-bold">구독자 관리</legend>
-            <div className="min-h-[40vh]">
-                <UserGrid
-                    users={users}
-                    type="BLOG"
-                    onButtonClick={handleFollowCancel}
-                />
-            </div>
-            {page !== totalPages && (
-                <div className="mt-10 w-full text-center">
-                    <button
-                        className="text-customGray-100"
-                        onClick={handleScroll}
-                    >
-                        <IoIosArrowDown className="size-10" />
-                    </button>
+            {isLoading ? (
+                <div className="flex h-24 items-center justify-center">
+                    <div className="spinner-brown" />
                 </div>
+            ) : users && users.length > 0 ? (
+                <>
+                    <div className="min-h-[40vh]">
+                        <UserGrid
+                            users={users}
+                            type="BLOG"
+                            onButtonClick={handleFollowCancel}
+                        />
+                    </div>
+                    {page !== totalPages && (
+                        <div className="mt-10 w-full text-center">
+                            <button
+                                className="text-customGray-100"
+                                onClick={handleScroll}
+                            >
+                                <IoIosArrowDown className="size-10" />
+                            </button>
+                        </div>
+                    )}
+                </>
+            ) : (
+                <div>구독자가 없습니다.</div>
             )}
+
             <AlertPopup
                 show={showPopup}
                 onConfirm={() => setShowPopup(false)}
