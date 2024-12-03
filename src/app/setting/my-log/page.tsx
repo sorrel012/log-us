@@ -150,7 +150,7 @@ export default function BlogInfo() {
             return;
         }
 
-        router.push(`/${blogAddress}/setting`);
+        router.push(`/${blogAddress}`);
     };
 
     return (
