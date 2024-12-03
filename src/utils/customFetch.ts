@@ -88,7 +88,6 @@ export async function customFetch<T>(
 
         const resultData = (await response.json()) as T;
 
-        console.log('resut', resultData);
         if (!response.ok) {
             state.isError = true;
             state.error = resultData.message || '서버 오류가 발생하였습니다';
