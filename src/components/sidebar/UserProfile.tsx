@@ -10,6 +10,7 @@ export interface Member {
     blogAuth: string;
     imgUrl?: string;
     myLogAddress: string;
+    email?: string;
 }
 
 export default function UserProfile() {

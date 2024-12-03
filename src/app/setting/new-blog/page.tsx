@@ -1,21 +1,26 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FcCancel, FcOk } from 'react-icons/fc';
-import { useParams } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
-import { useBlogStore } from '@/store/useBlogStore';
 import { Member } from '@/components/sidebar/UserProfile';
 import AddMemberPopup from '@/components/blog/setting/AddMemberPopup';
+import AlertPopup from '@/components/AlertPopup';
+import Image from 'next/image';
+import PersonIcon from '@/components/icons/PersonIcon';
+import { FaRegSquareMinus } from 'react-icons/fa6';
+import { useRouter } from 'next/navigation';
+import emailjs from 'emailjs-com';
 
 export default function NewBlogPage() {
-    const { blogInfo } = useBlogStore();
-    const { blogAddress: orgBlogAddress } = useParams();
+    const router = useRouter();
+    // TODO zustand로 수정
+    const loginUserNickname = 'hana';
 
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
     const [introduce, setIntroduce] = useState('');
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState<Member[]>([]);
     const [invitation, setInvitation] = useState('');
     const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
     const [isDuplicatedCheckedClicked, setIsDuplicatedCheckedClicked] =
@@ -26,13 +31,16 @@ export default function NewBlogPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (blogInfo) {
-            setBlogName(blogInfo.blogName);
-            setBlogAddress(blogInfo.blogAddress);
-            setIntroduce(blogInfo.introduce!);
-        }
-    }, [blogInfo]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupTitle, setPopupTitle] = useState('');
+    const [popupText, setPopupText] = useState('');
+
+    //TODO 블로그 도메인 수정
+    const defaultInvitation = `${loginUserNickname}님이 새로운 Our-log에 초대하였습니다.\r\n - 블로그명: ${blogName}\r\n - 블로그 주소: https://logus.com/${blogAddress}`;
+    const validateBlogName = (name: string) => {
+        const regex = /^[a-zA-Z가-힣0-9-_]+$/;
+        return name.length >= 2 && name.length <= 20 && regex.test(name);
+    };
 
     const handleBlogAddressChange = (e) => {
         setIsDuplicateChecked(false);
@@ -73,13 +81,123 @@ export default function NewBlogPage() {
         }
     };
 
-    const handleGetMember = () => {};
+    const handleAddMber = (newMember: Member) => {
+        const dupCnt = members.findIndex(
+            (member) => member.memberId === newMember.memberId,
+        );
 
-    const handleAddMber = () => {
-        console.log('하이룽~');
+        if (dupCnt < 0) {
+            setMembers((prevState) => [...prevState, newMember]);
+            setIsModalOpen(false);
+        } else {
+            setPopupTitle('이미 추가한 멤버입니다.');
+            setPopupText('');
+            setShowPopup(true);
+        }
     };
 
-    const handleSave = () => {};
+    const handleDeleteMber = (selectedMember: Member) => {
+        const newMembers = members.filter(
+            (member) => member.memberId !== selectedMember.memberId,
+        );
+        setMembers(newMembers);
+    };
+
+    const validate = () => {
+        if (!blogName) {
+            setPopupTitle('블로그명을 입력해 주세요.');
+            setPopupText('');
+            setShowPopup(true);
+            return;
+        }
+
+        if (!validateBlogName(blogName)) {
+            setPopupTitle('블로그명을 올바르게 입력해 주세요.');
+            setPopupText(
+                '한글, 영문, 숫자, 특수문자(-,_)를 사용하여<br> 2자 이상, 20자 이하로 입력해 주세요.',
+            );
+            setShowPopup(true);
+            return false;
+        }
+
+        if (!blogAddress) {
+            setPopupTitle('블로그 주소를 입력해 주세요.');
+            setPopupText('');
+            setShowPopup(true);
+            return;
+        }
+
+        if (!validateBlogAddress(blogAddress)) {
+            setPopupTitle('블로그 주소를 올바르게 입력해 주세요.');
+            setPopupText(
+                '영문, 숫자, 하이픈(-)을 사용하여 4자 이상, 32자 이하로 입력해 주세요. 하이픈은 처음과 끝에 사용할 수 없으며 연속된 하이픈도 사용할 수 없습니다.',
+            );
+            setShowPopup(true);
+            return false;
+        }
+
+        if (!isDuplicateChecked) {
+            setPopupTitle('블로그 중복 확인을 해주세요.');
+            setPopupText('');
+            setShowPopup(true);
+            return;
+        }
+
+        return true;
+    };
+
+    const handleSave = async () => {
+        if (!validate) {
+            return;
+        }
+
+        const body = {
+            blogName,
+            blogAddress,
+            introduce,
+            shareYn: 'Y',
+            blogMembers: members.map((member) => ({
+                memberId: member.memberId,
+            })),
+        };
+
+        const res = await customFetch('/blog/setting', {
+            queryKey: ['new-blog', blogAddress, blogName, introduce],
+            method: 'POST',
+            body,
+        });
+
+        if (res.isError) {
+            setPopupTitle('블로그를 개설하지 못했습니다.');
+            setPopupText('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+            return;
+        }
+
+        try {
+            for (const member of members) {
+                await emailjs.send(
+                    process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
+                    process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
+                    {
+                        to_email: member.email,
+                        to_name: member.nickname,
+                        from_name: loginUserNickname,
+                        blog_name: blogName,
+                        link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
+                    },
+                    process.env.NEXT_PUBLIC_EMAIL_USER_ID,
+                );
+            }
+
+            router.push(`/${blogAddress}`);
+        } catch (error) {
+            setPopupTitle('초대장 발송에 실패했습니다.');
+            setPopupText('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+            return;
+        }
+    };
 
     return (
         <fieldset>
@@ -162,9 +280,34 @@ export default function NewBlogPage() {
                             + 추가
                         </button>
                     </div>
-                    <ul className="min-h-[120px] rounded border border-solid border-customLightBlue-100">
+                    <ul className="flex min-h-[120px] flex-wrap rounded border border-solid border-customLightBlue-100 px-3 py-1">
                         {members.map((member: Member) => (
-                            <li key={member.memberId}>{member.nickname}</li>
+                            <li
+                                key={member.memberId}
+                                className="flex w-[280px] items-center gap-2 px-5"
+                            >
+                                <>
+                                    {member.imgUrl && (
+                                        <div className="relative h-10 w-10">
+                                            <Image
+                                                src={member.imgUrl}
+                                                alt={`${member.nickname}'s photo`}
+                                                fill
+                                            />
+                                        </div>
+                                    )}
+                                    {!member.imgUrl && (
+                                        <PersonIcon size="size-10" />
+                                    )}
+                                </>
+                                <div className="max-w-[180px] truncate text-lg font-bold">
+                                    {member.nickname}
+                                </div>
+                                <FaRegSquareMinus
+                                    className="cursor-pointer text-customLightBlue-200"
+                                    onClick={() => handleDeleteMber(member)}
+                                />
+                            </li>
                         ))}
                     </ul>
                 </div>
@@ -176,23 +319,19 @@ export default function NewBlogPage() {
                         id="introduce"
                         className="mt-4 w-full resize-none rounded border border-solid border-customLightBlue-100 p-2 text-sm leading-6 outline-none"
                         rows={8}
-                        value={introduce}
-                        onChange={(e) => setIntroduce(e.target.value)}
-                        placeholder="300자 이내로 입력해 주세요."
+                        value={invitation}
+                        onChange={(e) => setInvitation(e.target.value)}
+                        placeholder={defaultInvitation}
                     />
                 </div>
                 <div className="-mt-2 text-right">
                     <button
                         className={`rounded px-4 py-2 text-md ${
-                            orgBlogAddress !== blogAddress &&
                             !isDuplicateChecked
                                 ? 'bg-neutral-300 text-neutral-700'
                                 : 'bg-customBeige-100 text-customBrown-100'
                         }`}
-                        disabled={
-                            orgBlogAddress !== blogAddress &&
-                            !isDuplicateChecked
-                        }
+                        disabled={!isDuplicateChecked}
                         onClick={handleSave}
                     >
                         개설
@@ -204,6 +343,13 @@ export default function NewBlogPage() {
                 show={isModalOpen}
                 onConfirm={handleAddMber}
                 onCancel={() => setIsModalOpen(false)}
+            />
+
+            <AlertPopup
+                show={showPopup}
+                onConfirm={() => setShowPopup(false)}
+                title={popupTitle}
+                text={popupText}
             />
         </fieldset>
     );

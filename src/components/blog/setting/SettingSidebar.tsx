@@ -1,10 +1,13 @@
 'use client';
 
 import PanelModule from '@/components/sidebar/PanelModule';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
+import { useEffect } from 'react';
+import { customFetch } from '@/utils/customFetch';
 
 export default function SettingSidebar() {
-    const router = useRouter();
+    const { blogId, blogInfo, setBlogId, setBlogInfo } = useBlogStore();
     const pathName = usePathname();
     const isOurLogPath = pathName.includes('/our-log');
 
@@ -28,14 +31,16 @@ export default function SettingSidebar() {
         { value: '통계', link: `${myLogBasePath}/statistics` },
     ];
 
-    const ourLogBasePath = '/setting/our-log';
+    const ourLogBasePath = `/setting/our-log/${blogInfo?.blogAddress}`;
     const OUR_LOG_DTL = [
+        { value: '블로그 목록', link: `${basePath}/blogs` },
+        { value: '블로그 개설', link: `${basePath}/new-blog` },
+        { value: '블로그 정보 변경', link: `${ourLogBasePath}` },
         { value: '글 관리', link: `${ourLogBasePath}/posts` },
         { value: '댓글 관리', link: `${ourLogBasePath}/comments` },
         { value: '시리즈 관리', link: `${ourLogBasePath}/series` },
-        { value: '구독자 관리', link: `${ourLogBasePath}/subscribers` },
+        { value: '구독자 관리', link: `${ourLogBasePath}/followers` },
         { value: '통계', link: `${ourLogBasePath}/statistics` },
-        { value: '블로그 탈퇴', link: `${ourLogBasePath}/delete-blog` },
     ];
 
     useEffect(() => {

@@ -126,6 +126,22 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: space-between;
   }
 
+  .member-container {
+    background-color: white;
+    padding: 25px 20px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    input {
+      outline: none;
+    }
+  }
+
   h2 {
     font-size: 1.5rem;
   }
@@ -440,3 +456,4 @@ $spinner-border-width: 4px;
 .content img {
   padding: 10px 0 ;
 }
+
