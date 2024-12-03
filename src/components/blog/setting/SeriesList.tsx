@@ -30,6 +30,7 @@ export default function SeriesList({
 
     useEffect(() => {
         if (data) {
+            setClickedSeriesId(0);
             setSeriesList(data);
         }
     }, [data]);

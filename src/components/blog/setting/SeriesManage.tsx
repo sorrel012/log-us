@@ -23,6 +23,7 @@ export default function SeriesManage({
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
     const [seriesName, setSeriesName] = useState('');
+    const [orgImg, setOrgImg] = useState('');
     const [imgUrl, setImgUrl] = useState('');
     const [seriesImg, setSeriesImg] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -37,10 +38,12 @@ export default function SeriesManage({
                 (series) => series.seriesId === seriesId,
             )[0];
             setImgUrl(clickedSeries.imgUrl!);
+            setOrgImg(clickedSeries.imgUrl!);
             setSeriesName(clickedSeries.seriesName);
         } else {
             setImgUrl('');
             setSeriesImg(null);
+            setOrgImg(null);
             setSeriesName('');
         }
     }, [data, mode, seriesId]);
@@ -107,6 +110,11 @@ export default function SeriesManage({
         if (seriesImg) {
             formData.append('img', seriesImg);
         }
+
+        if ((seriesImg && orgImg) || (!seriesImg && orgImg)) {
+            formData.append('deleteImg', 'true');
+        }
+
         formData.append(
             'requestDto',
             new Blob([JSON.stringify(requestDto)], {

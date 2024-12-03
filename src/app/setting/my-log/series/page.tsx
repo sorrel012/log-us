@@ -64,6 +64,18 @@ export default function SeriesManagePage() {
 
         if (mode === 'EDIT') {
             setPopupTitle('시리즈를 수정하였습니다.');
+            const index = seriesList.findIndex(
+                (series) => series.seriesId === seriesId,
+            );
+            newSeriesList = [
+                ...seriesList.slice(0, index),
+                {
+                    seriesName: requestDto.seriesName,
+                    seriesId: seriesId,
+                    imgUrl: res.data.imgUrl,
+                },
+                ...seriesList.slice(index + 1, seriesList.length),
+            ];
         } else {
             setPopupTitle('시리즈를 저장하였습니다.');
 

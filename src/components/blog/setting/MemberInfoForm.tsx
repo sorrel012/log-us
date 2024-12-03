@@ -183,10 +183,7 @@ export default function MemberInfoForm() {
         if (memberImg) {
             formData.append('memberImg', memberImg);
         }
-        if (
-            (memberImg && orgData.imgUrl) ||
-            (!memberImg && orgData.imgUrl && true + '')
-        ) {
+        if ((memberImg && orgData.imgUrl) || (!memberImg && orgData.imgUrl)) {
             formData.append('deleteImg', 'true');
         }
 
