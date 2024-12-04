@@ -135,7 +135,7 @@ export default function CommentsManagePage() {
                 setShowPopup(true);
             } catch (e) {
                 setShowConfirmPopup(false);
-                setPopupTitle('게시글을 삭제할 수 없습니다.');
+                setPopupTitle('댓글을 삭제할 수 없습니다.');
                 setPopupText('잠시 후 다시 시도해 주세요.');
                 setPopupId('CLOSE');
                 setShowPopup(true);

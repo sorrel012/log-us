@@ -56,7 +56,9 @@ export default function ContentSettingCard({
         if (type === 'POST') {
             router.push(`/${blogAddress}/posts/${postId}`);
         } else {
-            router.push(`/${blogAddress}/posts/47?commentId=${commentId}`);
+            router.push(
+                `/${blogAddress}/posts/${postId}?commentId=${commentId}`,
+            );
         }
     };
 
@@ -69,14 +71,24 @@ export default function ContentSettingCard({
     };
 
     const handleDeleteConfirm = async () => {
+        let url;
+        if (type === 'POST') {
+            url = `/posts/${postId}`;
+        } else {
+            url = `/comments/${commentId}`;
+        }
+
         try {
-            const res = await customFetch(`/posts/${postId}`, {
+            const res = await customFetch(url, {
                 method: 'DELETE',
                 queryKey: ['deletePost', postId],
             });
 
             if (res.isError) {
-                throw new Error(res.error || '게시글을 삭제할 수 없습니다.');
+                throw new Error(
+                    res.error ||
+                        `${type === 'POST' ? '게시글' : '댓글'}을 삭제할 수 없습니다.`,
+                );
             }
 
             setShowConfirmPopup(false);
@@ -86,7 +98,9 @@ export default function ContentSettingCard({
             setShowPopup(true);
         } catch (e) {
             setShowConfirmPopup(false);
-            setPopupTitle('게시글을 삭제할 수 없습니다.');
+            setPopupTitle(
+                `${type === 'POST' ? '게시글' : '댓글'}을 삭제할 수 없습니다.`,
+            );
             setPopupText('잠시 후 다시 시도해 주세요.');
             setPopupId('CLOSE');
             setShowPopup(true);

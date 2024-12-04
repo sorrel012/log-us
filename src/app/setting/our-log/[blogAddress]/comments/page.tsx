@@ -1,20 +1,20 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
+import React, { useEffect, useState } from 'react';
+import { Comment } from '@/components/blog/post/PostCard';
 import { customFetch } from '@/utils/customFetch';
-import AlertPopup from '@/components/AlertPopup';
-import { Post } from '@/components/blog/post/PostCard';
+import SearchContent from '@/components/blog/setting/SearchContent';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
-import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 import Pagination from '@/components/Pagination';
-import ConfirmPopup from '@/components/ConfirmPopup';
-import { useRouter } from 'next/navigation';
-import SearchContent from '@/components/blog/setting/SearchContent';
 import SearchNothing from '@/components/blog/setting/SearchNothing';
+import AlertPopup from '@/components/AlertPopup';
+import ConfirmPopup from '@/components/ConfirmPopup';
+import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 
-export default function OurLogPostsManagePage() {
+export default function OurLogCommentsManagePage() {
     const router = useRouter();
     const { blogId } = useBlogStore();
 
@@ -22,9 +22,9 @@ export default function OurLogPostsManagePage() {
     const [size, setSize] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [totalPosts, setTotalPosts] = useState(0);
-    const [posts, setPosts] = useState<Post[]>(null);
-    const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
+    const [totalComments, setTotalComments] = useState(0);
+    const [comments, setComments] = useState<Comment[]>(null);
+    const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
     const [isSearch, setIsSearch] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -34,33 +34,26 @@ export default function OurLogPostsManagePage() {
     const [popupText, setPopupText] = useState('');
     const [popupId, setPopupId] = useState('CLOSE');
 
-    const params = useMemo(
-        () => ({
-            blogId,
-            size,
-            page: page - 1,
-        }),
-        [blogId, size, page],
-    );
-
     useEffect(() => {
+        const params = { blogId, condition: 'ALL', size, page: page - 1 };
+
         (async () => {
             if (blogId) {
                 setIsLoading(true);
                 setIsSearch(false);
 
                 try {
-                    const response = await customFetch<any>('/posts', {
-                        queryKey: ['posts', 'setting', blogId, page, size],
+                    const response = await customFetch<any>('/blog/comments', {
+                        queryKey: ['comments', 'setting', blogId, page, size],
                         params,
                         invalidateCache: true,
                     });
 
-                    setPosts(response.data.content);
+                    setComments(response.data.content);
                     setTotalPages(response.data.totalPages || 1);
-                    setTotalPosts(response.data.totalElements || 0);
+                    setTotalComments(response.data.totalElements || 0);
                 } catch (error) {
-                    setPopupTitle('게시글을 불러올 수 없습니다.');
+                    setPopupTitle('댓글을 불러올 수 없습니다.');
                     setPopupText('잠시 후 다시 시도해 주세요.');
                     setPopupId('CLOSE');
                     setShowPopup(true);
@@ -71,13 +64,13 @@ export default function OurLogPostsManagePage() {
                 }
             }
         })();
-    }, [blogId, page, size, params]);
+    }, [blogId, page, size]);
 
     const handleSearch = async (value: number, keyword: string) => {
         setSearchKeyword(keyword);
 
-        const res = await customFetch('/blog/posts', {
-            queryKey: ['search', 'posts', keyword, value, size, page],
+        const res = await customFetch('/blog/comments', {
+            queryKey: ['search', 'comments', keyword, value, size, page],
             params: {
                 blogId,
                 ...(keyword && { keyword }),
@@ -89,24 +82,24 @@ export default function OurLogPostsManagePage() {
         });
 
         if (res.isError) {
-            setPopupTitle('게시글을 검색하지 못했습니다.');
+            setPopupTitle('댓글을 검색하지 못했습니다.');
             setPopupText('잠시 후 다시 시도해 주세요.');
             setShowPopup(true);
             return;
         }
 
         setIsSearch(true);
-        setPosts(res.data.content);
+        setComments(res.data.content);
         setTotalPages(res.data.totalPages);
-        setTotalPosts(res.data.totalElements);
+        setTotalComments(res.data.totalElements);
     };
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
     };
 
-    const handleSelect = (posts: Post[]) => {
-        setSelectedPosts(posts);
+    const handleSelect = (comments: Comment[]) => {
+        setSelectedComments(comments);
     };
 
     const handlePageChange = (page: number) => {
@@ -114,26 +107,25 @@ export default function OurLogPostsManagePage() {
     };
 
     const handleConfirm = () => {
-        if (popupId === 'CLOSE') {
-            setShowPopup(false);
-        } else {
-            setShowPopup(false);
+        setShowPopup(false);
+        if (popupId === 'REFRESH') {
             router.refresh();
         }
     };
 
     const handleDeleteConfirm = async () => {
-        for (const post of selectedPosts) {
+        for (const comment of selectedComments) {
             try {
-                const res = await customFetch(`/posts/${post.postId}`, {
-                    method: 'DELETE',
-                    queryKey: ['deletePost', post.postId],
-                });
+                const res = await customFetch(
+                    `/comments/${comment.commentId}`,
+                    {
+                        method: 'DELETE',
+                        queryKey: ['deleteComment', comment.commentId],
+                    },
+                );
 
                 if (res.isError) {
-                    throw new Error(
-                        res.error || '게시글을 삭제할 수 없습니다.',
-                    );
+                    throw new Error(res.error || '댓글을 삭제할 수 없습니다.');
                 }
 
                 setShowConfirmPopup(false);
@@ -143,7 +135,7 @@ export default function OurLogPostsManagePage() {
                 setShowPopup(true);
             } catch (e) {
                 setShowConfirmPopup(false);
-                setPopupTitle('게시글을 삭제할 수 없습니다.');
+                setPopupTitle('댓글을 삭제할 수 없습니다.');
                 setPopupText('잠시 후 다시 시도해 주세요.');
                 setPopupId('CLOSE');
                 setShowPopup(true);
@@ -152,20 +144,22 @@ export default function OurLogPostsManagePage() {
     };
 
     const handleDelete = async () => {
-        setPopupTitle(`${selectedPosts.length}건의 글을 삭제하시겠습니까?`);
-        setPopupText('삭제한 글은 복구할 수 없습니다.');
+        setPopupTitle(
+            `${selectedComments.length}건의 댓글을 삭제하시겠습니까?`,
+        );
+        setPopupText('삭제한 댓글은 복구할 수 없습니다.');
         setShowConfirmPopup(true);
     };
 
     return (
         <fieldset>
             <div className="flex">
-                <legend className="mb-8 text-lg font-bold">글 관리</legend>
+                <legend className="mb-8 text-lg font-bold">댓글 관리</legend>
                 <span
                     className="relative ml-0.5 text-sm text-customLightBlue-200"
                     style={{ top: '-0.1em' }}
                 >
-                    {totalPosts}
+                    {totalComments}
                 </span>
             </div>
             <SearchContent onSearch={handleSearch} />
@@ -173,12 +167,12 @@ export default function OurLogPostsManagePage() {
                 <div className="flex h-24 items-center justify-center">
                     <div className="spinner-brown" />
                 </div>
-            ) : posts && posts.length > 0 ? (
+            ) : comments && comments.length > 0 ? (
                 <>
                     <div className="mb-4 flex items-center justify-between">
                         <button
                             className="rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100"
-                            disabled={selectedPosts.length < 1}
+                            disabled={selectedComments.length < 1}
                             onClick={handleDelete}
                         >
                             삭제
@@ -190,9 +184,9 @@ export default function OurLogPostsManagePage() {
                         />
                     </div>
                     <ContentSettingList
-                        contents={posts}
+                        contents={comments}
                         onSelect={handleSelect}
-                        type="POST"
+                        type="COMMENT"
                     />
                     <Pagination
                         currentPage={page}
@@ -203,7 +197,7 @@ export default function OurLogPostsManagePage() {
             ) : isSearch ? (
                 <SearchNothing keyword={searchKeyword} />
             ) : (
-                <div className="mt-6"> 게시글이 존재하지 않습니다. </div>
+                <div className="mt-6"> 댓글이 존재하지 않습니다. </div>
             )}
 
             <AlertPopup
