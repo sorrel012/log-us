@@ -27,7 +27,8 @@ export default function BlogsPage() {
                 return;
             }
 
-            setBlogs(res.data!);
+            const blogsData: Blog[] = Array.isArray(res.data) ? res.data : [];
+            setBlogs(blogsData.filter((blog: Blog) => blog.shareYn === 'Y'));
         })();
     }, []);
 
