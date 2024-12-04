@@ -14,7 +14,7 @@ export default function UserGridCard({
     onButtonClick: (followId: number) => void;
 }) {
     return (
-        <article className={`${getCardStyle(type)} h-[150px] w-[320px]`}>
+        <article className={`${getCardStyle(type)} min-h-[150px] w-[320px]`}>
             <div
                 className={
                     'mb-3 flex items-center justify-between border-b border-solid border-customLightBlue-100 pb-2 pt-3'

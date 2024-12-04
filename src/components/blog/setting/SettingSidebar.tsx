@@ -41,7 +41,7 @@ export default function SettingSidebar() {
         { value: '글 관리', link: `${ourLogBasePath}/posts` },
         { value: '댓글 관리', link: `${ourLogBasePath}/comments` },
         { value: '시리즈 관리', link: `${ourLogBasePath}/series` },
-        { value: '구독자 관리', link: `${ourLogBasePath}/followers` },
+        { value: '구독자 관리', link: `${ourLogBasePath}/follower` },
         { value: '통계', link: `${ourLogBasePath}/statistics` },
     ];
 
