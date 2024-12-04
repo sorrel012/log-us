@@ -11,6 +11,8 @@ import PostSettingList from '@/components/blog/setting/PostSettingList';
 import Pagination from '@/components/Pagination';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { useRouter } from 'next/navigation';
+import SearchContent from '@/components/blog/setting/SearchContent';
+import SearchNothing from '@/components/blog/setting/SearchNothing';
 
 export default function PostsManagePage() {
     const router = useRouter();
@@ -23,6 +25,8 @@ export default function PostsManagePage() {
     const [totalPosts, setTotalPosts] = useState(0);
     const [posts, setPosts] = useState<Post[]>(null);
     const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
+    const [isSearch, setIsSearch] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState('');
 
     const [showPopup, setShowPopup] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
@@ -43,6 +47,7 @@ export default function PostsManagePage() {
         (async () => {
             if (blogId) {
                 setIsLoading(true);
+                setIsSearch(false);
 
                 try {
                     const response = await customFetch<any>('/posts', {
@@ -67,6 +72,34 @@ export default function PostsManagePage() {
             }
         })();
     }, [blogId, page, size, params]);
+
+    const handleSearch = async (value: number, keyword: string) => {
+        setSearchKeyword(keyword);
+
+        const res = await customFetch('/blog/posts', {
+            queryKey: ['search', 'posts', keyword, value, size, page],
+            params: {
+                blogId,
+                ...(keyword && { keyword }),
+                condition:
+                    value === 0 ? 'ALL' : value === 1 ? 'TITLE' : 'CONTENT',
+                size,
+                page: page - 1,
+            },
+        });
+
+        if (res.isError) {
+            setPopupTitle('게시글을 검색하지 못했습니다.');
+            setPopupText('잠시 후 다시 시도해 주세요.');
+            setShowPopup(true);
+            return;
+        }
+
+        setIsSearch(true);
+        setPosts(res.data.content);
+        setTotalPages(res.data.totalPages);
+        setTotalPosts(res.data.totalElements);
+    };
 
     const handleItemsPerValueChange = (value: number) => {
         setSize(value);
@@ -134,6 +167,7 @@ export default function PostsManagePage() {
                     {totalPosts}
                 </span>
             </div>
+            <SearchContent onSearch={handleSearch} />
             {isLoading ? (
                 <div className="flex h-24 items-center justify-center">
                     <div className="spinner-brown" />
@@ -161,8 +195,10 @@ export default function PostsManagePage() {
                         onPageChange={handlePageChange}
                     />{' '}
                 </>
+            ) : isSearch ? (
+                <SearchNothing keyword={searchKeyword} />
             ) : (
-                <div> 게시글이 존재하지 않습니다. </div>
+                <div className="mt-6"> 게시글이 존재하지 않습니다. </div>
             )}
 
             <AlertPopup
