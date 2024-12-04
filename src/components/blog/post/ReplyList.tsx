@@ -3,7 +3,7 @@ import { BsArrowReturnRight } from 'react-icons/bs';
 import CommentCard from '@/components/blog/post/CommentCard';
 import { AiOutlineUser } from 'react-icons/ai';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { escapeSpecialChars } from '@/utils/commonUtil';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
@@ -18,6 +18,7 @@ export default function ReplyList({
     commentWriterId,
     parentId,
     childComments,
+    highlightedCommentId,
 }) {
     const [childCommentsState, setChildCommentsState] = useState(childComments);
     const [replyText, setReplyText] = useState('');
@@ -25,6 +26,25 @@ export default function ReplyList({
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
+
+    useEffect(() => {
+        const scrollToComment = () => {
+            const replyElement = document.getElementById(
+                `comment-${highlightedCommentId}`,
+            );
+
+            if (replyElement) {
+                replyElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+            }
+        };
+
+        if (highlightedCommentId) {
+            scrollToComment();
+        }
+    }, [highlightedCommentId]);
 
     const handleTextareaChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -112,11 +132,18 @@ export default function ReplyList({
                     (childComment: Comment, index: number) => (
                         <div
                             key={childComment.commentId}
+                            id={'comment-' + childComment.commentId}
                             className="mb-3 flex items-center gap-3"
                         >
                             <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
                             {
-                                <div className="w-full">
+                                <div
+                                    className={`${
+                                        highlightedCommentId ===
+                                            childComment.commentId + '' &&
+                                        'rounded bg-red-50/50'
+                                    } w-full px-3 pb-3 pt-2`}
+                                >
                                     {childComment.status !== 'SECRET' ||
                                     postWriterId === loginUser ||
                                     isMember ||
@@ -187,7 +214,7 @@ export default function ReplyList({
                                 />
                             </div>
                         </div>
-                        <div className="mt-3 flex items-center justify-end gap-2">
+                        <div className="mb-2 mt-4 flex items-center justify-end gap-2">
                             {loginUser && (
                                 <button
                                     onClick={() =>

@@ -10,6 +10,7 @@ export interface Comment {
     commentId: number;
     memberId: number;
     nickname: string;
+    title?: string;
     imgUrl?: string;
     postId: number;
     parentId?: number;

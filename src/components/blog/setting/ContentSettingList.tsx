@@ -1,32 +1,42 @@
 'use client';
 
+import { Comment, Post } from '@/components/blog/post/PostCard';
 import { useEffect, useState } from 'react';
-import { Post } from '@/components/blog/post/PostCard';
 import ContentSettingCard from '@/components/blog/setting/ContentSettingCard';
 
 export default function ContentSettingList({
     contents,
     onSelect,
+    type,
 }: {
-    contents: Post[];
-    onSelect: (posts: Post[]) => void;
+    contents: Post[] | Comment[];
+    onSelect: (contents: Post[] | Comment[]) => void;
+    type: 'POST' | 'COMMENT';
 }) {
-    const [selectedContents, setSelectedContents] = useState<Post[]>([]);
+    const [selectedContents, setSelectedContents] = useState<
+        Post[] | Comment[]
+    >([]);
 
     useEffect(() => {
         onSelect(selectedContents);
     }, [selectedContents]);
 
-    const handleCheckboxChange = (
-        newSelectedPosts: Post,
-        isChecked: boolean,
-    ) => {
+    const handleCheckboxChange = (newSelectedContents, isChecked: boolean) => {
         if (isChecked) {
-            setSelectedContents((prev) => [...prev, newSelectedPosts]);
+            setSelectedContents((prev) => [...prev, newSelectedContents]);
         } else {
-            const index = selectedContents.findIndex(
-                (post) => post.postId === newSelectedPosts.postId,
-            );
+            let index;
+            if (type === 'POST') {
+                index = selectedContents.findIndex(
+                    (post: Post) => post.postId === newSelectedContents.postId,
+                );
+            } else {
+                index = selectedContents.findIndex(
+                    (comment: Comment) =>
+                        comment.commentId === newSelectedContents.commentId,
+                );
+            }
+
             setSelectedContents((prev) => [
                 ...prev.slice(0, index),
                 ...prev.slice(index + 1),
@@ -39,10 +49,15 @@ export default function ContentSettingList({
             {contents &&
                 contents.map((content, index) => (
                     <ContentSettingCard
-                        key={content.postId}
-                        post={content}
+                        key={
+                            'commentId' in content
+                                ? content.commentId + ''
+                                : content.postId
+                        }
+                        content={content}
                         isLast={index === contents.length - 1}
                         onSelect={handleCheckboxChange}
+                        type={type}
                     />
                 ))}
         </section>

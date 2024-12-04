@@ -49,7 +49,9 @@ export default function BlogLayout({
 
     return (
         <>
-            {isShow && <BlogHeader />}
+            <div className="sticky top-0 z-50 bg-white">
+                {isShow && <BlogHeader />}
+            </div>
             <main className="mx-auto flex">
                 {isShow && (
                     <Sidebar

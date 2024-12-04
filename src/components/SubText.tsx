@@ -8,7 +8,7 @@ interface SubTextProps {
 export default function SubText({ text, isLast = false }: SubTextProps) {
     return (
         <div className="flex">
-            {text}
+            <span className="max-w-[500px] truncate">{text}</span>
             {!isLast && <SubLineBar />}
         </div>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
 import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
@@ -10,6 +10,8 @@ import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailPage() {
     const { postId } = useParams();
+    const searchParams = useSearchParams();
+    const commentIdParam = searchParams.get('commentId');
 
     const [post, setPost] = useState<Post>();
 
@@ -47,7 +49,7 @@ export default function PostDetailPage() {
     };
 
     return (
-        <section>
+        <section className={`${commentIdParam && 'pt-8'}`}>
             {post && (
                 <>
                     <PostDetail {...post} />
