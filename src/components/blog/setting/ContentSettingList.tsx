@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Post } from '@/components/blog/post/PostCard';
-import PostSettingCard from '@/components/blog/setting/PostSettingCard';
+import ContentSettingCard from '@/components/blog/setting/ContentSettingCard';
 
-export default function PostSettingList({
+export default function ContentSettingList({
     contents,
     onSelect,
 }: {
@@ -38,7 +38,7 @@ export default function PostSettingList({
         <section className="font-default mb-14 rounded-md border border-solid border-customLightBlue-100">
             {contents &&
                 contents.map((content, index) => (
-                    <PostSettingCard
+                    <ContentSettingCard
                         key={content.postId}
                         post={content}
                         isLast={index === contents.length - 1}

@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
 
-export default function PostSettingCard({
+export default function ContentSettingCard({
     post,
     isLast,
     onSelect,

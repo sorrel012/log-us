@@ -7,7 +7,7 @@ import AlertPopup from '@/components/AlertPopup';
 import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
-import PostSettingList from '@/components/blog/setting/PostSettingList';
+import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 import Pagination from '@/components/Pagination';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { useRouter } from 'next/navigation';
@@ -188,7 +188,10 @@ export default function PostsManagePage() {
                             containerWidth="w-30"
                         />
                     </div>
-                    <PostSettingList contents={posts} onSelect={handleSelect} />
+                    <ContentSettingList
+                        contents={posts}
+                        onSelect={handleSelect}
+                    />
                     <Pagination
                         currentPage={page}
                         totalPages={totalPages}
