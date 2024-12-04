@@ -208,7 +208,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 .select .select-box {
   background-color: white;
-  color: black;
   display: flex;
   align-items: center;
   margin-bottom: -5px;
@@ -216,7 +215,18 @@ h1, h2, h3, h4, h5, h6 {
   padding: 11px 10px;
   cursor: pointer;
   border-radius: 5px;
+  color: black;
   border: 1px solid rgba(110, 127, 145, 0.8);
+}
+.select .select-box-in {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  margin-bottom: -5px;
+  justify-content: space-between;
+  padding: 11px 10px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 .select .selected-text {
   white-space: nowrap;
@@ -226,15 +236,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 .select .options-container {
   position: absolute;
-  top: 36px;
-  left: 0;
   background-color: white;
-  border: 1px solid rgba(110, 127, 145, 0.8);
   border-radius: 5px;
   max-height: 200px;
   overflow-y: auto;
   z-index: 999;
+  border: 1px solid rgba(110, 127, 145, 0.8);
   box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.25);
+  top: 36px;
+  left: 0;
 }
 .select .options-container .option {
   padding: 10px;
@@ -244,6 +254,28 @@ h1, h2, h3, h4, h5, h6 {
   overflow-x: hidden;
 }
 .select .options-container .option:hover {
+  background-color: rgba(110, 127, 145, 0.8);
+  color: white;
+}
+.select .options-container-in {
+  position: absolute;
+  background-color: white;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999;
+  top: 43px;
+  left: -8px;
+  box-shadow: 0 2px 3px 0 rgba(110, 127, 145, 0.8);
+}
+.select .options-container-in .option {
+  padding: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+.select .options-container-in .option:hover {
   background-color: rgba(110, 127, 145, 0.8);
   color: white;
 }
