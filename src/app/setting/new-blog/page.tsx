@@ -194,7 +194,7 @@ export default function NewBlogPage() {
                 );
             }
 
-            router.push(`/${blogAddress}`);
+            router.push(`/setting/our-log/${blogAddress}`);
         } catch (error) {
             setPopupTitle('초대장 발송에 실패했습니다.');
             setPopupText('잠시 후 다시 시도해 주세요.');
