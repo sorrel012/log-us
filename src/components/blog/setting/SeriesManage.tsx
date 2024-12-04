@@ -27,6 +27,7 @@ export default function SeriesManage({
     const [imgUrl, setImgUrl] = useState('');
     const [seriesImg, setSeriesImg] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
@@ -69,12 +70,14 @@ export default function SeriesManage({
             }
         }
         setIsUploading(false);
+        setIsDeleted(false);
     };
     const handleImageClick = () => fileInputRef.current?.click();
 
     const handleImageDelete = () => {
         setSeriesImg(null);
         setImgUrl(null);
+        setIsDeleted(true);
     };
 
     const handleSave = async () => {
@@ -111,7 +114,7 @@ export default function SeriesManage({
             formData.append('img', seriesImg);
         }
 
-        if ((seriesImg && orgImg) || (!seriesImg && orgImg)) {
+        if ((orgImg && seriesImg) || (orgImg && !seriesImg && isDeleted)) {
             formData.append('deleteImg', 'true');
         }
 

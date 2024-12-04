@@ -79,7 +79,7 @@ export default function SeriesList({
     const handleAdd = () => {
         setClickedSeriesId(0);
         onAdd(!isAddMode);
-        setIsAddMode((prevState) => !prevState);
+        setIsAddMode(false);
     };
 
     const handleDeleteConfirm = () => {
