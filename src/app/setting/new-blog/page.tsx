@@ -15,6 +15,7 @@ import emailjs from 'emailjs-com';
 export default function NewBlogPage() {
     const router = useRouter();
     // TODO zustand로 수정
+    const loginUser = 1;
     const loginUserNickname = 'hana';
 
     const [blogName, setBlogName] = useState('');
@@ -30,6 +31,7 @@ export default function NewBlogPage() {
     );
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
@@ -151,6 +153,17 @@ export default function NewBlogPage() {
             return;
         }
 
+        setIsLoading(true);
+
+        const newMember: Member = {
+            memberId: loginUser,
+            nickname: loginUserNickname,
+            email: '',
+            myLogAddress: '',
+            blogAuth: 'OWNER',
+        };
+        setMembers((prevState) => [...prevState, newMember]);
+
         const body = {
             blogName,
             blogAddress,
@@ -176,22 +189,24 @@ export default function NewBlogPage() {
 
         try {
             for (const member of members) {
-                await emailjs.send(
-                    process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
-                    process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
-                    {
-                        to_email: member.email,
-                        to_name: member.nickname,
-                        from_name: loginUserNickname,
-                        blog_name: blogName,
-                        message:
-                            invitation && invitation.trim().length > 0
-                                ? invitation
-                                : '이 공간에 특별한 추억을 남겨보세요.',
-                        link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
-                    },
-                    process.env.NEXT_PUBLIC_EMAIL_USER_ID,
-                );
+                if (member.memberId !== loginUser) {
+                    await emailjs.send(
+                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
+                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
+                        {
+                            to_email: member.email,
+                            to_name: member.nickname,
+                            from_name: loginUserNickname,
+                            blog_name: blogName,
+                            message:
+                                invitation && invitation.trim().length > 0
+                                    ? invitation
+                                    : '이 공간에 특별한 추억을 남겨보세요.',
+                            link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
+                        },
+                        process.env.NEXT_PUBLIC_EMAIL_USER_ID,
+                    );
+                }
             }
 
             router.push(`/${blogAddress}`);
@@ -201,6 +216,8 @@ export default function NewBlogPage() {
             setShowPopup(true);
             return;
         }
+
+        setIsLoading(false);
     };
 
     return (
@@ -342,6 +359,12 @@ export default function NewBlogPage() {
                     </button>
                 </div>
             </div>
+
+            {isLoading && (
+                <div className="flex h-24 items-center justify-center">
+                    <div className="spinner-brown absolute top-1/2" />
+                </div>
+            )}
 
             <AddMemberPopup
                 show={isModalOpen}
