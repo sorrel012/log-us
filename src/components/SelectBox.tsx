@@ -38,7 +38,7 @@ export default function SelectBox({
             if (selectedItem) {
                 setSelectedText(selectedItem.text || items[0].text);
             } else {
-                setSelectedText('선택');
+                setSelectedText(items[0].text || '선택');
             }
         }
     }, [defaultValue, items]);
