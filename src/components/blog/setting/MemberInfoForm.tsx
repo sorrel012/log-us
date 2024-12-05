@@ -25,6 +25,7 @@ export default function MemberInfoForm() {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [emailMessage, setEmailMessage] = useState('');
     const [isUploading, setIsUploading] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
     const [memberImg, setMemberImg] = useState<File>();
     const [imagePreview, setImagePreview] = useState<string>('');
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -149,6 +150,7 @@ export default function MemberInfoForm() {
             }
         }
         setIsUploading(false);
+        setIsDeleted(false);
     };
 
     const handleImageClick = () => {
@@ -158,6 +160,7 @@ export default function MemberInfoForm() {
     const handleImageDelete = () => {
         setMemberImg(null);
         setImagePreview(null);
+        setIsDeleted(true);
     };
 
     const handleSaveInfo = async () => {
@@ -183,7 +186,11 @@ export default function MemberInfoForm() {
         if (memberImg) {
             formData.append('memberImg', memberImg);
         }
-        if ((memberImg && orgData.imgUrl) || (!memberImg && orgData.imgUrl)) {
+
+        if (
+            (orgData.imgUrl && memberImg) ||
+            (orgData.imgUrl && !memberImg && isDeleted)
+        ) {
             formData.append('deleteImg', 'true');
         }
 
