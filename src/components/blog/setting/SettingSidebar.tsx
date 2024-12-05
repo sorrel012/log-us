@@ -3,15 +3,34 @@
 import PanelModule from '@/components/sidebar/PanelModule';
 import { useParams, usePathname } from 'next/navigation';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 
 export default function SettingSidebar() {
-    const { blogInfo, setBlogId, setBlogInfo } = useBlogStore();
+    const { setBlogId, setBlogInfo } = useBlogStore();
     const pathName = usePathname();
     const isMyLogPath = pathName.includes('/my-log');
     const isOurLogPath = pathName.includes('/our-log');
     const { blogAddress } = useParams();
+
+    const myLogPath = '/setting/my-log';
+    const [MY_LOG, setMY_LOG] = useState([
+        { value: '블로그 정보 변경', link: myLogPath },
+        { value: '글 관리', link: myLogPath },
+        {
+            value: '댓글 관리',
+            link: myLogPath,
+        },
+        {
+            value: '시리즈 관리',
+            link: myLogPath,
+        },
+        {
+            value: '구독자 관리',
+            link: myLogPath,
+        },
+        { value: '통계', link: myLogPath },
+    ]);
 
     const basePath = '/setting';
     const PROFILE = [
@@ -21,16 +40,6 @@ export default function SettingSidebar() {
     const OUR_LOG = [
         { value: '블로그 목록', link: `${basePath}/blogs` },
         { value: '블로그 개설', link: `${basePath}/new-blog` },
-    ];
-
-    const myLogBasePath = `/setting/my-log/${blogInfo?.blogAddress}`;
-    const MY_LOG = [
-        { value: '블로그 정보 변경', link: `${myLogBasePath}` },
-        { value: '글 관리', link: `${myLogBasePath}/posts` },
-        { value: '댓글 관리', link: `${myLogBasePath}/comments` },
-        { value: '시리즈 관리', link: `${myLogBasePath}/series` },
-        { value: '구독자 관리', link: `${myLogBasePath}/follower` },
-        { value: '통계', link: `${myLogBasePath}/statistics` },
     ];
 
     const ourLogBasePath = `/setting/our-log/${blogAddress}`;
@@ -47,26 +56,8 @@ export default function SettingSidebar() {
 
     useEffect(() => {
         (async () => {
-            if (isMyLogPath) {
-                setBlogInfo(null);
-                const res = await customFetch('/blog/my-log', {
-                    queryKey: ['my-log'],
-                });
-
-                if (res.data.blogId) {
-                    setBlogId(res.data.blogId);
-
-                    const blogInfoRes = await customFetch<BlogInfo>(
-                        '/blog-info',
-                        {
-                            queryKey: ['memberInfo'],
-                            params: { blogId: res.data.blogId },
-                        },
-                    );
-
-                    setBlogInfo(blogInfoRes.data!);
-                }
-            } else {
+            setBlogInfo(null);
+            if (isOurLogPath) {
                 setBlogInfo(null);
                 const response = await customFetch('/blog-id', {
                     params: { blogAddress },
@@ -86,9 +77,47 @@ export default function SettingSidebar() {
 
                     setBlogInfo(blogInfoRes.data!);
                 }
+            } else {
+                const res = await customFetch('/blog/my-log', {
+                    queryKey: ['my-log'],
+                });
+
+                if (res.data.blogId) {
+                    setBlogId(res.data.blogId);
+
+                    const blogInfoRes = await customFetch<BlogInfo>(
+                        '/blog-info',
+                        {
+                            queryKey: ['memberInfo'],
+                            params: { blogId: res.data.blogId },
+                        },
+                    );
+
+                    setBlogInfo(blogInfoRes.data!);
+
+                    const myLogBasePath = `/setting/my-log/${blogInfoRes.data?.blogAddress}`;
+                    const myLog = [
+                        { value: '블로그 정보 변경', link: `${myLogBasePath}` },
+                        { value: '글 관리', link: `${myLogBasePath}/posts` },
+                        {
+                            value: '댓글 관리',
+                            link: `${myLogBasePath}/comments`,
+                        },
+                        {
+                            value: '시리즈 관리',
+                            link: `${myLogBasePath}/series`,
+                        },
+                        {
+                            value: '구독자 관리',
+                            link: `${myLogBasePath}/follower`,
+                        },
+                        { value: '통계', link: `${myLogBasePath}/statistics` },
+                    ];
+                    setMY_LOG(myLog);
+                }
             }
         })();
-    }, [blogAddress, isMyLogPath, setBlogId, setBlogInfo]);
+    }, [blogAddress, isMyLogPath, isOurLogPath, setBlogId, setBlogInfo]);
 
     return (
         <aside className="fixed flex h-[100vh] w-1/5 flex-col gap-12 overflow-y-auto border-r border-solid border-customLightBlue-100 p-5 pt-14 lg:w-1/6">
