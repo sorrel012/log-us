@@ -1,16 +1,17 @@
 'use client';
 
 import PanelModule from '@/components/sidebar/PanelModule';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 
-export default function SettingSidebar() {
+export default function SettingSidebar({
+    isOurLogPath,
+}: {
+    isOurLogPath: boolean;
+}) {
     const { setBlogId, setBlogInfo } = useBlogStore();
-    const pathName = usePathname();
-    const isMyLogPath = pathName.includes('/my-log');
-    const isOurLogPath = pathName.includes('/our-log');
     const { blogAddress } = useParams();
 
     const myLogPath = '/setting/my-log';
@@ -47,6 +48,7 @@ export default function SettingSidebar() {
         { value: '블로그 목록', link: `${basePath}/blogs` },
         { value: '블로그 개설', link: `${basePath}/new-blog` },
         { value: '블로그 정보 변경', link: `${ourLogBasePath}` },
+        { value: '블로그 권한 관리', link: `${ourLogBasePath}/permissions` },
         { value: '글 관리', link: `${ourLogBasePath}/posts` },
         { value: '댓글 관리', link: `${ourLogBasePath}/comments` },
         { value: '시리즈 관리', link: `${ourLogBasePath}/series` },
@@ -117,7 +119,7 @@ export default function SettingSidebar() {
                 }
             }
         })();
-    }, [blogAddress, isMyLogPath, isOurLogPath, setBlogId, setBlogInfo]);
+    }, [blogAddress, isOurLogPath, setBlogId, setBlogInfo]);
 
     return (
         <aside className="fixed flex h-[100vh] w-1/5 flex-col gap-12 overflow-y-auto border-r border-solid border-customLightBlue-100 p-5 pt-14 lg:w-1/6">
