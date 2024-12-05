@@ -5,9 +5,9 @@ import SubText from '@/components/SubText';
 import ViewIcon from '@/components/icons/ViewIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
 import LikeIcon from '@/components/icons/LikeIcon';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
 
@@ -22,8 +22,15 @@ export default function ContentSettingCard({
     onSelect: (content: Post | Comment, isChecked: boolean) => void;
     type: 'POST' | 'COMMENT';
 }) {
+    //TODO zustand 로 수정
+    const loginUser = 1;
     const router = useRouter();
     const { blogAddress } = useParams();
+    const pathname = usePathname();
+    const isOurLog = pathname.includes('/our-log');
+
+    const [postWriterId, setPostWriterId] = useState();
+
     const {
         postId,
         title,
@@ -34,6 +41,7 @@ export default function ContentSettingCard({
         commentCount,
         likeCount,
         nickname,
+        memberId,
         commentId,
         content: comment,
     } = content;
@@ -43,6 +51,24 @@ export default function ContentSettingCard({
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
     const [popupId, setPopupId] = useState('');
+
+    useEffect(() => {
+        if (type === 'COMMENT' && isOurLog && postId) {
+            (async () => {
+                const res = await customFetch(`/posts/${postId}`, {
+                    queryKey: ['posts', 'comment'],
+                });
+
+                if (res.isError) {
+                    throw new Error(
+                        res.error || '게시글을 불러올 수 없습니다.',
+                    );
+                }
+
+                setPostWriterId(res.data.memberId);
+            })();
+        }
+    }, [isOurLog, postId, type]);
 
     const handleConfirm = () => {
         if (popupId === 'CLOSE') {
@@ -175,18 +201,25 @@ export default function ContentSettingCard({
                 </div>
             </div>
             <div className="mt-2 shrink-0 text-customLightBlue-200 md:mt-0">
-                {type === 'POST' && (
-                    <LightButton
-                        className="mr-1"
-                        text="수정"
-                        onClick={handleEdit}
-                    />
+                {isOurLog && (
+                    <>
+                        {type === 'POST' && loginUser === memberId && (
+                            <LightButton
+                                className="mr-1"
+                                text="수정"
+                                onClick={handleEdit}
+                            />
+                        )}
+                        {(loginUser === postWriterId ||
+                            loginUser === memberId) && (
+                            <LightButton
+                                className="mr-1"
+                                text="삭제"
+                                onClick={handleDelete}
+                            />
+                        )}
+                    </>
                 )}
-                <LightButton
-                    className="mr-1"
-                    text="삭제"
-                    onClick={handleDelete}
-                />
             </div>
 
             <AlertPopup
