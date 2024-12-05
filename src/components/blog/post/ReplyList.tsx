@@ -158,6 +158,9 @@ export default function ReplyList({
                                             memberId={childComment.memberId}
                                             status={childComment.status}
                                             commentId={childComment.commentId}
+                                            isPostWriter={
+                                                postWriterId === loginUser
+                                            }
                                             onEditSuccess={(
                                                 updatedContent,
                                                 updatedStatus,

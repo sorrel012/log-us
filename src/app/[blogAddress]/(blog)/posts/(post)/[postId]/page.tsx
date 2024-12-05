@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
 import { useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
@@ -9,7 +9,9 @@ import { Post } from '@/components/blog/post/PostCard';
 import CommentList from '@/components/blog/post/CommentList';
 
 export default function PostDetailPage() {
-    const { postId } = useParams();
+    const router = useRouter();
+    const { postId, blogAddress } = useParams();
+
     const searchParams = useSearchParams();
     const commentIdParam = searchParams.get('commentId');
 
@@ -17,6 +19,7 @@ export default function PostDetailPage() {
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [popupId, setPopupId] = useState('CLOSE');
 
     useEffect(() => {
         (async () => {
@@ -30,14 +33,21 @@ export default function PostDetailPage() {
                     );
 
                     if (response.isError) {
-                        throw new Error(
-                            response.error || '게시글을 불러올 수 없습니다.',
-                        );
+                        if (response.code === 3004) {
+                            setPopupMessage(response.error!);
+                            setShowPopup(true);
+                            setPopupId('OUT');
+                        } else {
+                            throw new Error(
+                                response.error ||
+                                    '게시글을 불러올 수 없습니다.',
+                            );
+                        }
                     }
                     setPost(response.data);
                 } catch (error) {
-                    setShowPopup(true);
                     setPopupMessage(error.message);
+                    setShowPopup(true);
                 }
             }
         })();
@@ -46,6 +56,9 @@ export default function PostDetailPage() {
     const handleClosePopup = () => {
         setShowPopup(false);
         setPopupMessage('');
+        if (popupId === 'OUT') {
+            router.push(`/${blogAddress}/posts/series/0&전체보기`);
+        }
     };
 
     return (

@@ -21,8 +21,8 @@ export default function CommentList({
     const commentIdParam = searchParams.get('commentId');
     const { blogInfo } = useBlogStore();
     //TODO zustand로 수정 필요
-    const loginUser = 1;
-    const loginUserNickname = '유저1';
+    const loginUser = 4;
+    const loginUserNickname = '유저3';
     const isMember =
         blogInfo?.shareYn === 'Y' &&
         blogInfo?.members.filter((member) => member.memberId === loginUser)
@@ -255,6 +255,10 @@ export default function CommentList({
                                                         memberId={memberId}
                                                         commentId={commentId}
                                                         status={status}
+                                                        isPostWriter={
+                                                            postWriterId ===
+                                                            loginUser
+                                                        }
                                                         onEditSuccess={(
                                                             updatedContent,
                                                             updatedStatus,
@@ -318,11 +322,14 @@ export default function CommentList({
                                                         highlightedCommentId={
                                                             commentIdParam
                                                         }
+                                                        postWriterId={
+                                                            postWriterId
+                                                        }
                                                     />
                                                 )}
                                             </section>
                                         ) : (
-                                            <div className="mb-2 mt-2 flex items-center gap-2 text-customLightBlue-200">
+                                            <div className="mb-2 mt-2 flex items-center gap-2 px-4 pb-3 text-customLightBlue-200">
                                                 <IoLockClosedOutline />
                                                 <span>비밀 댓글입니다.</span>
                                             </div>

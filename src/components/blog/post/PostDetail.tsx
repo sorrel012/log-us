@@ -38,7 +38,7 @@ export default function PostDetail({
     const { blogAddress } = useParams();
 
     //TODO zustand에서 받아오기
-    const isWriter = memberId === 1;
+    const isWriter = memberId === 4;
 
     // 좋아요 관련 상태
     const [likesCnt, setLikesCnt] = useState(likeCount);

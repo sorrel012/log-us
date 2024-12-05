@@ -26,12 +26,7 @@ export default function SelectBox({
     containerWidth,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState<string>(
-        items.length > 0
-            ? items.find((item) => item.value === defaultValue)?.text ||
-                  items[0].text
-            : '선택',
-    );
+    const [selectedText, setSelectedText] = useState<string>('');
 
     const selectBoxRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,7 +36,9 @@ export default function SelectBox({
                 (item) => item.value === defaultValue,
             );
             if (selectedItem) {
-                setSelectedText(selectedItem.text);
+                setSelectedText(selectedItem.text || items[0].text);
+            } else {
+                setSelectedText('선택');
             }
         }
     }, [defaultValue, items]);

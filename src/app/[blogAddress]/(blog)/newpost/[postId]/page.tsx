@@ -19,11 +19,13 @@ import ConfirmPopup from '@/components/ConfirmPopup';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
-interface PostPayload {
+export interface PostPayload {
     blogId: number;
     postId?: number;
     categoryId?: number;
+    parentCategoryId?: number;
     seriesId?: number | null;
+    imgUrl?: string;
     title: string;
     content: string;
     status: PostStatus;
@@ -68,6 +70,7 @@ export default function NewPostEditPage() {
     const [content, setContent] = useState('');
     const [seriesId, setSeriesId] = useState<number>(null);
     const [postId, setPostId] = useState<number>(null);
+    const [popupData, setPopupData] = useState<Partial<PostPayload>>();
 
     const [showPopup, setShowPopup] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
@@ -91,14 +94,23 @@ export default function NewPostEditPage() {
                     }
 
                     const data = response.data;
+
                     setTitle(unescapeSpecialChars(data.title));
                     setContent(data.content);
                     setSeriesId(data.seriesId || 0);
+                    setPopupData({
+                        imgUrl: data.imgUrl,
+                        categoryId: data.categoryId,
+                        parentCategoryId: data.parentCategoryId,
+                        status: data.status,
+                        tags: data.tags,
+                    });
                 } catch (error) {
                     setPopupTitle(error.message);
                     setPopupMessage('잠시 후 다시 시도해 주세요.');
                     setPopupId('CLOSE');
                     setShowPopup(true);
+                    setPopupData({});
                 }
             }
         })();
@@ -115,7 +127,7 @@ export default function NewPostEditPage() {
                 setPopupId('SAVE');
                 setShowPopup(true);
             }
-        } else {
+        } else if (!loginUser) {
             setPopupTitle('유효하지 않은 접근입니다.');
             setPopupMessage('');
             setPopupId('SAVE');
@@ -127,7 +139,7 @@ export default function NewPostEditPage() {
         setSeriesId(value);
     };
 
-    const getData = (type: string, postInfo?: any) => {
+    const getData = (type: string, postInfo?: any, isDeleted?: boolean) => {
         const formData = new FormData();
         let requestDto;
 
@@ -140,7 +152,20 @@ export default function NewPostEditPage() {
                 ...(seriesId > 0 && { seriesId }),
             };
         } else {
-            formData.append('thumbImg', postInfo?.thumbImg);
+            if (postInfo?.thumbImg) {
+                formData.append('thumbImg', postInfo?.thumbImg);
+            }
+
+            if (
+                popupData?.imgUrl &&
+                postInfo.thumbImg &&
+                popupData?.imgUrl &&
+                !postInfo.thumbImg &&
+                isDeleted
+            ) {
+                formData.append('deleteImg', 'true');
+            }
+
             requestDto = {
                 blogId,
                 title: escapeSpecialChars(title),
@@ -349,8 +374,8 @@ export default function NewPostEditPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post) => {
-        const data = getData(post.status, post);
+    const handleSavePost = async (post, isDeleted) => {
+        const data = getData(post.status, post, isDeleted);
         try {
             const result = await customFetch(`/posts/${editPostId}`, {
                 queryKey: ['savePost', post.status],
@@ -438,6 +463,7 @@ export default function NewPostEditPage() {
 
             <SavePostPopup
                 show={showSavePopup}
+                content={popupData}
                 onClose={() => setShowSavePopup(false)}
                 onPostSave={handleSavePost}
             />

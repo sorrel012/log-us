@@ -8,6 +8,7 @@ import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
+import { useBlogStore } from '@/store/useBlogStore';
 
 export default function CommentCard({
     memberId,
@@ -18,16 +19,24 @@ export default function CommentCard({
     createDate,
     commentId,
     status,
+    isPostWriter,
     onEditSuccess,
     onDeleteSuccess,
 }: Partial<Comment> & {
+    isPostWriter: boolean;
+} & {
     onEditSuccess: (updatedContent: string, updatedStatus: string) => void;
 } & {
     onDeleteSuccess: (commentId: number) => void;
 }) {
-    //TODO 현재 로그인 유저 정보
-    const loginUser = 1;
+    const { blogInfo } = useBlogStore();
+    //TODO zustand 현재 로그인 유저 정보
+    const loginUser = 4;
     const isWriter = memberId === loginUser;
+    const isMember =
+        blogInfo?.shareYn === 'Y' &&
+        blogInfo?.members.filter((member) => member.memberId === loginUser)
+            .length === 1;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -100,11 +109,6 @@ export default function CommentCard({
         setShowConfirmPopup(true);
     };
 
-    const POST_EDIT = [
-        { value: 'edit', text: '수정', fnClick: handleEditClick },
-        { value: 'delete', text: '삭제', fnClick: handleDelete },
-    ];
-
     const handleConfirm = async () => {
         try {
             const response = await customFetch(`/comments/${commentId}`, {
@@ -152,7 +156,7 @@ export default function CommentCard({
                             <div className="font-bold">{nickname}</div>
                             {status === 'SECRET' && <IoLockClosedOutline />}
                         </div>
-                        {isWriter && (
+                        {(isWriter || isPostWriter) && (
                             <div className="relative">
                                 <IoEllipsisVerticalCircle
                                     className="size-5 flex-shrink-0 cursor-pointer text-customDarkBlue-100"
@@ -164,18 +168,22 @@ export default function CommentCard({
                                 />
                                 {isDropdownOpen && (
                                     <div className="absolute right-1/2 mt-2 w-[80px] translate-x-1/2 transform select-none rounded-lg border border-gray-300 bg-white p-2 shadow-2xl">
-                                        {POST_EDIT.map((type) => (
+                                        {isWriter && (
                                             <div
-                                                className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${
-                                                    type.value === 'delete' &&
-                                                    'text-red-600'
-                                                }`}
-                                                key={type.value}
-                                                onClick={type.fnClick}
+                                                className="cursor-pointer px-1 py-2 text-center hover:bg-gray-100"
+                                                onClick={handleEditClick}
                                             >
-                                                {type.text}
+                                                수정
                                             </div>
-                                        ))}
+                                        )}
+                                        {
+                                            <div
+                                                className="cursor-pointer px-1 py-2 text-center text-red-600 hover:bg-gray-100"
+                                                onClick={handleDelete}
+                                            >
+                                                삭제
+                                            </div>
+                                        }
                                     </div>
                                 )}
                             </div>

@@ -55,7 +55,7 @@ export async function customFetch<T>(
     //TODO 토큰 받아오는 것으로 수정
     if (true) {
         headers['Authorization'] =
-            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL2Jsb2cubG9ndXMuY29tLyIsImlzQWRtaW4iOiJmYWxzZSIsInN1YiI6InVzZXIxIiwiaWF0IjoxNzMwOTY5NjgxLCJleHAiOjE3MzYxNTM2ODF9.UlFUJesaNmAVte27M-_xV90TurL0j6vq8v-gWjI0R4Oj8wmlQHSpOv2kkmpKP2JpT7dCnnT4WucTWtPmeepyDg';
+            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL2Jsb2cubG9ndXMuY29tLyIsImlzQWRtaW4iOiJmYWxzZSIsInN1YiI6InVzZXIyIiwiaWF0IjoxNzMwOTY5NzU1LCJleHAiOjE3MzYxNTM3NTV9.pVixVD1Bl-FiE6McPczGAd3aYbpjAsWZ_t4EqjH4AoYgXsS9NvGuvwf07DXqvtClRGuQ0zAsx95nCjMWw_JJiw';
     }
 
     if (!method) {
