@@ -20,7 +20,7 @@ export default function BlogCard({
             >
                 <div className="mb-1 text-lg font-bold">{blogName}</div>
                 <Link
-                    href={`/setting/our-log/${blogAddress}`}
+                    href={`/setting/our-log/${blogAddress}/posts`}
                     className="ml-1 shrink-0 rounded-md bg-customBeige-100 px-3 py-1 text-md text-customBrown-100"
                 >
                     관리
