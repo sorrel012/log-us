@@ -43,7 +43,9 @@ type popupIdType =
 export default function NewPostEditPage() {
     const router = useRouter();
     const { blogAddress, postId: editPostId } = useParams();
-    const { blogId } = useBlogStore();
+    const { blogId, blogInfo } = useBlogStore();
+    // TODO zustand로 수정
+    const loginUser = 1;
     const { data } = useSeries();
     const series = data
         ? [
@@ -101,6 +103,25 @@ export default function NewPostEditPage() {
             }
         })();
     }, [editPostId]);
+
+    useEffect(() => {
+        if (blogId && blogInfo) {
+            const index = blogInfo.members.findIndex(
+                (member) => member.memberId === loginUser,
+            );
+            if (index < 0) {
+                setPopupTitle('유효하지 않은 접근입니다.');
+                setPopupMessage('');
+                setPopupId('SAVE');
+                setShowPopup(true);
+            }
+        } else {
+            setPopupTitle('유효하지 않은 접근입니다.');
+            setPopupMessage('');
+            setPopupId('SAVE');
+            setShowPopup(true);
+        }
+    }, [blogId, blogInfo]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);

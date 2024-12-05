@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GrFormPreviousLink } from 'react-icons/gr';
 import { useParams, useRouter } from 'next/navigation';
 import { customFetch } from '@/utils/customFetch';
@@ -43,7 +43,9 @@ type popupIdType =
 export default function NewPostPage() {
     const router = useRouter();
     const { blogAddress } = useParams();
-    const { blogId } = useBlogStore();
+    const { blogId, blogInfo } = useBlogStore();
+    // TODO zustand로 수정
+    const loginUser = 1;
     const { data } = useSeries();
     const series = data
         ? [
@@ -72,6 +74,25 @@ export default function NewPostPage() {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupTitle, setPopupTitle] = useState('');
     const [popupId, setPopupId] = useState<popupIdType>('');
+
+    useEffect(() => {
+        if (blogId && blogInfo) {
+            const index = blogInfo.members.findIndex(
+                (member) => member.memberId === loginUser,
+            );
+            if (index < 0) {
+                setPopupTitle('유효하지 않은 접근입니다.');
+                setPopupMessage('');
+                setPopupId('SAVE');
+                setShowPopup(true);
+            }
+        } else {
+            setPopupTitle('유효하지 않은 접근입니다.');
+            setPopupMessage('');
+            setPopupId('SAVE');
+            setShowPopup(true);
+        }
+    }, [blogId, blogInfo]);
 
     const handleItemsPerValueChange = (value: number) => {
         setSeriesId(value);
@@ -141,22 +162,16 @@ export default function NewPostPage() {
     };
 
     const handleAlertConfirm = async () => {
-        if (popupId === 'TMP_SAVE_EXIT') {
-            handleClosePopup();
+        if (popupId === 'TMP_SAVE_EXIT' || popupId === 'SAVE') {
             router.push(`/${blogAddress}/posts/series/0&전체보기`);
-        } else if (popupId === 'SAVE') {
-            handleClosePopup();
-            router.push(`/${blogAddress}/posts/series/0&전체보기`);
-        } else if (popupId === 'CLOSE') {
-            handleClosePopup();
         } else if (popupId === 'TITLE_FOCUS') {
             const tmpRef = titleRef.current!;
             tmpRef.focus();
-            handleClosePopup();
         } else if (popupId === 'CONTENT_FOCUS') {
-            handleClosePopup();
             setIsContentEmpty(true);
         }
+
+        handleClosePopup();
     };
 
     const handleConfirm = async () => {
