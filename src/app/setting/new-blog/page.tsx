@@ -162,16 +162,18 @@ export default function NewBlogPage() {
             myLogAddress: '',
             blogAuth: 'OWNER',
         };
-        setMembers((prevState) => [...prevState, newMember]);
 
         const body = {
             blogName,
             blogAddress,
             introduce,
             shareYn: 'Y',
-            blogMembers: members.map((member) => ({
-                memberId: member.memberId,
-            })),
+            blogMembers: [
+                ...members.map((member) => ({
+                    memberId: member.memberId,
+                })),
+                { memberId: loginUser },
+            ],
         };
 
         const res = await customFetch('/blog/setting', {
