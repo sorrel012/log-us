@@ -309,10 +309,6 @@ export default function CommentList({
                                                         loginUserNickname={
                                                             loginUserNickname
                                                         }
-                                                        isMember={isMember}
-                                                        commentWriterId={
-                                                            memberId
-                                                        }
                                                         parentId={commentId}
                                                         postId={postId}
                                                         highlightedCommentId={
@@ -320,6 +316,9 @@ export default function CommentList({
                                                         }
                                                         postWriterId={
                                                             postWriterId
+                                                        }
+                                                        commentWriterId={
+                                                            memberId
                                                         }
                                                     />
                                                 )}

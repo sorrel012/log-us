@@ -20,10 +20,13 @@ export default function CommentCard({
     commentId,
     status,
     isPostWriter,
+    isCommentWriter,
     onEditSuccess,
     onDeleteSuccess,
 }: Partial<Comment> & {
     isPostWriter: boolean;
+} & {
+    isCommentWriter?: boolean;
 } & {
     onEditSuccess: (updatedContent: string, updatedStatus: string) => void;
 } & {
@@ -154,6 +157,7 @@ export default function CommentCard({
                         </div>
                         {(isWriter ||
                             isPostWriter ||
+                            isCommentWriter ||
                             (isMember &&
                                 (userBlogAuth === 'OWNER' ||
                                     userBlogAuth === 'ADMIN'))) && (
