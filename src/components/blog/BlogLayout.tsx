@@ -12,7 +12,10 @@ export default function BlogLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { setBlogId, setBlogInfo } = useBlogStore();
+    // TODO zustand로 수정
+    const loginUser = 6;
+    const { setBlogId, setBlogInfo, setIsMember, setUserBlogAuth } =
+        useBlogStore();
     const pathname = usePathname();
     const isShow = !pathname.includes('newpost');
     const { blogAddress } = useParams();
@@ -37,11 +40,19 @@ export default function BlogLayout({
                         },
                     );
 
-                    setBlogInfo(blogInfoRes.data!);
+                    const data = blogInfoRes.data;
+                    setBlogInfo(data!);
+                    const me = data?.members.filter(
+                        (member) => member.memberId === loginUser,
+                    );
+                    setIsMember(me.length === 1);
+                    if (setIsMember.length > 0) {
+                        setUserBlogAuth(me[0].blogAuth);
+                    }
                 }
             } catch (error) {}
         })();
-    }, [blogAddress, setBlogId, setBlogInfo]);
+    }, [blogAddress, setBlogId, setBlogInfo, setIsMember, setUserBlogAuth]);
 
     const handleSidebarClick = () => {
         setIsSidebarOpen((prev) => !prev);

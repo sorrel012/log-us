@@ -12,6 +12,7 @@ import AlertPopup from '@/components/AlertPopup';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import LikeIcon from '@/components/icons/LikeIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
+import { useBlogStore } from '@/store/useBlogStore';
 
 export default function PostDetail({
     postId,
@@ -36,11 +37,12 @@ export default function PostDetail({
 }: Post) {
     const router = useRouter();
     const { blogAddress } = useParams();
+    const { isMember, userBlogAuth } = useBlogStore();
 
     //TODO zustand에서 받아오기
-    const isWriter = memberId === 1;
+    const loginUser = 1;
+    const isWriter = memberId === loginUser;
 
-    // 좋아요 관련 상태
     const [likesCnt, setLikesCnt] = useState(likeCount);
     const [isLiked, setIsLiked] = useState(liked);
 
@@ -113,11 +115,6 @@ export default function PostDetail({
         }
     };
 
-    const POST_EDIT = [
-        { value: 'edit', text: '수정', fnClick: handleEdit },
-        { value: 'delete', text: '삭제', fnClick: handleDelete },
-    ];
-
     return (
         <section className="mx-auto max-w-screen-2xl pb-3">
             <header className="border-b border-solid border-customLightBlue-100 pb-6">
@@ -130,7 +127,7 @@ export default function PostDetail({
                     <span className="min-w-0 truncate text-2xl font-bold">
                         {unescapeSpecialChars(title)}
                     </span>
-                    {isWriter && (
+                    {(isWriter || (isMember && userBlogAuth === 'OWNER')) && (
                         <div className="relative">
                             <IoEllipsisVerticalCircle
                                 className="size-7 flex-shrink-0 cursor-pointer text-customDarkBlue-100"
@@ -138,15 +135,20 @@ export default function PostDetail({
                             />
                             {isDropdownOpen && (
                                 <div className="absolute right-1/2 mt-2 w-[80px] translate-x-1/2 transform select-none rounded-lg border border-gray-300 bg-white p-2 shadow-2xl">
-                                    {POST_EDIT.map((type) => (
+                                    {isWriter && (
                                         <div
-                                            className={`cursor-pointer px-1 py-2 text-center hover:bg-gray-100 ${type.value === 'delete' && 'text-red-600'}`}
-                                            key={type.value}
-                                            onClick={type.fnClick}
+                                            className="cursor-pointer px-1 py-2 text-center hover:bg-gray-100"
+                                            onClick={handleEdit}
                                         >
-                                            {type.text}
+                                            수정
                                         </div>
-                                    ))}
+                                    )}
+                                    <div
+                                        className="cursor-pointer px-1 py-2 text-center text-red-600 hover:bg-gray-100"
+                                        onClick={handleDelete}
+                                    >
+                                        삭제
+                                    </div>
                                 </div>
                             )}
                         </div>
