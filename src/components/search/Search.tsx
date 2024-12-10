@@ -5,36 +5,37 @@ import { motion } from 'framer-motion';
 export default function Search() {
     const [activeSearch, setActiveSearch] = useState(false);
 
-    const ClickSearchBtn = () => {
-        setActiveSearch(!activeSearch);
+    const toggleSearch = () => {
+        setActiveSearch((prev) => !prev); // 상태를 반전하여 검색창 열고 닫기
     };
 
-
     return (
-        <div className='relative'>
-            {activeSearch && (
-                <motion.div animate={{width: activeSearch ? '16rem' : '2.5rem', opacity : activeSearch ? 1 : 0.5}} transition={{duration:0.4}}>
-                    <div className='relative'>
-                        <input type='text'
-                            className='w-full px-4 py-2 pr-10 text-md rounded-md outline-0 border-2 border-customLightBlue-100 text-gray-500 focus:border-customLightBlue-200'
-                            placeholder='검색어를 입력해주세요.'
-                            autoFocus
-                        />
-                        <button
-                            onClick={ClickSearchBtn}
-                            className='absolute top-1/2 right-2 transform -translate-y-1/2'
-                        >
-                            <IoSearch className='text-2xl text-customLightBlue-200' />
-                        </button>
-                    </div>
-                </motion.div>
-            )}
+        <div className='relative flex items-center'>
+            <motion.div
+                initial={{ width: '2.5rem' }}
+                animate={{ width: activeSearch ? '16rem' : '2.5rem' }}
+                transition={{ duration: 0.5 }}
+                className={`overflow-hidden flex items-center border-2 rounded-md ${
+                    activeSearch ? 'border-customLightBlue-100' : ''
+                }`}
+            >
+                {activeSearch && (
+                    <input
+                        type='text'
+                        className='w-full px-3 py-1 text-md outline-0 text-gray-500 rounded-md border-2 border-customLightBlue-100 focus:border-customLightBlue-200 duration-200'
+                        placeholder='검색어를 입력해주세요.'
+                        autoFocus
+                    />
+                )}
+            </motion.div>
 
-            {!activeSearch && (
-                <button onClick={ClickSearchBtn} className='text-customLightBlue-200 pt-1 hover:text-customDarkBlue-200 cursor-pointer'>
-                    <IoSearch className='text-2xl' />
-                </button>
-            )}
+            <button
+                onClick={toggleSearch}
+                className='absolute right-1 text-customLightBlue-200 hover:text-customDarkBlue-200 cursor-pointer duration-200'
+                style={{ transform: 'translateY(-50%)', top: '50%' }}
+            >
+                <IoSearch className='text-xl' />
+            </button>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-type ModalType = 'login' | 'join' | null;
+type ModalType = 'login' | 'join' | 'notify' | 'find' | null;
 
 export const useModal = () => {
   const [modalType, setModalType] = useState<ModalType>(null);
