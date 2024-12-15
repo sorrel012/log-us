@@ -1,6 +1,7 @@
 'use client';
 
 import MainHeader from '@/components/header/MainHeader';
+import MainGrid from '@/components/main/MainGrid';
 
 export default function MainLayout({
     children,
@@ -10,6 +11,10 @@ export default function MainLayout({
     return (
         <div>
             <MainHeader />
+            <div className='bg-customBeige-100/80'>
+                <MainGrid/>
+            </div>
+            
             {children}
         </div>
     );
