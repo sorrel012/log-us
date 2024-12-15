@@ -13,6 +13,8 @@ export default function MemberInvitation({
     members,
     onAdd,
     onDelete,
+    onChangeInvitation,
+    type,
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [invitation, setInvitation] = useState('');
@@ -43,12 +45,17 @@ export default function MemberInvitation({
         onDelete(selectedMember);
     };
 
+    const handleInvitation = (e) => {
+        setInvitation(e.target.value);
+        onChangeInvitation(e.target.value);
+    };
+
     return (
         <>
             <div className="mt-4">
                 <div className="mb-4 flex items-baseline gap-2.5">
                     <label htmlFor="introduce" className="block font-semibold">
-                        멤버 초대
+                        멤버 {type === 'OUR' ? '관리' : '초대'}
                     </label>
                     <button
                         className="rounded border border-solid border-customLightBlue-100 px-2 text-sm text-customLightBlue-200"
@@ -97,7 +104,7 @@ export default function MemberInvitation({
                     className="mt-4 w-full resize-none rounded border border-solid border-customLightBlue-100 p-2 text-sm leading-6 outline-none"
                     rows={8}
                     value={invitation}
-                    onChange={(e) => setInvitation(e.target.value)}
+                    onChange={handleInvitation}
                     placeholder={defaultInvitation}
                 />
             </div>

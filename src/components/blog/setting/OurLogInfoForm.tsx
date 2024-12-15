@@ -1,42 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
-import { Member } from '@/components/sidebar/UserProfile';
-import AlertPopup from '@/components/AlertPopup';
-import { useRouter } from 'next/navigation';
-import emailjs from 'emailjs-com';
+import { useParams } from 'next/navigation';
 import MemberInvitation from '@/components/blog/setting/MemberInvitation';
+import { Member } from '@/components/sidebar/UserProfile';
 
-export default function NewBlogPage() {
-    const router = useRouter();
-    // TODO zustand로 수정
+export default function OurLogInfoForm({
+    blogInfo,
+    onSave,
+    isLoading,
+}: {
+    blogInfo: any;
+    onSave: (data: any) => void;
+    isLoading: boolean;
+}) {
+    const { blogAddress: orgBlogAddress } = useParams();
+    //TODO zustand로 수정
     const loginUser = 1;
     const loginUserNickname = 'hana';
 
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
     const [introduce, setIntroduce] = useState('');
-    const [members, setMembers] = useState<Member[]>([]);
-    const [invitation, setInvitation] = useState('');
     const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
     const [isDuplicatedCheckedClicked, setIsDuplicatedCheckedClicked] =
         useState(false);
     const [blogAddressMessage, setBlogAddressMessage] = useState(
         '사용할 수 없는 블로그 주소입니다.',
     );
+    const [members, setMembers] = useState<Member[]>([]);
+    const [invitation, setInvitation] = useState('');
 
-    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        if (blogInfo) {
+            setBlogName(blogInfo.blogName);
+            setBlogAddress(blogInfo.blogAddress);
+            setIntroduce(blogInfo.introduce!);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupTitle, setPopupTitle] = useState('');
-    const [popupText, setPopupText] = useState('');
-
-    const validateBlogName = (name: string) => {
-        const regex = /^[a-zA-Z가-힣0-9-_]+$/;
-        return name.length >= 2 && name.length <= 20 && regex.test(name);
-    };
+            const orgMembers =
+                blogInfo?.members.filter(
+                    (member) => member.memberId !== loginUser,
+                ) || [];
+            setMembers(orgMembers);
+        }
+    }, [blogInfo]);
 
     const handleBlogAddressChange = (e) => {
         setIsDuplicateChecked(false);
@@ -88,121 +97,15 @@ export default function NewBlogPage() {
         setMembers(newMembers);
     };
 
-    const validate = () => {
-        if (!blogName) {
-            setPopupTitle('블로그명을 입력해 주세요.');
-            setPopupText('');
-            setShowPopup(true);
-            return;
-        }
-
-        if (!validateBlogName(blogName)) {
-            setPopupTitle('블로그명을 올바르게 입력해 주세요.');
-            setPopupText(
-                '한글, 영문, 숫자, 특수문자(-,_)를 사용하여<br> 2자 이상, 20자 이하로 입력해 주세요.',
-            );
-            setShowPopup(true);
-            return false;
-        }
-
-        if (!blogAddress) {
-            setPopupTitle('블로그 주소를 입력해 주세요.');
-            setPopupText('');
-            setShowPopup(true);
-            return;
-        }
-
-        if (!validateBlogAddress(blogAddress)) {
-            setPopupTitle('블로그 주소를 올바르게 입력해 주세요.');
-            setPopupText(
-                '영문, 숫자, 하이픈(-)을 사용하여 4자 이상, 32자 이하로 입력해 주세요. 하이픈은 처음과 끝에 사용할 수 없으며 연속된 하이픈도 사용할 수 없습니다.',
-            );
-            setShowPopup(true);
-            return false;
-        }
-
-        if (!isDuplicateChecked) {
-            setPopupTitle('블로그 중복 확인을 해주세요.');
-            setPopupText('');
-            setShowPopup(true);
-            return;
-        }
-
-        return true;
-    };
-
-    const handleSave = async () => {
-        if (!validate) {
-            return;
-        }
-
-        setIsLoading(true);
-
-        const newMember: Member = {
-            memberId: loginUser,
-            nickname: loginUserNickname,
-            email: '',
-            myLogAddress: '',
-            blogAuth: 'OWNER',
-        };
-
-        const body = {
+    const handleSave = () => {
+        onSave({
             blogName,
             blogAddress,
             introduce,
-            shareYn: 'Y',
-            blogMembers: [
-                ...members.map((member) => ({
-                    memberId: member.memberId,
-                })),
-                { memberId: loginUser },
-            ],
-        };
-
-        const res = await customFetch('/blog/setting', {
-            queryKey: ['new-blog', blogAddress, blogName, introduce],
-            method: 'POST',
-            body,
+            isDuplicateChecked,
+            members,
+            invitation,
         });
-
-        if (res.isError) {
-            setPopupTitle('블로그를 개설하지 못했습니다.');
-            setPopupText('잠시 후 다시 시도해 주세요.');
-            setShowPopup(true);
-            return;
-        }
-
-        try {
-            for (const member of members) {
-                if (member.memberId !== loginUser) {
-                    await emailjs.send(
-                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
-                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
-                        {
-                            to_email: member.email,
-                            to_name: member.nickname,
-                            from_name: loginUserNickname,
-                            blog_name: blogName,
-                            message:
-                                invitation && invitation.trim().length > 0
-                                    ? invitation
-                                    : '이 공간에 특별한 추억을 남겨보세요.',
-                            link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
-                        },
-                        process.env.NEXT_PUBLIC_EMAIL_USER_ID,
-                    );
-                }
-            }
-
-            router.push(`/${blogAddress}`);
-        } catch (error) {
-            setPopupTitle('초대장 발송에 실패했습니다.');
-            setPopupText('잠시 후 다시 시도해 주세요.');
-            setShowPopup(true);
-            return;
-        }
-
-        setIsLoading(false);
     };
 
     const handleInvitation = (invitation) => {
@@ -211,7 +114,7 @@ export default function NewBlogPage() {
 
     return (
         <fieldset>
-            <legend className="mb-8 text-lg font-bold">블로그 개설</legend>
+            <legend className="mb-8 text-lg font-bold">블로그 정보 변경</legend>
             <div className="*:mb-10">
                 <div>
                     <label htmlFor="blogName" className="font-semibold">
@@ -224,6 +127,7 @@ export default function NewBlogPage() {
                         value={blogName}
                         onChange={(e) => setBlogName(e.target.value)}
                         placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해 주세요.(최소 2자, 최대 20자)"
+                        disabled={isLoading}
                     />
                 </div>
                 <div>
@@ -238,11 +142,12 @@ export default function NewBlogPage() {
                             placeholder="한글, 영문, 숫자, 하이픈(-)을 사용하여 입력해 주세요.(최소 4자, 최대 32자)"
                             value={blogAddress}
                             onChange={handleBlogAddressChange}
+                            disabled={isLoading}
                         />
                         <button
                             className={`rounded-r border-b border-r border-t px-2 py-1.5 ${isDuplicateChecked ? 'border-customLightBlue-200 bg-customLightBlue-200 text-white' : 'border-customLightBlue-100 text-customDarkBlue-200'}`}
                             onClick={handleDuplicateCheck}
-                            disabled={isDuplicateChecked}
+                            disabled={isDuplicateChecked || isLoading}
                         >
                             중복 확인
                         </button>
@@ -273,6 +178,7 @@ export default function NewBlogPage() {
                         value={introduce}
                         onChange={(e) => setIntroduce(e.target.value)}
                         placeholder="100자 이내로 입력해 주세요."
+                        disabled={isLoading}
                     />
                 </div>
                 <MemberInvitation
@@ -283,34 +189,26 @@ export default function NewBlogPage() {
                     onAdd={handleAddMember}
                     onDelete={handleDeleteMember}
                     onChangeInvitation={handleInvitation}
+                    type="OUR"
                 />
                 <div className="-mt-2 text-right">
                     <button
                         className={`rounded px-4 py-2 text-md ${
+                            orgBlogAddress !== blogAddress &&
                             !isDuplicateChecked
                                 ? 'bg-neutral-300 text-neutral-700'
                                 : 'bg-customBeige-100 text-customBrown-100'
                         }`}
-                        disabled={!isDuplicateChecked}
+                        disabled={
+                            orgBlogAddress !== blogAddress &&
+                            !isDuplicateChecked
+                        }
                         onClick={handleSave}
                     >
-                        개설
+                        저장
                     </button>
                 </div>
             </div>
-
-            {isLoading && (
-                <div className="flex h-24 items-center justify-center">
-                    <div className="spinner-brown absolute top-1/2" />
-                </div>
-            )}
-
-            <AlertPopup
-                show={showPopup}
-                onConfirm={() => setShowPopup(false)}
-                title={popupTitle}
-                text={popupText}
-            />
         </fieldset>
     );
 }
