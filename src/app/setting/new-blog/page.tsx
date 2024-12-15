@@ -4,13 +4,10 @@ import React, { useState } from 'react';
 import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
 import { Member } from '@/components/sidebar/UserProfile';
-import AddMemberPopup from '@/components/blog/setting/AddMemberPopup';
 import AlertPopup from '@/components/AlertPopup';
-import Image from 'next/image';
-import PersonIcon from '@/components/icons/PersonIcon';
-import { FaRegSquareMinus } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import emailjs from 'emailjs-com';
+import MemberInvitation from '@/components/blog/setting/MemberInvitation';
 
 export default function NewBlogPage() {
     const router = useRouter();
@@ -30,15 +27,12 @@ export default function NewBlogPage() {
         '사용할 수 없는 블로그 주소입니다.',
     );
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
 
-    //TODO 블로그 도메인 수정
-    const defaultInvitation = `${loginUserNickname}님이 새로운 Our-log에 초대하였습니다.\r\n - 블로그명: ${blogName}\r\n - 블로그 주소: https://logus.com/${blogAddress}`;
     const validateBlogName = (name: string) => {
         const regex = /^[a-zA-Z가-힣0-9-_]+$/;
         return name.length >= 2 && name.length <= 20 && regex.test(name);
@@ -83,22 +77,11 @@ export default function NewBlogPage() {
         }
     };
 
-    const handleAddMber = (newMember: Member) => {
-        const dupCnt = members.findIndex(
-            (member) => member.memberId === newMember.memberId,
-        );
-
-        if (dupCnt < 0) {
-            setMembers((prevState) => [...prevState, newMember]);
-            setIsModalOpen(false);
-        } else {
-            setPopupTitle('이미 추가한 멤버입니다.');
-            setPopupText('');
-            setShowPopup(true);
-        }
+    const handleAddMember = (newMember: Member) => {
+        setMembers((prevState) => [...prevState, newMember]);
     };
 
-    const handleDeleteMber = (selectedMember: Member) => {
+    const handleDeleteMember = (selectedMember: Member) => {
         const newMembers = members.filter(
             (member) => member.memberId !== selectedMember.memberId,
         );
@@ -288,65 +271,14 @@ export default function NewBlogPage() {
                         placeholder="100자 이내로 입력해 주세요."
                     />
                 </div>
-                <div className="mt-4">
-                    <div className="mb-4 flex items-baseline gap-2.5">
-                        <label
-                            htmlFor="introduce"
-                            className="block font-semibold"
-                        >
-                            멤버 초대
-                        </label>
-                        <button
-                            className="rounded border border-solid border-customLightBlue-100 px-2 text-sm text-customLightBlue-200"
-                            onClick={() => setIsModalOpen(true)}
-                        >
-                            + 추가
-                        </button>
-                    </div>
-                    <ul className="flex min-h-[120px] flex-wrap rounded border border-solid border-customLightBlue-100 px-3 py-1">
-                        {members.map((member: Member) => (
-                            <li
-                                key={member.memberId}
-                                className="flex w-[280px] items-center gap-2 px-5"
-                            >
-                                <>
-                                    {member.imgUrl && (
-                                        <div className="relative h-10 w-10">
-                                            <Image
-                                                src={member.imgUrl}
-                                                alt={`${member.nickname}'s photo`}
-                                                fill
-                                            />
-                                        </div>
-                                    )}
-                                    {!member.imgUrl && (
-                                        <PersonIcon size="size-10" />
-                                    )}
-                                </>
-                                <div className="max-w-[180px] truncate text-lg font-bold">
-                                    {member.nickname}
-                                </div>
-                                <FaRegSquareMinus
-                                    className="cursor-pointer text-customLightBlue-200"
-                                    onClick={() => handleDeleteMber(member)}
-                                />
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="mt-4">
-                    <label htmlFor="introduce" className="block font-semibold">
-                        초대장
-                    </label>
-                    <textarea
-                        id="introduce"
-                        className="mt-4 w-full resize-none rounded border border-solid border-customLightBlue-100 p-2 text-sm leading-6 outline-none"
-                        rows={8}
-                        value={invitation}
-                        onChange={(e) => setInvitation(e.target.value)}
-                        placeholder={defaultInvitation}
-                    />
-                </div>
+                <MemberInvitation
+                    members={members}
+                    blogAddress={blogAddress}
+                    blogName={blogName}
+                    loginUserNickname={loginUserNickname}
+                    onAdd={handleAddMember}
+                    onDelete={handleDeleteMember}
+                />
                 <div className="-mt-2 text-right">
                     <button
                         className={`rounded px-4 py-2 text-md ${
@@ -367,12 +299,6 @@ export default function NewBlogPage() {
                     <div className="spinner-brown absolute top-1/2" />
                 </div>
             )}
-
-            <AddMemberPopup
-                show={isModalOpen}
-                onConfirm={handleAddMber}
-                onCancel={() => setIsModalOpen(false)}
-            />
 
             <AlertPopup
                 show={showPopup}
