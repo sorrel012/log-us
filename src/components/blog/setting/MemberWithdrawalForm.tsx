@@ -19,7 +19,7 @@ export default function MemberWithdrawalForm() {
         if (popupId === 'CLOSE') {
             setShowPopup(false);
         } else {
-            router.push('/main');
+            router.push('/(main)');
         }
     };
 

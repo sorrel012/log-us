@@ -1,3 +1,9 @@
+import MainGrid from '@/components/main/MainGrid';
+
 export default function Home() {
-    return <div>메인</div>;
+    return (
+        <div className="bg-customBeige-100/80">
+            <MainGrid />
+        </div>
+    );
 }

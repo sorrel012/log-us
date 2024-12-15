@@ -215,7 +215,7 @@ export default function OurLogSetting() {
             return;
         }
 
-        router.push('/main');
+        router.push('/(main)');
     };
 
     return (
