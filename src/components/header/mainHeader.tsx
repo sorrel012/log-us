@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import Search from '@/components/search/Search';
-import { useModal } from '../../hooks/useModal';
+import { useModal } from '@/hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
 import JoinModal from '../@Modal/JoinModal';
 import NotifyModal from '../@Modal/NotifyModal';
@@ -17,9 +18,8 @@ import { loginAuthStore } from '@/constants/loginAuthStore';
 export default function MainHeader() {
     const { modalType, openModal, closeModal } = useModal();
     const [findType, setFindType] = useState<string | null>(null);
+    //TODO zustand 수정
     const { userId, accessToken, clearAuthInfo } = loginAuthStore();
-    const isLogined = false; //임시
-    // const isLogined = !!accessToken;
     const [viewOurLog, setViewOurLog] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -75,24 +75,19 @@ export default function MainHeader() {
 
     return (
         <header>
-            <div className="mx-auto flex h-min max-w-screen-2xl items-center justify-between p-5">
+            <div className="mx-auto flex h-[70px] max-w-screen-xl items-center justify-between p-5">
                 {/* 메인 헤더 공통 구역 */}
-                <div className="flex items-center">
-                    <Link href="/">
-                        <img src="/logo.png" width={200} alt="Logo" />
-                    </Link>
-                    <div className="ml-3 flex space-x-8">
-                        <Link href="/notice" className="pt-2 text-md">
-                            공지사항
-                        </Link>
-                        <Link href="/qna" className="pt-2 text-md">
-                            QnA
-                        </Link>
-                    </div>
-                </div>
+                <Link href="/" className="">
+                    <Image
+                        src="/logo.png"
+                        width={200}
+                        height={200}
+                        alt="Logo"
+                    />
+                </Link>
                 {/* 로그인여부에 따라 달라지는 구역 */}
                 <div className="relative flex items-center justify-between">
-                    {isLogined && (
+                    {userId && (
                         <>
                             <div className="mr-8 flex items-center justify-between gap-6">
                                 <div className="cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200">
@@ -160,7 +155,7 @@ export default function MainHeader() {
                         </div>
                     )}
 
-                    {!isLogined && (
+                    {!userId && (
                         <div className="mr-5">
                             <Search />
                         </div>
@@ -168,13 +163,11 @@ export default function MainHeader() {
                     <div>
                         <button
                             onClick={
-                                isLogined
-                                    ? handleLogout
-                                    : () => openModal('login')
+                                userId ? handleLogout : () => openModal('login')
                             }
                             className="mr-2 rounded-lg bg-customDarkBlue-200 px-8 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
                         >
-                            {isLogined ? '로그아웃' : '로그인'}
+                            {userId ? '로그아웃' : '로그인'}
                         </button>
                         <LoginModal
                             isOpen={modalType === 'login'}

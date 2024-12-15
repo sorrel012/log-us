@@ -1,6 +1,5 @@
 'use client';
 
-import BlogHeader from '@/components/header/blogHeader';
 import React, { useEffect, useState } from 'react';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { useParams, usePathname } from 'next/navigation';
@@ -49,9 +48,6 @@ export default function BlogLayout({
 
     return (
         <>
-            <div className="sticky top-0 z-50 bg-white">
-                {isShow && <BlogHeader />}
-            </div>
             <main className="mx-auto flex">
                 {isShow && (
                     <Sidebar
