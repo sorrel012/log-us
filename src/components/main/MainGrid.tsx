@@ -1,30 +1,122 @@
-import MainGridItem from './MainGridItem';
+'use client';
 
-export default function MainGrid() {
-    const gridItems = [
-        { id : 1, category : '영화', title : '인사이드 아웃 후기', content : '안녕하세요~ 개불안이입니다. 이번에 인사이드 아웃2가 개봉해서 보고왔습니다.....', view : 50, comment : 2, like : 12},
-        { id : 2, category : '영화', title : '검정고무신 대개봉', content : '추억의 검정고무신이 개봉했습니다. 저도 최근에 보고왔는데요. 기영이 머리가...', view : 50, comment : 2, like : 12},
-        { id : 3, category : '영화', title : '브나나 한국오다', content : '세계 최고로 재밌는 브루클린 나인나인의 에이미, 페랄타, 찰스가 한국을 방문한다는 소식인데요.....', view : 50, comment : 2, like : 12},
-        { id : 4, category : '영화', title : '인사이드 아웃 후기', content : '안녕하세요~ 개불안이입니다. 이번에 인사이드 아웃2가 개봉해서 보고왔습니다.....', view : 50, comment : 2, like : 12},
-        { id : 5, category : '영화', title : '검정고무신 대개봉', content : '추억의 검정고무신이 개봉했습니다. 저도 최근에 보고왔는데요. 기영이 머리가...', view : 50, comment : 2, like : 12},
-        { id : 6, category : '영화', title : '브나나 한국오다', content : '세계 최고로 재밌는 브루클린 나인나인의 에이미, 페랄타, 찰스가 한국을 방문한다는 소식인데요.....', view : 50, comment : 2, like : 12},
-        { id : 7, category : '영화', title : '인사이드 아웃 후기', content : '안녕하세요~ 개불안이입니다. 이번에 인사이드 아웃2가 개봉해서 보고왔습니다.....', view : 50, comment : 2, like : 12},
-        { id : 8, category : '영화', title : '검정고무신 대개봉', content : '추억의 검정고무신이 개봉했습니다. 저도 최근에 보고왔는데요. 기영이 머리가...', view : 50, comment : 2, like : 12},
-        { id : 9, category : '영화', title : '브나나 한국오다', content : '세계 최고로 재밌는 브루클린 나인나인의 에이미, 페랄타, 찰스가 한국을 방문한다는 소식인데요.....', view : 50, comment : 2, like : 12},
+import MainGridItem from '@/components/main/MainGridItem';
+
+export interface ExtendedPost {
+    postId: number;
+    blogId: number;
+    imgUrl?: string | null;
+    title: string;
+    content: string;
+    views: number;
+    commentCount: number;
+    likeCount: number;
+    blogAddress: string;
+}
+
+export interface MainData {
+    categoryId: number;
+    categoryName: string;
+    postList: ExtendedPost[];
+}
+
+export default function MainGrid({ content }: { content: MainData }) {
+    //TODO 임시 게시글
+    const postList: ExtendedPost[] = [
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content:
+                '2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content: '2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content: '2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content: '2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content: '2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
+        {
+            postId: 2,
+            blogId: 1,
+            imgUrl: null,
+            title: '2번째 포스팅 제목입니다.',
+            content: '2번째 포스팅 내용입니다.',
+            views: 13,
+            commentCount: 2,
+            likeCount: 1,
+            blogAddress: 'sorrel012',
+        },
     ];
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-            {gridItems.map((item) => (
-                <MainGridItem
-                    key={item.id}
-                    title={item.title}
-                    content={item.content}
-                    view={item.view}
-                    comment={item.comment}
-                    like={item.like}
-                />
-            ))}
-        </div>
+        <section className="p-6">
+            <div className="mb-3 flex items-baseline gap-3 font-bold">
+                <div>
+                    HOT <em className="text-red-500">POST</em>
+                </div>
+                <h3 className="shadow-custom rounded-xl bg-yellow-100 px-3 text-xs">
+                    {content.categoryName}
+                </h3>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {/*{content.postList.map((post) => (*/}
+                {postList.map((post) => (
+                    <MainGridItem
+                        blogAddress={post.blogAddress}
+                        postId={post.postId}
+                        key={post.postId}
+                        title={post.title!}
+                        content={post.content!}
+                        views={post.views!}
+                        commentCount={post.commentCount!}
+                        likeCount={post.likeCount!}
+                    />
+                ))}
+            </div>
+        </section>
     );
 }

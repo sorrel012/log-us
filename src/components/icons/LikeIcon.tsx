@@ -12,7 +12,7 @@ export default function LikeIcon({
     liked?: boolean;
 }) {
     return (
-        <div className="flex">
+        <div className="flex items-center">
             {liked ? (
                 <IoMdHeart
                     className={'cursor-pointer text-orange-600'}
