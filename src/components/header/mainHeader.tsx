@@ -2,29 +2,31 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import Search from '@/components/search/Search';
 import { useModal } from '@/hooks/useModal';
-import LoginModal from '../@Modal/LoginModal';
-import FindModal from '../@Modal/FindModal';
 
-import { useMemo, useRef, useState } from 'react';
-import { FiSettings } from 'react-icons/fi';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { useRouter } from 'next/navigation';
 import { Blog } from '@/components/UserGrid';
+import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
+import Search from '@/components/search/Search';
+import { FiSettings } from 'react-icons/fi';
+import LoginModal from '@/components/@Modal/LoginModal';
+import FindModal from '@/components/@Modal/FindModal';
 
 export default function MainHeader() {
     const router = useRouter();
-    const logRef = useRef(null);
-    const menuRef = useRef(null);
+    const logRef = useRef<HTMLDivElement | null>(null);
+    const menuRef = useRef<HTMLDivElement | null>(null);
+    const [isClient, setIsClient] = useState(false);
+
+    const { loginUser, clearAuthInfo } = useAuthStore();
 
     const { modalType, openModal, closeModal } = useModal();
     const [findType, setFindType] = useState<string | null>(null);
-    const { loginUser, loginUserNickname, loginImgUrl, clearAuthInfo } =
-        useAuthStore();
+
     const [viewOurLog, setViewOurLog] = useState(false);
     const [ourLogItems, setOurLogItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,6 +35,19 @@ export default function MainHeader() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const totalPages = Math.ceil(ourLogItems.length / itemsPerPage);
+
+    const itemsToDisplay = useMemo(() => {
+        return ourLogItems.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage,
+        );
+    }, [currentPage, ourLogItems, itemsPerPage]);
 
     const handleOurLog = async () => {
         if (!viewOurLog && ourLogItems.length === 0) {
@@ -56,15 +71,6 @@ export default function MainHeader() {
         setViewOurLog((prevState) => !prevState);
     };
 
-    const totalPages = Math.ceil(ourLogItems.length / itemsPerPage);
-
-    const itemsToDisplay = useMemo(() => {
-        return ourLogItems.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage,
-        );
-    }, [currentPage, ourLogItems]);
-
     const handleNextPage = () => {
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
@@ -87,6 +93,10 @@ export default function MainHeader() {
         console.log('로그아웃 되었습니다.');
     };
 
+    if (!isClient) {
+        return null;
+    }
+
     return (
         <header>
             <div className="mx-auto flex h-[70px] max-w-screen-xl items-center justify-between p-5">
@@ -95,6 +105,7 @@ export default function MainHeader() {
                     <Image
                         src="/logo.png"
                         width={200}
+                        아니
                         height={200}
                         alt="Logo"
                     />
@@ -129,9 +140,7 @@ export default function MainHeader() {
                                             }}
                                         >
                                             <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3">
-                                                <div className="font-bold">
-                                                    Our-log 목록
-                                                </div>
+                                                <div className="font-bold"></div>
                                                 <div className="flex items-center gap-3">
                                                     <button
                                                         onClick={handlePrevPage}
