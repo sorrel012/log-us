@@ -1,22 +1,33 @@
 import PersonIcon from '@/components/icons/PersonIcon';
+import { Member } from '@/components/sidebar/UserProfile';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const members = [
-    { name: 'hana', image: 'https://' },
-    { name: 'manda', image: 'https://' },
-    { name: 'loveorlike', image: 'https://' },
-    { name: '코코', image: 'https://' },
-    { name: 'asdfasdfasdfasdfasdfasfsda', image: 'https://' },
-];
-
-export default function OurLogsUserProfile() {
+export default function OurLogsUserProfile({ members }: { members: Member[] }) {
     return (
-        <ul className="mb-2">
-            {members.map((member, index) => (
-                <li key={index} className="mb-1 flex items-center">
-                    <div>
-                        <PersonIcon className="mr-2 mt-1" size="size-7" />
-                    </div>
-                    <span className="truncate text-lg">{member.name}</span>
+        <ul className="mb-2 w-full">
+            {members.map(({ nickname, imgUrl, myLogAddress, memberId }) => (
+                <li key={memberId} className="mb-1 w-full">
+                    <Link
+                        href={`/${myLogAddress}`}
+                        className="flex w-full items-center"
+                    >
+                        {imgUrl ? (
+                            <div className="relative mr-2 mt-1 size-7">
+                                <Image
+                                    src={imgUrl}
+                                    alt={nickname}
+                                    fill
+                                    className="rounded-full"
+                                />
+                            </div>
+                        ) : (
+                            <PersonIcon className="mr-2 mt-1" size="size-7 " />
+                        )}
+                        <span className="w-[80%] truncate pt-1 text-lg">
+                            {nickname}
+                        </span>
+                    </Link>
                 </li>
             ))}
         </ul>

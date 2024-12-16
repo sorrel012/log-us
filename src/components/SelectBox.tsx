@@ -4,22 +4,44 @@ import { useEffect, useRef, useState } from 'react';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 
 export interface SelectType {
-    value: number;
+    value: number | string;
     text: string;
 }
 
 interface SelectProps {
-    onItemsPerPageChange: (value: number) => void;
+    onItemsPerValueChange: (value: number | string) => void;
     items: SelectType[];
+    defaultValue?: number | string;
+    disabled?: boolean;
+    width?: string;
+    containerWidth?: string;
 }
 
 export default function SelectBox({
-    onItemsPerPageChange,
+    onItemsPerValueChange,
     items,
+    defaultValue,
+    disabled,
+    width,
+    containerWidth,
 }: SelectProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState(items[0].text);
+    const [selectedText, setSelectedText] = useState<string>('');
+
     const selectBoxRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (items.length > 0) {
+            const selectedItem = items.find(
+                (item) => item.value === defaultValue,
+            );
+            if (selectedItem) {
+                setSelectedText(selectedItem.text || items[0].text);
+            } else {
+                setSelectedText(items[0].text || '선택');
+            }
+        }
+    }, [defaultValue, items]);
 
     const handleToggle = () => {
         setIsOpen((prev) => !prev);
@@ -27,7 +49,7 @@ export default function SelectBox({
 
     const handleOptionClick = (item: SelectType) => {
         setSelectedText(item.text);
-        onItemsPerPageChange(item.value);
+        onItemsPerValueChange(item.value);
         setIsOpen((prev) => !prev);
     };
 
@@ -37,7 +59,7 @@ export default function SelectBox({
                 selectBoxRef.current &&
                 !selectBoxRef.current!.contains(event.target as Node)
             ) {
-                setIsOpen(false); // 외부 클릭 시 드롭다운 닫기
+                setIsOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -47,15 +69,24 @@ export default function SelectBox({
     }, []);
 
     return (
-        <div className="select" ref={selectBoxRef}>
-            <button className="select-box" onClick={handleToggle}>
+        <div
+            className={`select ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${containerWidth ? containerWidth : 'w-full'}`}
+            ref={selectBoxRef}
+        >
+            <button
+                className={`select-box ${width ? width : 'w-[140px]'}`}
+                onClick={handleToggle}
+                disabled={disabled}
+            >
                 <span className="selected-text">{selectedText}</span>
                 <div>
                     {isOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
                 </div>
             </button>
             {isOpen && (
-                <ul className="options-container">
+                <ul
+                    className={`options-container ${width ? width : 'w-[140px]'}`}
+                >
                     {items.map((item) => (
                         <li
                             key={item.value}

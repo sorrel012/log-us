@@ -16,17 +16,27 @@ const config: Config = {
                 customDarkBlue: {
                     100: '#394C60',
                     200: '#506b87',
-
                 },
                 customBeige: {
-                    100: '#EFECE7',
+                    100: '#F7F5F3',
                 },
                 customGray: {
                     100: '#CDCAC5',
+                    200 :'#F6F6F6',
                 },
                 customBrown: {
                     100: '#A38970',
                 },
+                customMint : {
+                    100 : '#A5C4BD',
+                },
+            },
+            screens: {
+                '3xl': '1800px',
+                '4xl': '2200px',
+            },
+            fontSize: {
+                md: '1rem',
             },
         },
     },
