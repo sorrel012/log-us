@@ -4,13 +4,13 @@ import { persist } from 'zustand/middleware';
 interface AuthState {
     loginUser: number | null;
     loginUserNickname: string | null;
-    isAdmin: boolean;
-    accessToken: string | null;
+    loginImgUrl: string | null;
+    loginBlogAddress: string | null;
     setAuthInfo: (
         loginUser: number | null,
         loginUserNickname: string | null,
-        isAdmin: boolean,
-        accessToken: string | null,
+        loginImgUrl: string | null,
+        loginBlogAddress: string | null,
     ) => void;
     clearAuthInfo: () => void;
 }
@@ -20,21 +20,32 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             loginUser: null,
             loginUserNickname: null,
-            isAdmin: false,
-            accessToken: null,
-            setAuthInfo: (loginUser, loginUserNickname, isAdmin, accessToken) =>
-                set({ loginUser, loginUserNickname, isAdmin, accessToken }),
+            loginImgUrl: null,
+            loginBlogAddress: null,
+            setAuthInfo: (
+                loginUser,
+                loginUserNickname,
+                loginImgUrl,
+                loginBlogAddress,
+            ) =>
+                set({
+                    loginUser,
+                    loginUserNickname,
+                    loginImgUrl,
+                    loginBlogAddress,
+                }),
             clearAuthInfo: () =>
                 set({
                     loginUser: null,
                     loginUserNickname: null,
-                    isAdmin: false,
-                    accessToken: null,
+                    loginImgUrl: null,
+                    loginBlogAddress: null,
                 }),
         }),
         {
-            name: 'auth-storage',
-            getStorage: () => localStorage,
+            name: 'auth',
+            getStorage: () =>
+                typeof window !== 'undefined' ? localStorage : undefined,
         },
     ),
 );

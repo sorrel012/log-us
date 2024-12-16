@@ -6,7 +6,7 @@ import SelectBox from '@/components/SelectBox';
 import {
     BLOG_OWNER_PERMISSION_OPTIONS,
     BLOG_PERMISSION_OPTIONS,
-} from '@/utils/constant';
+} from '@/constants/constant';
 
 export default function BlogPermission({
     member,

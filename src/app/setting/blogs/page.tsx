@@ -17,7 +17,7 @@ export default function BlogsPage() {
     useEffect(() => {
         (async () => {
             const res = await customFetch<Blog[]>('/blog/our-log', {
-                queryKey: ['follower'],
+                queryKey: ['blogs'],
             });
 
             if (res.isError) {
