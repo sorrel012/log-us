@@ -8,7 +8,7 @@ import { Post } from '@/components/blog/post/PostCard';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import PostList from '@/components/blog/post/PostList';
 

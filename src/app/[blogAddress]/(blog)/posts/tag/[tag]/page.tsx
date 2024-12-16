@@ -5,7 +5,7 @@ import { useBlogStore } from '@/store/useBlogStore';
 import { useEffect, useMemo, useState } from 'react';
 import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import PostListSkeleton from '@/components/blog/post/PostListSkeleton';
 import PostList from '@/components/blog/post/PostList';
 import Pagination from '@/components/Pagination';

@@ -6,7 +6,7 @@ import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 import Pagination from '@/components/Pagination';
 import ConfirmPopup from '@/components/ConfirmPopup';

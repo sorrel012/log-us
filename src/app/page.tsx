@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import MainGrid, { MainData } from '@/components/main/MainGrid';
 import SelectBox from '@/components/SelectBox';
-import { MAIN_DATE_OPTIONS } from '@/utils/constant';
+import { MAIN_DATE_OPTIONS } from '@/constants/constant';
 
 type DateType = 'day' | 'week' | 'month' | 'year';
 

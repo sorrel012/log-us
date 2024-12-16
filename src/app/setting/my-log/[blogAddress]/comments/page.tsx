@@ -7,7 +7,7 @@ import { Comment } from '@/components/blog/post/PostCard';
 import { customFetch } from '@/utils/customFetch';
 import SearchContent from '@/components/blog/setting/SearchContent';
 import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import Pagination from '@/components/Pagination';
 import SearchNothing from '@/components/blog/setting/SearchNothing';
 import AlertPopup from '@/components/AlertPopup';
