@@ -37,7 +37,7 @@ export default function Home() {
     };
 
     return (
-        <div className="font-default h-screen">
+        <div className="font-default mt-10 h-screen">
             <div className="mx-auto flex max-w-screen-xl gap-8 px-6 text-lg *:cursor-pointer">
                 <div
                     onClick={() => setGrid('trend')}
