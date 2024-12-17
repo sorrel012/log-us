@@ -5,11 +5,11 @@ import JoinModal from '../@Modal/JoinModal';
 
 import { FaRegBell } from 'react-icons/fa';
 import { FaCircleUser } from 'react-icons/fa6';
-import { loginAuthStore } from '@/constants/loginAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function BlogHeader() {
     const { modalType, openModal, closeModal } = useModal();
-    const { userId, accessToken, clearAuthInfo } = loginAuthStore();
+    const { userId, accessToken, clearAuthInfo } = useAuthStore();
     const isLogined = !!accessToken;
 
     const handleLogout = () => {
@@ -65,8 +65,6 @@ export default function BlogHeader() {
                             />
                         </>
                     )}
-
-
                 </div>
             </div>
         </header>

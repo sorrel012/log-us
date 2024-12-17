@@ -157,13 +157,10 @@ export default function NewPostEditPage() {
             }
 
             if (
-                popupData?.imgUrl &&
-                postInfo.thumbImg &&
-                popupData?.imgUrl &&
-                !postInfo.thumbImg &&
-                isDeleted
+                (popupData?.imgUrl && postInfo.thumbImg) ||
+                (popupData?.imgUrl && !postInfo.thumbImg && isDeleted)
             ) {
-                formData.append('deleteImg', 'true');
+                formData.append('deleteThumb', 'true');
             }
 
             requestDto = {

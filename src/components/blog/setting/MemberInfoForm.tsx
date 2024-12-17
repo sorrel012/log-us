@@ -215,6 +215,7 @@ export default function MemberInfoForm() {
             return;
         }
 
+        setIsDeleted(false);
         setPopupTitle('회원정보를 변경하였습니다.');
         setPopupText('');
         setShowPopup(true);

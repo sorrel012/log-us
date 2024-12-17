@@ -8,6 +8,7 @@ import SelectBox from '@/components/SelectBox';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { useBlogStore } from '@/store/useBlogStore';
+import { PostPayload } from '@/app/[blogAddress]/(blog)/newpost/[postId]/page';
 
 const STATUS = [
     { text: '공개', value: 'PUBLIC' },
@@ -23,15 +24,15 @@ export default function SavePostPopup({
     show,
     onClose,
     onPostSave,
+    content,
 }: {
     show: boolean;
     onClose: () => void;
-    onPostSave: (post: any) => void;
+    onPostSave: (post: any, isDeleted: boolean) => void;
+    content: Partial<PostPayload>;
 }) {
     const { blogInfo } = useBlogStore();
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-    const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [thumbImg, setThumbImg] = useState<File | null>(null);
     const [parentCategory, setParentCategory] = useState([
@@ -40,10 +41,23 @@ export default function SavePostPopup({
     const [category, setCategory] = useState([
         { text: '2차 카테고리', value: 0 },
     ]);
-    const [parentId, setParentId] = useState<number>();
-    const [categoryId, setCategoryId] = useState<number>();
+    const [parentId, setParentId] = useState<number>(0);
+    const [categoryId, setCategoryId] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
     const [status, setStatus] = useState<string>('PUBLIC');
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [isDeleted, setIsDeleted] = useState(false);
+
+    useEffect(() => {
+        if (content) {
+            setImagePreview(content.imgUrl || null);
+            setStatus(content.status || 'PUBLIC');
+            setTags(content.tags || []);
+            setParentId(content.parentCategoryId || 0);
+        }
+    }, [content]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -51,11 +65,13 @@ export default function SavePostPopup({
             setThumbImg(file);
             setImagePreview(URL.createObjectURL(file));
         }
+        setIsDeleted(false);
     };
     const handleImageClick = () => fileInputRef.current?.click();
     const handleImageDelete = () => {
         setThumbImg(null);
         setImagePreview(null);
+        setIsDeleted(true);
     };
 
     useEffect(() => {
@@ -99,9 +115,13 @@ export default function SavePostPopup({
                     { text: '2차 카테고리', value: 0 },
                     ...selectBoxCategoryDtl,
                 ]);
+
+                if (content?.categoryId) {
+                    setCategoryId(content.categoryId);
+                }
             });
         }
-    }, [parentId]);
+    }, [content, parentId]);
 
     const handleParentCategory = (id: number) => setParentId(id);
     const handleCategory = (id: number) => setCategoryId(id);
@@ -148,13 +168,17 @@ export default function SavePostPopup({
     };
 
     const handleSavePost = () => {
-        onPostSave({
-            thumbImg,
-            parentId,
-            categoryId,
-            status,
-            tags,
-        });
+        onPostSave(
+            {
+                thumbImg,
+                parentId,
+                categoryId,
+                status,
+                tags,
+            },
+            isDeleted,
+        );
+        setIsDeleted(false);
         onClose();
     };
 

@@ -10,6 +10,7 @@ import AlertPopup from '@/components/AlertPopup';
 import React, { useEffect, useState } from 'react';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
+import { useBlogStore } from '@/store/useBlogStore';
 
 export default function ContentSettingCard({
     content,
@@ -23,13 +24,15 @@ export default function ContentSettingCard({
     type: 'POST' | 'COMMENT';
 }) {
     //TODO zustand 로 수정
-    const loginUser = 1;
+    const loginUser = 6;
     const router = useRouter();
     const { blogAddress } = useParams();
     const pathname = usePathname();
     const isOurLog = pathname.includes('/our-log');
+    const { userBlogAuth } = useBlogStore();
 
     const [postWriterId, setPostWriterId] = useState();
+    const [commentWriterId, setCommentWriterId] = useState();
 
     const {
         postId,
@@ -42,8 +45,10 @@ export default function ContentSettingCard({
         likeCount,
         nickname,
         memberId,
+        parentId,
         commentId,
         content: comment,
+        depth,
     } = content;
 
     const [showPopup, setShowPopup] = useState(false);
@@ -53,7 +58,7 @@ export default function ContentSettingCard({
     const [popupId, setPopupId] = useState('');
 
     useEffect(() => {
-        if (type === 'COMMENT' && isOurLog && postId) {
+        if (isOurLog && type === 'COMMENT' && postId) {
             (async () => {
                 const res = await customFetch(`/posts/${postId}`, {
                     queryKey: ['posts', 'comment'],
@@ -66,6 +71,12 @@ export default function ContentSettingCard({
                 }
 
                 setPostWriterId(res.data.memberId);
+                if (depth === 1) {
+                    const commentWriter = res.data.comments.parents.filter(
+                        (comment) => comment.commentId === parentId,
+                    );
+                    console.log('commentR', parentId, commentWriter);
+                }
             })();
         }
     }, [isOurLog, postId, type]);
@@ -211,7 +222,10 @@ export default function ContentSettingCard({
                             />
                         )}
                         {(loginUser === postWriterId ||
-                            loginUser === memberId) && (
+                            loginUser === memberId ||
+                            userBlogAuth === 'OWNER' ||
+                            (type === 'COMMENT' &&
+                                userBlogAuth === 'ADMIN')) && (
                             <LightButton
                                 className="mr-1"
                                 text="삭제"

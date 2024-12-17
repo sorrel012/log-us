@@ -6,7 +6,7 @@ import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
-import { PAGE_SIZE_OPTIONS } from '@/utils/constant';
+import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 import Pagination from '@/components/Pagination';
 import ConfirmPopup from '@/components/ConfirmPopup';
@@ -16,7 +16,7 @@ import SearchNothing from '@/components/blog/setting/SearchNothing';
 
 export default function OurLogPostsManagePage() {
     const router = useRouter();
-    const { blogId } = useBlogStore();
+    const { blogId, userBlogAuth } = useBlogStore();
 
     const [isLoading, setIsLoading] = useState(true);
     const [size, setSize] = useState(10);
@@ -177,7 +177,7 @@ export default function OurLogPostsManagePage() {
                 <>
                     <div className="mb-4 flex items-center justify-between">
                         <button
-                            className="rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100"
+                            className={`rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100 ${userBlogAuth !== 'OWNER' && 'invisible'}`}
                             disabled={selectedPosts.length < 1}
                             onClick={handleDelete}
                         >
