@@ -11,7 +11,10 @@ export default function SettingSidebar({
 }: {
     isOurLogPath: boolean;
 }) {
-    const { setBlogId, setBlogInfo } = useBlogStore();
+    //TODO zustand에서 받아오는 걸로 수정
+    const loginUser = 6;
+    const { setBlogId, setBlogInfo, setIsMember, setUserBlogAuth } =
+        useBlogStore();
     const { blogAddress } = useParams();
 
     const myLogPath = '/setting/my-log';
@@ -77,7 +80,15 @@ export default function SettingSidebar({
                         },
                     );
 
-                    setBlogInfo(blogInfoRes.data!);
+                    const data = blogInfoRes.data;
+                    setBlogInfo(data!);
+                    const me = data?.members.filter(
+                        (member) => member.memberId === loginUser,
+                    );
+                    setIsMember(me.length === 1);
+                    if (setIsMember.length > 0) {
+                        setUserBlogAuth(me[0].blogAuth);
+                    }
                 }
             } else {
                 const res = await customFetch('/blog/my-log', {
@@ -96,6 +107,8 @@ export default function SettingSidebar({
                     );
 
                     setBlogInfo(blogInfoRes.data!);
+                    setIsMember(false);
+                    setUserBlogAuth('');
 
                     const myLogBasePath = `/setting/my-log/${blogInfoRes.data?.blogAddress}`;
                     const myLog = [

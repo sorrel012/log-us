@@ -19,14 +19,10 @@ export default function CommentList({
     const router = useRouter();
     const searchParams = useSearchParams();
     const commentIdParam = searchParams.get('commentId');
-    const { blogInfo } = useBlogStore();
     //TODO zustand로 수정 필요
-    const loginUser = 4;
-    const loginUserNickname = '유저3';
-    const isMember =
-        blogInfo?.shareYn === 'Y' &&
-        blogInfo?.members.filter((member) => member.memberId === loginUser)
-            .length === 1;
+    const loginUser = 6;
+    const loginUserNickname = '유저1';
+    const { isMember } = useBlogStore();
 
     const [commentText, setCommentText] = useState('');
     const [isPrivateComment, setIsPrivateComment] = useState(false);
@@ -313,10 +309,6 @@ export default function CommentList({
                                                         loginUserNickname={
                                                             loginUserNickname
                                                         }
-                                                        isMember={isMember}
-                                                        commentWriterId={
-                                                            memberId
-                                                        }
                                                         parentId={commentId}
                                                         postId={postId}
                                                         highlightedCommentId={
@@ -324,6 +316,9 @@ export default function CommentList({
                                                         }
                                                         postWriterId={
                                                             postWriterId
+                                                        }
+                                                        commentWriterId={
+                                                            memberId
                                                         }
                                                     />
                                                 )}

@@ -8,18 +8,20 @@ import { escapeSpecialChars } from '@/utils/commonUtil';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { IoLockClosedOutline } from 'react-icons/io5';
+import { useBlogStore } from '@/store/useBlogStore';
 
 export default function ReplyList({
     loginUser,
     loginUserNickname,
     postId,
     postWriterId,
-    isMember,
     commentWriterId,
     parentId,
     childComments,
     highlightedCommentId,
 }) {
+    const { isMember } = useBlogStore();
+
     const [childCommentsState, setChildCommentsState] = useState(childComments);
     const [replyText, setReplyText] = useState('');
     const [isPrivateReply, setIsPrivateReply] = useState(false);
@@ -160,6 +162,9 @@ export default function ReplyList({
                                             commentId={childComment.commentId}
                                             isPostWriter={
                                                 postWriterId === loginUser
+                                            }
+                                            isCommentWriter={
+                                                commentWriterId === loginUser
                                             }
                                             onEditSuccess={(
                                                 updatedContent,

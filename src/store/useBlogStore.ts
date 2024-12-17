@@ -14,6 +14,10 @@ interface BlogState {
     setBlogId: (id: string) => void;
     blogInfo: BlogInfo;
     setBlogInfo: (info: BlogInfo) => void;
+    isMember: boolean;
+    setIsMember: (isMember: boolean) => void;
+    userBlogAuth: string | null;
+    setUserBlogAuth: (auth: string) => void;
 }
 
 export const useBlogStore = create<BlogState>((set) => ({
@@ -22,4 +26,8 @@ export const useBlogStore = create<BlogState>((set) => ({
     blogInfo: null,
     setBlogInfo: (info: BlogInfo) =>
         set((state) => ({ ...state, blogInfo: info })),
+    isMember: false,
+    setIsMember: (isMember: boolean) => set({ isMember }),
+    userBlogAuth: null,
+    setUserBlogAuth: (auth: string) => set({ userBlogAuth: auth }),
 }));
