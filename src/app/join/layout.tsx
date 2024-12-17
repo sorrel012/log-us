@@ -1,8 +1,9 @@
 'use client';
 
 import MainHeader from '@/components/header/MainHeader';
+import Join from '@/components/join/Join';
 
-export default function MainLayout({
+export default function BlogLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
@@ -10,7 +11,7 @@ export default function MainLayout({
     return (
         <div>
             <MainHeader />
-            {children}
+            <Join />
         </div>
     );
 }

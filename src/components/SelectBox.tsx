@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 
 export interface SelectType {
-    value: number;
+    value: number | string;
     text: string;
 }
 
 interface SelectProps {
-    onItemsPerValueChange: (value: number) => void;
+    onItemsPerValueChange: (value: number | string) => void;
     items: SelectType[];
-    defaultValue?: number;
+    defaultValue?: number | string;
     disabled?: boolean;
     width?: string;
     containerWidth?: string;

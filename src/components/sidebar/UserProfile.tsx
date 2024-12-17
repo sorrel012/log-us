@@ -11,6 +11,7 @@ export interface Member {
     imgUrl?: string;
     myLogAddress: string;
     email?: string;
+    createDate?: string;
 }
 
 export default function UserProfile() {

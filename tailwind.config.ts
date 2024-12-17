@@ -22,9 +22,13 @@ const config: Config = {
                 },
                 customGray: {
                     100: '#CDCAC5',
+                    200 :'#F6F6F6',
                 },
                 customBrown: {
                     100: '#A38970',
+                },
+                customMint : {
+                    100 : '#A5C4BD',
                 },
             },
             screens: {
