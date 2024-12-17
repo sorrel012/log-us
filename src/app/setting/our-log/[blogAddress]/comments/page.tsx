@@ -16,7 +16,7 @@ import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 
 export default function OurLogCommentsManagePage() {
     const router = useRouter();
-    const { blogId } = useBlogStore();
+    const { blogId, userBlogAuth } = useBlogStore();
 
     const [isLoading, setIsLoading] = useState(true);
     const [size, setSize] = useState(10);
@@ -171,7 +171,7 @@ export default function OurLogCommentsManagePage() {
                 <>
                     <div className="mb-4 flex items-center justify-between">
                         <button
-                            className="rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100"
+                            className={`rounded bg-customBeige-100 px-3 py-2.5 text-customBrown-100 ${userBlogAuth === 'EDITOR' && 'invisible'}`}
                             disabled={selectedComments.length < 1}
                             onClick={handleDelete}
                         >

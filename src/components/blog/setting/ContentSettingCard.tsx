@@ -32,6 +32,7 @@ export default function ContentSettingCard({
     const { userBlogAuth } = useBlogStore();
 
     const [postWriterId, setPostWriterId] = useState();
+    const [commentWriterId, setCommentWriterId] = useState();
 
     const {
         postId,
@@ -44,8 +45,10 @@ export default function ContentSettingCard({
         likeCount,
         nickname,
         memberId,
+        parentId,
         commentId,
         content: comment,
+        depth,
     } = content;
 
     const [showPopup, setShowPopup] = useState(false);
@@ -55,7 +58,7 @@ export default function ContentSettingCard({
     const [popupId, setPopupId] = useState('');
 
     useEffect(() => {
-        if (type === 'COMMENT' && isOurLog && postId) {
+        if (isOurLog && type === 'COMMENT' && postId) {
             (async () => {
                 const res = await customFetch(`/posts/${postId}`, {
                     queryKey: ['posts', 'comment'],
@@ -68,6 +71,12 @@ export default function ContentSettingCard({
                 }
 
                 setPostWriterId(res.data.memberId);
+                if (depth === 1) {
+                    const commentWriter = res.data.comments.parents.filter(
+                        (comment) => comment.commentId === parentId,
+                    );
+                    console.log('commentR', parentId, commentWriter);
+                }
             })();
         }
     }, [isOurLog, postId, type]);
