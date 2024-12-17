@@ -82,7 +82,7 @@ export async function customFetch<T>(
             headers,
             ...options,
             signal,
-            // credentials: 'include',
+            credentials: 'include',
         });
 
         clearTimeout(timeoutId);
