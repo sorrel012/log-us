@@ -20,23 +20,22 @@ export default function CommentCard({
     commentId,
     status,
     isPostWriter,
+    isCommentWriter,
     onEditSuccess,
     onDeleteSuccess,
 }: Partial<Comment> & {
     isPostWriter: boolean;
 } & {
+    isCommentWriter?: boolean;
+} & {
     onEditSuccess: (updatedContent: string, updatedStatus: string) => void;
 } & {
     onDeleteSuccess: (commentId: number) => void;
 }) {
-    const { blogInfo } = useBlogStore();
+    const { isMember, userBlogAuth } = useBlogStore();
     //TODO zustand 현재 로그인 유저 정보
-    const loginUser = 4;
+    const loginUser = 6;
     const isWriter = memberId === loginUser;
-    const isMember =
-        blogInfo?.shareYn === 'Y' &&
-        blogInfo?.members.filter((member) => member.memberId === loginUser)
-            .length === 1;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -156,7 +155,12 @@ export default function CommentCard({
                             <div className="font-bold">{nickname}</div>
                             {status === 'SECRET' && <IoLockClosedOutline />}
                         </div>
-                        {(isWriter || isPostWriter) && (
+                        {(isWriter ||
+                            isPostWriter ||
+                            isCommentWriter ||
+                            (isMember &&
+                                (userBlogAuth === 'OWNER' ||
+                                    userBlogAuth === 'ADMIN'))) && (
                             <div className="relative">
                                 <IoEllipsisVerticalCircle
                                     className="size-5 flex-shrink-0 cursor-pointer text-customDarkBlue-100"
