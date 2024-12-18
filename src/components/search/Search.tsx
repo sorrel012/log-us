@@ -1,19 +1,19 @@
 import { IoSearch } from 'react-icons/io5';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useSearchStore } from '@/store/useSearchStore';
 
-export default function Search({
-    onSearch,
-}: {
-    onSearch: (keyword: string) => void;
-}) {
+export default function Search() {
+    const { setKeyword, setIsOpen } = useSearchStore();
+
     const [activeSearch, setActiveSearch] = useState(false);
-    const [keyword, setKeyword] = useState('');
+    const [searchKeyword, setSearchKeyword] = useState('');
 
     const toggleSearch = () => {
         if (activeSearch) {
-            setKeyword('');
+            setSearchKeyword('');
         }
+        setIsOpen(!activeSearch);
         setActiveSearch((prev) => !prev);
     };
 
@@ -32,11 +32,11 @@ export default function Search({
                             type="text"
                             className="w-full rounded-md border-2 border-customLightBlue-100 px-3 py-1 text-md text-gray-500 outline-0 duration-200 focus:border-customLightBlue-200"
                             placeholder="검색어를 입력해주세요."
-                            value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
                             onKeyPress={(e) => {
                                 if (e.key === 'Enter') {
-                                    onSearch(keyword);
+                                    setKeyword(searchKeyword);
                                 }
                             }}
                             autoFocus

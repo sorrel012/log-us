@@ -16,7 +16,6 @@ import { FiSettings } from 'react-icons/fi';
 import LoginModal from '@/components/@Modal/LoginModal';
 import FindModal from '@/components/@Modal/FindModal';
 import { useStore } from '@/store/useStore';
-import { useSearchStore } from '@/store/useSearchStore';
 
 export default function MainHeader() {
     const loginBlogAddress = useStore(useAuthStore, (state) => {
@@ -26,7 +25,6 @@ export default function MainHeader() {
         return state.loginUser;
     });
     const { clearAuthInfo } = useAuthStore();
-    const { setKeyword } = useSearchStore();
 
     const router = useRouter();
     const logRef = useRef<HTMLDivElement | null>(null);
@@ -89,10 +87,6 @@ export default function MainHeader() {
         });
     };
 
-    const handleSearch = async (keyword: string) => {
-        setKeyword(keyword);
-    };
-
     const handleNextPage = () => {
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
@@ -132,7 +126,7 @@ export default function MainHeader() {
                                     <button
                                         ref={menuRef}
                                         onClick={handleOurLog}
-                                        className="relative cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
+                                        className="relative mr-2 cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
                                     >
                                         Our-log
                                     </button>
@@ -149,7 +143,9 @@ export default function MainHeader() {
                                             }}
                                         >
                                             <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3">
-                                                <div className="font-bold"></div>
+                                                <div className="font-bold">
+                                                    Our-log 목록
+                                                </div>
                                                 <div className="flex items-center gap-3">
                                                     <button
                                                         onClick={handlePrevPage}
@@ -195,7 +191,7 @@ export default function MainHeader() {
                                 </div>
                             </div>
                             <div className="mr-5 flex items-center justify-between gap-4">
-                                <Search onSearch={handleSearch} />
+                                <Search />
                                 <Link href="/setting">
                                     <FiSettings className="text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
                                 </Link>
@@ -205,7 +201,7 @@ export default function MainHeader() {
 
                     {!loginUser && (
                         <div className="mr-5">
-                            <Search onSearch={handleSearch} />
+                            <Search />
                         </div>
                     )}
                     <div>

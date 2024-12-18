@@ -19,7 +19,7 @@ const MainGridItem = ({
     return (
         <Link
             href={`/${blogAddress}/posts/${postId}`}
-            className="font-default rounded-md border border-solid border-gray-200 bg-white py-3 shadow"
+            className="font-default flex items-center rounded-md border border-solid border-gray-200 bg-white py-3 shadow"
         >
             <div className="flex items-center gap-3 px-3 py-1">
                 {imgUrl ? (
