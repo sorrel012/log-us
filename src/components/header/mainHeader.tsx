@@ -88,9 +88,13 @@ export default function MainHeader() {
         openModal('find');
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         clearAuthInfo();
-        console.log('로그아웃 되었습니다.');
+        window.localStorage.removeItem('auth');
+        await customFetch('/logout', {
+            queryKey: ['logout'],
+            method: 'POST',
+        });
     };
 
     if (!isClient) {
@@ -105,7 +109,6 @@ export default function MainHeader() {
                     <Image
                         src="/logo.png"
                         width={200}
-                        아니
                         height={200}
                         alt="Logo"
                     />

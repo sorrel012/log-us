@@ -21,77 +21,6 @@ export interface MainData {
 }
 
 export default function MainGrid({ content }: { content: MainData }) {
-    //TODO 임시 게시글
-    const postList: ExtendedPost[] = [
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content:
-                '2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content: '2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content: '2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content: '2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content: '2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-        {
-            postId: 2,
-            blogId: 1,
-            imgUrl: null,
-            title: '2번째 포스팅 제목입니다.',
-            content: '2번째 포스팅 내용입니다.',
-            views: 13,
-            commentCount: 2,
-            likeCount: 1,
-            blogAddress: 'sorrel012',
-        },
-    ];
-
     return (
         <section className="p-6">
             <div className="mb-3 flex items-baseline gap-3 font-bold">
@@ -103,18 +32,8 @@ export default function MainGrid({ content }: { content: MainData }) {
                 </h3>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {/*{content.postList.map((post) => (*/}
-                {postList.map((post) => (
-                    <MainGridItem
-                        blogAddress={post.blogAddress}
-                        postId={post.postId}
-                        key={post.postId}
-                        title={post.title!}
-                        content={post.content!}
-                        views={post.views!}
-                        commentCount={post.commentCount!}
-                        likeCount={post.likeCount!}
-                    />
+                {content.postList.map((post) => (
+                    <MainGridItem key={post.postId} {...post} />
                 ))}
             </div>
         </section>

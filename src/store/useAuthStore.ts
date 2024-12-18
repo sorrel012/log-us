@@ -44,8 +44,9 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: 'auth',
-            getStorage: () =>
-                typeof window !== 'undefined' ? localStorage : undefined,
+            getStorage: () => {
+                return localStorage;
+            },
         },
     ),
 );
