@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
@@ -15,14 +15,22 @@ import Search from '@/components/search/Search';
 import { FiSettings } from 'react-icons/fi';
 import LoginModal from '@/components/@Modal/LoginModal';
 import FindModal from '@/components/@Modal/FindModal';
+import { useStore } from '@/store/useStore';
+import { useSearchStore } from '@/store/useSearchStore';
 
 export default function MainHeader() {
+    const loginBlogAddress = useStore(useAuthStore, (state) => {
+        return state.loginBlogAddress;
+    });
+    const loginUser = useStore(useAuthStore, (state) => {
+        return state.loginUser;
+    });
+    const { clearAuthInfo } = useAuthStore();
+    const { setKeyword } = useSearchStore();
+
     const router = useRouter();
     const logRef = useRef<HTMLDivElement | null>(null);
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const [isClient, setIsClient] = useState(false);
-
-    const { loginUser, clearAuthInfo } = useAuthStore();
 
     const { modalType, openModal, closeModal } = useModal();
     const [findType, setFindType] = useState<string | null>(null);
@@ -35,10 +43,6 @@ export default function MainHeader() {
     const [showPopup, setShowPopup] = useState(false);
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const totalPages = Math.ceil(ourLogItems.length / itemsPerPage);
 
@@ -71,18 +75,6 @@ export default function MainHeader() {
         setViewOurLog((prevState) => !prevState);
     };
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage((prevPage) => prevPage + 1);
-        }
-    };
-
-    const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage((prevPage) => prevPage - 1);
-        }
-    };
-
     const handleOpenFindModal = (type: string) => {
         setFindType(type);
         openModal('find');
@@ -97,10 +89,21 @@ export default function MainHeader() {
         });
     };
 
-    if (!isClient) {
-        return null;
-    }
+    const handleSearch = async (keyword: string) => {
+        setKeyword(keyword);
+    };
 
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1);
+        }
+    };
     return (
         <header>
             <div className="mx-auto flex h-[70px] max-w-screen-xl items-center justify-between p-5">
@@ -118,9 +121,12 @@ export default function MainHeader() {
                     {loginUser && (
                         <>
                             <div className="mr-8 flex items-center justify-between gap-6">
-                                <div className="cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200">
+                                <Link
+                                    href={`/${loginBlogAddress}`}
+                                    className="cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
+                                >
                                     My-log
-                                </div>
+                                </Link>
                                 <div className="h-3 w-0.5 border bg-customLightBlue-200"></div>
                                 <div>
                                     <button
@@ -189,15 +195,17 @@ export default function MainHeader() {
                                 </div>
                             </div>
                             <div className="mr-5 flex items-center justify-between gap-4">
-                                <Search />
-                                <FiSettings className="cursor-pointer text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
+                                <Search onSearch={handleSearch} />
+                                <Link href="/setting">
+                                    <FiSettings className="text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
+                                </Link>
                             </div>
                         </>
                     )}
 
                     {!loginUser && (
                         <div className="mr-5">
-                            <Search />
+                            <Search onSearch={handleSearch} />
                         </div>
                     )}
                     <div>
@@ -211,21 +219,19 @@ export default function MainHeader() {
                         >
                             {loginUser ? '로그아웃' : '로그인'}
                         </button>
-                        <LoginModal
-                            isOpen={modalType === 'login'}
-                            closeModal={closeModal}
-                            openJoinModal={() => openModal('join')}
-                            openFindModal={(type: string) =>
-                                handleOpenFindModal(type)
-                            }
-                        />
-                        <FindModal
-                            isOpen={modalType == 'find'}
-                            closeModal={closeModal}
-                            findType={findType}
-                        />
                     </div>
                 </div>
+                <LoginModal
+                    isOpen={modalType === 'login'}
+                    closeModal={closeModal}
+                    openJoinModal={() => openModal('join')}
+                    openFindModal={(type: string) => handleOpenFindModal(type)}
+                />
+                <FindModal
+                    isOpen={modalType == 'find'}
+                    closeModal={closeModal}
+                    findType={findType}
+                />
                 <AlertPopup
                     show={showPopup}
                     onConfirm={() => setShowPopup(false)}
