@@ -12,6 +12,7 @@ export default function Search() {
     const toggleSearch = () => {
         if (activeSearch) {
             setSearchKeyword('');
+            setKeyword('');
         }
         setIsOpen(!activeSearch);
         setActiveSearch((prev) => !prev);

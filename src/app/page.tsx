@@ -10,6 +10,7 @@ import { useStore } from '@/store/useStore';
 import FeedGrid from '@/components/main/FeedGrid';
 import { useSearchStore } from '@/store/useSearchStore';
 import { LuSearchX } from 'react-icons/lu';
+import { FaUserFriends } from 'react-icons/fa';
 
 type DateType = 'day' | 'week' | 'month' | 'year';
 
@@ -90,8 +91,10 @@ export default function Home() {
                 setTotalPages(res.data.totalPages);
                 setPosts(res.data.content);
             })();
+        } else {
+            setGrid('trend');
         }
-    }, [isOpen, keyword]);
+    }, [isOpen, keyword, page, size]);
 
     const handleItemsPerValueChange = (value: DateType) => {
         setDate(value);
@@ -149,8 +152,14 @@ export default function Home() {
                             {feedData && feedData.length > 0 ? (
                                 <FeedGrid content={feedData} />
                             ) : (
-                                <div className="mt-10 px-6">
-                                    구독 글이 없습니다.
+                                <div className="mt-10 flex w-full flex-col items-center px-6 text-center">
+                                    <FaUserFriends className="size-24 text-customLightBlue-200" />
+                                    <div className="mt-5 flex flex-col gap-2">
+                                        <div>구독 중인 블로그가 없습니다.</div>
+                                        <div>
+                                            관심 주제의 블로그를 구독해 보세요.
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </>

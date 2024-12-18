@@ -23,13 +23,14 @@ const MainGridItem = ({
         >
             <div className="flex items-center gap-3 px-3 py-1">
                 {imgUrl ? (
-                    <Image
-                        src={imgUrl}
-                        width={100}
-                        height={100}
-                        alt={title}
-                        className="w-5/12"
-                    />
+                    <div className="size-[100px]">
+                        <Image
+                            src={imgUrl}
+                            width={200}
+                            height={200}
+                            alt={title}
+                        />
+                    </div>
                 ) : (
                     <HiPhoto className="h-[100px] w-[100px] text-customLightBlue-100" />
                 )}
