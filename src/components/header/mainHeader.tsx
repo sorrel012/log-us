@@ -105,7 +105,6 @@ export default function MainHeader() {
                     <Image
                         src="/logo.png"
                         width={200}
-                        아니
                         height={200}
                         alt="Logo"
                     />
