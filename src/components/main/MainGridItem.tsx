@@ -19,27 +19,29 @@ const MainGridItem = ({
     return (
         <Link
             href={`/${blogAddress}/posts/${postId}`}
-            className="font-default flex items-center rounded-md border border-solid border-gray-200 bg-white py-3 shadow"
+            className="font-default flex w-full items-center rounded-md border border-solid border-gray-200 bg-white py-3 shadow"
         >
-            <div className="flex items-center gap-3 px-3 py-1">
-                {imgUrl ? (
-                    <div className="size-[100px]">
-                        <Image
-                            src={imgUrl}
-                            width={200}
-                            height={200}
-                            alt={title}
-                        />
-                    </div>
-                ) : (
-                    <HiPhoto className="h-[100px] w-[100px] text-customLightBlue-100" />
-                )}
-                <div className="flex w-7/12 flex-col justify-between">
+            <div className="flex w-full flex-col items-center gap-3 px-3 py-1 text-center md:flex-row">
+                <div>
+                    {imgUrl ? (
+                        <div className="w-[100px]">
+                            <Image
+                                src={imgUrl}
+                                width={100}
+                                height={100}
+                                alt={title}
+                            />
+                        </div>
+                    ) : (
+                        <HiPhoto className="h-[100px] w-[100px] text-customLightBlue-100" />
+                    )}
+                </div>
+                <div className="flex w-full flex-col justify-between md:max-w-[210px] lg:w-[200px]">
                     <div>
-                        <div className="mb-2 truncate text-lg font-semibold">
+                        <div className="mb-2 truncate text-left text-lg font-semibold">
                             {unescapeSpecialChars(title)}
                         </div>
-                        <div className="line-clamp-2 text-sm text-gray-600">
+                        <div className="line-clamp-2 text-left text-sm text-gray-600">
                             {unescapeSpecialChars(content).replace(
                                 /<[^>]*>/g,
                                 '',
