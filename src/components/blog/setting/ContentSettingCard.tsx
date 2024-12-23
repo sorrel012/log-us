@@ -75,7 +75,6 @@ export default function ContentSettingCard({
                     const commentWriter = res.data.comments.parents.filter(
                         (comment) => comment.commentId === parentId,
                     );
-                    console.log('commentR', parentId, commentWriter);
                 }
             })();
         }

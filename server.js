@@ -30,11 +30,9 @@ app.prepare().then(() => {
 
     httpServer.listen(HTTP_PORT, (err) => {
         if (err) throw err;
-        console.log(`> Ready on http://localhost:${HTTP_PORT}`);
     });
 
     httpsServer.listen(HTTPS_PORT, (err) => {
         if (err) throw err;
-        console.log(`> Ready on https://localhost:${HTTPS_PORT}`);
     });
 });

@@ -16,8 +16,11 @@ import { FiSettings } from 'react-icons/fi';
 import LoginModal from '@/components/@Modal/LoginModal';
 import FindModal from '@/components/@Modal/FindModal';
 import { useStore } from '@/store/useStore';
+import { usePathname } from 'next/dist/client/components/navigation';
 
 export default function MainHeader() {
+    const pathname = usePathname();
+    const isJoin = pathname.includes('join');
     const searchParams = useSearchParams();
     const login = searchParams.get('login');
 
@@ -209,23 +212,25 @@ export default function MainHeader() {
                         </>
                     )}
 
-                    {!loginUser && (
+                    {!loginUser && !isJoin && (
                         <div className="mr-5">
                             <Search />
                         </div>
                     )}
-                    <div>
-                        <button
-                            onClick={
-                                loginUser
-                                    ? handleLogout
-                                    : () => openModal('login')
-                            }
-                            className="mr-2 rounded-lg bg-customDarkBlue-200 px-8 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
-                        >
-                            {loginUser ? '로그아웃' : '로그인'}
-                        </button>
-                    </div>
+                    {!isJoin && (
+                        <div>
+                            <button
+                                onClick={
+                                    loginUser
+                                        ? handleLogout
+                                        : () => openModal('login')
+                                }
+                                className="mr-2 rounded-lg bg-customDarkBlue-200 px-8 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
+                            >
+                                {loginUser ? '로그아웃' : '로그인'}
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <LoginModal
                     isOpen={modalType === 'login'}

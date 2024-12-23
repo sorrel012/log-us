@@ -13,7 +13,6 @@ export default function BlogHeader() {
 
     const handleLogout = () => {
         clearAuthInfo();
-        console.log('로그아웃 되었습니다.');
     };
 
     return (

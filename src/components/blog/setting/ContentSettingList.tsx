@@ -16,7 +16,6 @@ export default function ContentSettingList({
     const [selectedContents, setSelectedContents] = useState<
         Post[] | Comment[]
     >([]);
-    console.log('콘', contents);
     useEffect(() => {
         onSelect(selectedContents);
     }, [selectedContents]);
