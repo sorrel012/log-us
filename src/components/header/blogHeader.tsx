@@ -1,7 +1,6 @@
 import Search from '@/components/search/Search';
 import { useModal } from '@/hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
-import JoinModal from '../@Modal/JoinModal';
 
 import { FaRegBell } from 'react-icons/fa';
 import { FaCircleUser } from 'react-icons/fa6';
@@ -58,10 +57,6 @@ export default function BlogHeader() {
                                 isOpen={modalType === 'login'}
                                 closeModal={closeModal}
                                 openJoinModal={() => openModal('join')}
-                            />
-                            <JoinModal
-                                isOpen={modalType === 'join'}
-                                closeModal={closeModal}
                             />
                         </>
                     )}

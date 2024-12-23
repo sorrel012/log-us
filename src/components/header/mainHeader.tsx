@@ -4,11 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Blog } from '@/components/UserGrid';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import Search from '@/components/search/Search';
@@ -18,6 +18,15 @@ import FindModal from '@/components/@Modal/FindModal';
 import { useStore } from '@/store/useStore';
 
 export default function MainHeader() {
+    const searchParams = useSearchParams();
+    const login = searchParams.get('login');
+
+    useEffect(() => {
+        if (login === 'true') {
+            openModal('login');
+        }
+    }, [login]);
+
     const loginBlogAddress = useStore(useAuthStore, (state) => {
         return state.loginBlogAddress;
     });
@@ -220,8 +229,10 @@ export default function MainHeader() {
                 </div>
                 <LoginModal
                     isOpen={modalType === 'login'}
-                    closeModal={closeModal}
-                    openJoinModal={() => openModal('join')}
+                    closeModal={() => {
+                        closeModal();
+                        router.push('/');
+                    }}
                     openFindModal={(type: string) => handleOpenFindModal(type)}
                 />
                 <FindModal

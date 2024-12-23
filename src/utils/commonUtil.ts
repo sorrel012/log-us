@@ -89,3 +89,38 @@ export function unescapeSpecialChars(str: string): string {
         return entity;
     });
 }
+
+export function validatePassword(password: string) {
+    const lengthRegex = /^.{8,16}$/;
+    const alphabetRegex = /[a-zA-Z]/;
+    const numberRegex = /\d/;
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>_-]/;
+
+    const containsAlphabet = alphabetRegex.test(password);
+    const containsNumber = numberRegex.test(password);
+    const containsSpecialChar = specialCharRegex.test(password);
+
+    if (!lengthRegex.test(password)) {
+        return false;
+    }
+
+    const mixCount = [
+        containsAlphabet,
+        containsNumber,
+        containsSpecialChar,
+    ].filter(Boolean).length;
+
+    return mixCount >= 2;
+}
+
+export function validateBlogAddress(address: string) {
+    const regex = /^[a-zA-Z0-9-]+$/;
+    return (
+        address.length >= 4 &&
+        address.length <= 32 &&
+        regex.test(address) &&
+        !address.startsWith('-') &&
+        !address.endsWith('-') &&
+        !address.includes('--')
+    );
+}

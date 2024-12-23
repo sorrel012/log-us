@@ -3,6 +3,7 @@ import { FcCancel, FcOk } from 'react-icons/fc';
 import { ChangeEvent, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { useRouter } from 'next/navigation';
+import { validatePassword } from '@/utils/commonUtil';
 
 export default function MemberPwdForm() {
     const router = useRouter();
@@ -49,29 +50,6 @@ export default function MemberPwdForm() {
             setIsCorrectCurrPwd(false);
             setCurrPwdMessage('현재 비밀번호와 일치하지 않습니다.');
         }
-    };
-
-    const validatePassword = (password: string) => {
-        const lengthRegex = /^.{8,16}$/;
-        const alphabetRegex = /[a-zA-Z]/;
-        const numberRegex = /\d/;
-        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>_-]/;
-
-        const containsAlphabet = alphabetRegex.test(password);
-        const containsNumber = numberRegex.test(password);
-        const containsSpecialChar = specialCharRegex.test(password);
-
-        if (!lengthRegex.test(password)) {
-            return false;
-        }
-
-        const mixCount = [
-            containsAlphabet,
-            containsNumber,
-            containsSpecialChar,
-        ].filter(Boolean).length;
-
-        return mixCount >= 2;
     };
 
     const handleNewPwdChange = (e: ChangeEvent<HTMLInputElement>) => {

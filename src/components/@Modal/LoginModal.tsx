@@ -5,20 +5,21 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { customFetch } from '@/utils/customFetch';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 interface LoginModalProps {
     isOpen: boolean;
     closeModal: () => void;
-    openJoinModal: () => void;
     openFindModal: (type: string) => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
     isOpen,
     closeModal,
-    openJoinModal,
     openFindModal,
 }) => {
+    const router = useRouter();
+
     const [isClient, setIsClient] = useState(false);
     const [modalContainer, setModalContainer] = useState<HTMLElement | null>(
         null,
@@ -92,6 +93,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
         }
 
         handleCloseModal();
+    };
+
+    const handleJoin = () => {
+        closeModal();
+        router.push('/join');
     };
 
     return createPortal(
@@ -176,7 +182,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                                     <div className="h-5 w-0.5 border bg-gray-200"></div>
                                     <div
                                         className="cursor-pointer text-sm"
-                                        onClick={openJoinModal}
+                                        onClick={handleJoin}
                                     >
                                         회원가입
                                     </div>

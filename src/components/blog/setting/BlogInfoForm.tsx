@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
 import { useParams } from 'next/navigation';
+import { validateBlogAddress } from '@/utils/commonUtil';
 
 export default function BlogInfoForm({
     blogInfo,
@@ -37,18 +38,6 @@ export default function BlogInfoForm({
     const handleBlogAddressChange = (e) => {
         setIsDuplicateChecked(false);
         setBlogAddress(e.target.value);
-    };
-
-    const validateBlogAddress = (address: string) => {
-        const regex = /^[a-zA-Z0-9-]+$/;
-        return (
-            address.length >= 4 &&
-            address.length <= 32 &&
-            regex.test(address) &&
-            !address.startsWith('-') &&
-            !address.endsWith('-') &&
-            !address.includes('--')
-        );
     };
 
     const handleDuplicateCheck = async () => {
