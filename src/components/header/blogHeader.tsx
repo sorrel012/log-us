@@ -59,6 +59,13 @@ export default function BlogHeader() {
                             <Link href="/setting">
                                 <FiSettings className="mr-4 text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
                             </Link>
+
+                            <button
+                                onClick={handleLogout}
+                                className="mr-4 rounded-lg bg-customDarkBlue-200 px-6 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
+                            >
+                                로그아웃
+                            </button>
                         </>
                     )}
 

@@ -5,14 +5,14 @@ import { useParams } from 'next/navigation';
 import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function SettingSidebar({
     isOurLogPath,
 }: {
     isOurLogPath: boolean;
 }) {
-    //TODO zustand에서 받아오는 걸로 수정
-    const loginUser = 6;
+    const { loginUser } = useAuthStore();
     const { setBlogId, setBlogInfo, setIsMember, setUserBlogAuth } =
         useBlogStore();
     const { blogAddress } = useParams();
@@ -135,7 +135,7 @@ export default function SettingSidebar({
     }, [blogAddress, isOurLogPath, setBlogId, setBlogInfo]);
 
     return (
-        <aside className="fixed flex h-[100vh] w-1/5 flex-col gap-12 overflow-y-auto border-r border-solid border-customLightBlue-100 p-5 pt-14 lg:w-1/6">
+        <aside className="fixed flex h-[100vh] w-1/5 flex-col gap-12 overflow-y-auto border-r border-solid border-customLightBlue-100 p-5 pt-8 lg:w-1/6">
             <PanelModule title="프로필" contents={PROFILE} />
             <PanelModule title="My-log" contents={MY_LOG} />
             {!isOurLogPath && (

@@ -3,6 +3,7 @@ import MyLogUserProfile from '@/components/sidebar/MyLogUserProfile';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export interface Member {
     memberId: number;
@@ -15,12 +16,12 @@ export interface Member {
 }
 
 export default function UserProfile() {
+    const { loginUser } = useAuthStore();
     const { blogInfo } = useBlogStore();
     const router = useRouter();
-    const loginMember = 1; // TODO Zustand에서 받아와야 함
 
     const isContain =
-        blogInfo?.members?.some((member) => member.memberId === loginMember) ||
+        blogInfo?.members?.some((member) => member.memberId === loginUser) ||
         false;
 
     const handleButtonClick = () => {
@@ -41,7 +42,6 @@ export default function UserProfile() {
                 </p>
                 {isContain && (
                     <div className="text-center">
-                        {/*TODO 로그인 한 사용자와 비교*/}
                         <button
                             className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
                             onClick={handleButtonClick}
