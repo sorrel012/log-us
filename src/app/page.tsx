@@ -11,6 +11,7 @@ import FeedGrid from '@/components/main/FeedGrid';
 import { useSearchStore } from '@/store/useSearchStore';
 import { LuSearchX } from 'react-icons/lu';
 import { FaUserFriends } from 'react-icons/fa';
+import Pagination from '@/components/Pagination';
 
 type DateType = 'day' | 'week' | 'month' | 'year';
 
@@ -166,7 +167,16 @@ export default function Home() {
                     ) : grid === 'search' ? (
                         <>
                             {posts && posts.length > 0 ? (
-                                <FeedGrid content={posts} />
+                                <>
+                                    <FeedGrid content={posts} />
+                                    <Pagination
+                                        currentPage={page}
+                                        totalPages={totalPages}
+                                        onPageChange={(pageChange) =>
+                                            setPage(pageChange)
+                                        }
+                                    />
+                                </>
                             ) : (
                                 <div className="w-ful mt-10 flex flex-col items-center px-6 text-center">
                                     <LuSearchX className="size-24 text-customLightBlue-200" />
