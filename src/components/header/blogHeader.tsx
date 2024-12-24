@@ -12,6 +12,7 @@ import BlogSearch from '@/components/search/BlogSearch';
 
 export default function BlogHeader() {
     const pathname = usePathname();
+    const isSearchShow = pathname.split('/').length === 2;
     const isSetting = pathname.includes('setting');
 
     const { modalType, openModal, closeModal } = useModal();
@@ -54,7 +55,7 @@ export default function BlogHeader() {
                 <div className="flex items-center gap-6">
                     {loginUser && !isSetting && (
                         <>
-                            <BlogSearch />
+                            {isSearchShow && <BlogSearch />}
                             <Link href="/setting">
                                 <FiSettings className="mr-4 text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
                             </Link>
@@ -63,7 +64,7 @@ export default function BlogHeader() {
 
                     {!loginUser && (
                         <>
-                            <BlogSearch />
+                            {isSearchShow && <BlogSearch />}
                             <button
                                 onClick={
                                     loginUser

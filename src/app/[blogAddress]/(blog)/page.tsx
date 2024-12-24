@@ -21,7 +21,7 @@ export default function BlogMain() {
     const [size, setSize] = useState(10);
     const [totalPosts, setTotalPosts] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
-    const [posts, setPosts] = useState<Post[] | null>(null); // posts 초기값을 null로 설정
+    const [posts, setPosts] = useState<Post[] | null>(null);
 
     useEffect(() => {
         if (isBlogOpen && blogKeyword) {
