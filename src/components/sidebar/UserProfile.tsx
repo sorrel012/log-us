@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 export interface Member {
     memberId: number;
+    loginId: string;
     nickname: string;
     blogAuth: string;
     imgUrl?: string;

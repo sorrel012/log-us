@@ -7,7 +7,11 @@ import emailjs from 'emailjs-com';
 import { customFetch } from '@/utils/customFetch';
 import { FcCancel, FcOk } from 'react-icons/fc';
 import AlertPopup from '@/components/AlertPopup';
-import { validateBlogAddress, validatePassword } from '@/utils/commonUtil';
+import {
+    generateCode,
+    validateBlogAddress,
+    validatePassword,
+} from '@/utils/commonUtil';
 import imageCompression from 'browser-image-compression';
 import { useRouter } from 'next/navigation';
 
@@ -56,10 +60,6 @@ export default function Join() {
         setEmailMessage('');
         setUserCode('');
         setEmail(e.target.value);
-    };
-
-    const generateCode = () => {
-        return Math.floor(100000 + Math.random() * 900000).toString();
     };
 
     const sendVerificationCode = async () => {

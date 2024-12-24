@@ -6,6 +6,7 @@ import { FcCancel, FcOk } from 'react-icons/fc';
 import Image from 'next/image';
 import { MdDelete, MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import imageCompression from 'browser-image-compression';
+import { generateCode } from '@/utils/commonUtil';
 
 export default function MemberInfoForm() {
     // TODO zustand로 변경
@@ -64,11 +65,6 @@ export default function MemberInfoForm() {
         setUserCode('');
         setNewEmail(e.target.value);
     };
-
-    const generateCode = () => {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-    };
-
     const sendVerificationCode = async () => {
         const code = generateCode();
         setEmailCode(code);

@@ -124,3 +124,7 @@ export function validateBlogAddress(address: string) {
         !address.includes('--')
     );
 }
+
+export function generateCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
