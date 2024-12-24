@@ -6,9 +6,11 @@ import { useBlogStore } from '@/store/useBlogStore';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
 import { IoIosArrowDown } from 'react-icons/io';
+import { useRouter } from 'next/navigation';
 
 export default function FollowerPage() {
-    const { blogId } = useBlogStore();
+    const router = useRouter();
+    const { blogId, userBlogAuth } = useBlogStore();
 
     const [size, setSize] = useState(30);
     const [page, setPage] = useState(1);
@@ -21,9 +23,12 @@ export default function FollowerPage() {
     const [popupText, setPopupText] = useState('');
 
     useEffect(() => {
+        if (userBlogAuth === 'EDITOR') {
+            router.push('/setting');
+        }
         setUsers([]);
         setPage(1);
-    }, [blogId]);
+    }, [blogId, userBlogAuth]);
 
     useEffect(() => {
         let isMounted = true;

@@ -7,9 +7,14 @@ import { SeriesGridProps } from '@/components/blog/series/SeriesCard';
 import { useSeries } from '@/hooks/useSeries';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
+import { useBlogStore } from '@/store/useBlogStore';
+import { useRouter } from 'next/navigation';
 
 export default function SeriesManagePage() {
+    const router = useRouter();
     const { data, isLoading } = useSeries();
+    const { userBlogAuth } = useBlogStore();
+
     const [seriesList, setSeriesList] = useState<SeriesGridProps[]>(data);
     const [seriesId, setSeriesId] = useState(0);
     const [mode, setMode] = useState('');
@@ -19,10 +24,15 @@ export default function SeriesManagePage() {
     const [popupText, setPopupText] = useState('');
 
     useEffect(() => {
-        if (data) {
-            setSeriesList(data);
+        if (userBlogAuth === 'EDITOR') {
+            router.push('/setting');
+            setSeriesList(null);
+        } else {
+            if (data) {
+                setSeriesList(data);
+            }
         }
-    }, [data]);
+    }, [router, userBlogAuth, data]);
 
     const handleEdit = (id: number) => {
         setSeriesId(id);

@@ -9,12 +9,12 @@ import DeleteBlog from '@/components/blog/setting/DeleteBlog';
 import OurLogInfoForm from '@/components/blog/setting/OurLogInfoForm';
 import { Member } from '@/components/sidebar/UserProfile';
 import emailjs from 'emailjs-com';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function OurLogSetting() {
     const router = useRouter();
-    const { blogId, blogInfo } = useBlogStore();
-    // TODO zustand
-    const loginUser = 1;
+    const { blogId, blogInfo, userBlogAuth } = useBlogStore();
+    const { loginUser } = useAuthStore();
     const loginUserNickname = 'hana';
 
     const [isLoading, setIsLoading] = useState(true);
@@ -31,14 +31,18 @@ export default function OurLogSetting() {
 
     useEffect(() => {
         setIsLoading(true);
-        if (blogInfo) {
-            setBlogName(blogInfo.blogName);
-            setBlogAddress(blogInfo.blogAddress);
-            setIntroduce(blogInfo.introduce!);
-            setMembers(blogInfo.members!);
+        if (userBlogAuth === 'EDITOR') {
+            router.push('/setting');
+        } else {
+            if (blogInfo) {
+                setBlogName(blogInfo.blogName);
+                setBlogAddress(blogInfo.blogAddress);
+                setIntroduce(blogInfo.introduce!);
+                setMembers(blogInfo.members!);
+            }
         }
         setIsLoading(false);
-    }, [blogInfo]);
+    }, [blogInfo, router, userBlogAuth]);
 
     const handleConfirm = () => {
         if (popupId === 'CLOSE') {

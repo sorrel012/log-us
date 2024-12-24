@@ -7,14 +7,13 @@ import { customFetch } from '@/utils/customFetch';
 import { Member } from '@/components/sidebar/UserProfile';
 import AlertPopup from '@/components/AlertPopup';
 import { useParams, useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function PermissionManagePage() {
     const router = useRouter();
-    const { blogId } = useBlogStore();
+    const { blogId, userBlogAuth } = useBlogStore();
+    const { loginUser } = useAuthStore();
     const { blogAddress } = useParams();
-
-    //TODO zustand
-    const loginUser = 1;
 
     const [members, setMembers] = useState<Member[]>([]);
 
@@ -24,37 +23,41 @@ export default function PermissionManagePage() {
     const [popupId, setPopupId] = useState('CLOSE');
 
     useEffect(() => {
-        if (blogId) {
-            (async () => {
-                const res = await customFetch<Member[]>('/blog/auth', {
-                    queryKey: ['blog-auth', blogId],
-                    params: { blogId },
-                });
+        if (userBlogAuth === 'EDITOR') {
+            router.push('/setting');
+        } else {
+            if (blogId) {
+                (async () => {
+                    const res = await customFetch<Member[]>('/blog/auth', {
+                        queryKey: ['blog-auth', blogId],
+                        params: { blogId },
+                    });
 
-                if (res.isError) {
-                    setPopupTitle('블로그 권한 조회에 실패했습니다.');
-                    setPopupText('잠시 후 다시 시도해 주세요.');
-                    setPopupId('CLOSE');
-                    setShowPopup(true);
-                }
-
-                if (res.data) {
-                    const index = res.data.findIndex(
-                        (member) => member.memberId === loginUser,
-                    );
-
-                    if (res.data[index].blogAuth === 'EDITOR') {
-                        setPopupTitle('접근할 수 없는 메뉴입니다.');
-                        setPopupText('');
-                        setPopupId('MOVE');
+                    if (res.isError) {
+                        setPopupTitle('블로그 권한 조회에 실패했습니다.');
+                        setPopupText('잠시 후 다시 시도해 주세요.');
+                        setPopupId('CLOSE');
                         setShowPopup(true);
                     }
-                }
 
-                setMembers(res.data!);
-            })();
+                    if (res.data) {
+                        const index = res.data.findIndex(
+                            (member) => member.memberId === loginUser,
+                        );
+
+                        if (res.data[index].blogAuth === 'EDITOR') {
+                            setPopupTitle('접근할 수 없는 메뉴입니다.');
+                            setPopupText('');
+                            setPopupId('MOVE');
+                            setShowPopup(true);
+                        }
+                    }
+
+                    setMembers(res.data!);
+                })();
+            }
         }
-    }, [blogId]);
+    }, [blogId, loginUser, router, userBlogAuth]);
 
     const handleConfirm = () => {
         setShowPopup(false);
