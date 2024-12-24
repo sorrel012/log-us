@@ -21,6 +21,7 @@ import { usePathname } from 'next/dist/client/components/navigation';
 export default function MainHeader() {
     const pathname = usePathname();
     const isJoin = pathname.includes('join');
+    const isSetting = pathname.includes('setting');
     const searchParams = useSearchParams();
     const login = searchParams.get('login');
 
@@ -113,19 +114,19 @@ export default function MainHeader() {
 
     return (
         <header>
-            <div className="mx-auto flex h-[70px] max-w-screen-xl items-center justify-between p-5">
+            <div className="mx-auto flex h-[70px] items-center justify-between p-5">
                 {/* 메인 헤더 공통 구역 */}
                 <Link href="/" className="">
                     <Image
                         src="/logo.png"
-                        width={200}
-                        height={200}
+                        width={150}
+                        height={150}
                         alt="Logo"
                     />
                 </Link>
                 {/* 로그인여부에 따라 달라지는 구역 */}
                 <div className="relative flex items-center justify-between">
-                    {loginUser && (
+                    {loginUser && !isSetting && (
                         <>
                             <div className="mr-8 flex items-center justify-between gap-6">
                                 <Link
@@ -217,7 +218,7 @@ export default function MainHeader() {
                             <Search />
                         </div>
                     )}
-                    {!isJoin && (
+                    {!isJoin && !isSetting && (
                         <div>
                             <button
                                 onClick={
