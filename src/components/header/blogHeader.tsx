@@ -1,6 +1,4 @@
 import Image from 'next/image';
-
-import Search from '@/components/search/Search';
 import { useModal } from '@/hooks/useModal';
 import LoginModal from '../@Modal/LoginModal';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -10,6 +8,7 @@ import Link from 'next/link';
 import { FiSettings } from 'react-icons/fi';
 import { useBlogStore } from '@/store/useBlogStore';
 import { usePathname } from 'next/dist/client/components/navigation';
+import BlogSearch from '@/components/search/BlogSearch';
 
 export default function BlogHeader() {
     const pathname = usePathname();
@@ -55,7 +54,7 @@ export default function BlogHeader() {
                 <div className="flex items-center gap-6">
                     {loginUser && !isSetting && (
                         <>
-                            <Search />
+                            <BlogSearch />
                             <Link href="/setting">
                                 <FiSettings className="mr-4 text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
                             </Link>
@@ -64,7 +63,7 @@ export default function BlogHeader() {
 
                     {!loginUser && (
                         <>
-                            <Search />
+                            <BlogSearch />
                             <button
                                 onClick={
                                     loginUser
