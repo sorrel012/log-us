@@ -74,9 +74,9 @@ export default function SettingSidebar({
                     );
                     setIsMember(me.length === 1);
                     if (setIsMember.length > 0) {
-                        setUserBlogAuth(me[0].blogAuth);
+                        setUserBlogAuth(me[0]?.blogAuth);
                     }
-                    if (me[0].blogAuth === 'OWNER') {
+                    if (me[0]?.blogAuth === 'OWNER') {
                         setOUR_LOG_DTL([
                             { value: '블로그 목록', link: `${basePath}/blogs` },
                             {
@@ -112,7 +112,7 @@ export default function SettingSidebar({
                                 link: `${ourLogBasePath}/statistics`,
                             },
                         ]);
-                    } else if (me[0].blogAuth === 'ADMIN') {
+                    } else if (me[0]?.blogAuth === 'ADMIN') {
                         setOUR_LOG_DTL([
                             { value: '블로그 목록', link: `${basePath}/blogs` },
                             {
