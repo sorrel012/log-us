@@ -24,31 +24,23 @@ export default function PostDetailPage() {
     useEffect(() => {
         (async () => {
             if (postId) {
-                try {
-                    const response = await customFetch<any>(
-                        `/posts/${postId}`,
-                        {
-                            queryKey: ['post', postId],
-                        },
-                    );
+                const response = await customFetch<any>(`/posts/${postId}`, {
+                    queryKey: ['post', postId],
+                });
 
-                    if (response.isError) {
-                        if (response.code === 3004) {
-                            setPopupMessage(response.error!);
-                            setShowPopup(true);
-                            setPopupId('OUT');
-                        } else {
-                            throw new Error(
-                                response.error ||
-                                    '게시글을 불러올 수 없습니다.',
-                            );
-                        }
+                if (response.isError) {
+                    if (response.code === 3004) {
+                        setPopupMessage(response.error!);
+                        setShowPopup(true);
+                        setPopupId('OUT');
+                    } else {
+                        setPopupMessage(
+                            response.error || '게시글을 불러올 수 없습니다.',
+                        );
+                        setShowPopup(true);
                     }
-                    setPost(response.data);
-                } catch (error) {
-                    setPopupMessage(error.message);
-                    setShowPopup(true);
                 }
+                setPost(response.data);
             }
         })();
     }, [postId]);
