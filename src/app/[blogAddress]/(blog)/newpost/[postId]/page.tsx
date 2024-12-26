@@ -81,37 +81,34 @@ export default function NewPostEditPage() {
     useEffect(() => {
         (async () => {
             if (editPostId) {
-                try {
-                    const response = await customFetch(`/posts/${editPostId}`, {
-                        queryKey: ['postEdit', editPostId],
-                        invalidateCache: true,
-                    });
+                const response = await customFetch(`/posts/${editPostId}`, {
+                    queryKey: ['postEdit', editPostId],
+                    invalidateCache: true,
+                });
 
-                    if (response.isError) {
-                        throw new Error(
-                            response.error || '게시글을 불러올 수 없습니다.',
-                        );
-                    }
-
-                    const data: any = response.data;
-
-                    setTitle(unescapeSpecialChars(data.title));
-                    setContent(data.content);
-                    setSeriesId(data.seriesId || 0);
-                    setPopupData({
-                        imgUrl: data.imgUrl,
-                        categoryId: data.categoryId,
-                        parentCategoryId: data.parentCategoryId,
-                        status: data.status,
-                        tags: data.tags,
-                    });
-                } catch (error) {
-                    setPopupTitle(error.message);
+                if (response.isError) {
+                    setPopupTitle(
+                        response.error || '게시글을 불러올 수 없습니다.',
+                    );
                     setPopupMessage('잠시 후 다시 시도해 주세요.');
                     setPopupId('CLOSE');
                     setShowPopup(true);
                     setPopupData({});
+                    return;
                 }
+
+                const data: any = response.data;
+
+                setTitle(unescapeSpecialChars(data.title));
+                setContent(data.content);
+                setSeriesId(data.seriesId || 0);
+                setPopupData({
+                    imgUrl: data.imgUrl,
+                    categoryId: data.categoryId,
+                    parentCategoryId: data.parentCategoryId,
+                    status: data.status,
+                    tags: data.tags,
+                });
             }
         })();
     }, [editPostId]);
