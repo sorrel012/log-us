@@ -9,6 +9,7 @@ import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { useBlogStore } from '@/store/useBlogStore';
 import { PostPayload } from '@/app/[blogAddress]/(blog)/newpost/[postId]/page';
+import { Post } from '@/components/blog/post/PostCard';
 
 const STATUS = [
     { text: '공개', value: 'PUBLIC' },
@@ -28,7 +29,7 @@ export default function SavePostPopup({
 }: {
     show: boolean;
     onClose: () => void;
-    onPostSave: (post: any, isDeleted: boolean) => void;
+    onPostSave: (post: Post[], isDeleted: boolean) => void;
     content: Partial<PostPayload>;
 }) {
     const { blogInfo } = useBlogStore();
