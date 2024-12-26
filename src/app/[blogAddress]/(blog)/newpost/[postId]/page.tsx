@@ -93,20 +93,18 @@ export default function NewPostEditPage() {
                         );
                     }
 
-                    const data = response.data;
+                    const data: any = response.data;
 
-                    if (data) {
-                        setTitle(unescapeSpecialChars(data.title));
-                        setContent(data.content);
-                        setSeriesId(data.seriesId || 0);
-                        setPopupData({
-                            imgUrl: data.imgUrl,
-                            categoryId: data.categoryId,
-                            parentCategoryId: data.parentCategoryId,
-                            status: data.status,
-                            tags: data.tags,
-                        });
-                    }
+                    setTitle(unescapeSpecialChars(data.title));
+                    setContent(data.content);
+                    setSeriesId(data.seriesId || 0);
+                    setPopupData({
+                        imgUrl: data.imgUrl,
+                        categoryId: data.categoryId,
+                        parentCategoryId: data.parentCategoryId,
+                        status: data.status,
+                        tags: data.tags,
+                    });
                 } catch (error) {
                     setPopupTitle(error.message);
                     setPopupMessage('잠시 후 다시 시도해 주세요.');
