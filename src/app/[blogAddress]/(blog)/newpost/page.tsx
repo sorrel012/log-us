@@ -16,6 +16,7 @@ import {
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { useSeries } from '@/hooks/useSeries';
 import ConfirmPopup from '@/components/ConfirmPopup';
+import { Post } from '@/components/blog/post/PostCard';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
@@ -314,7 +315,7 @@ export default function NewPostPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post) => {
+    const handleSavePost = async (post: Post) => {
         const data = getData(post.status, post);
         let result;
         try {
