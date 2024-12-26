@@ -133,8 +133,8 @@ export default function NewPostEditPage() {
         }
     }, [blogId, blogInfo]);
 
-    const handleItemsPerValueChange = (value: number) => {
-        setSeriesId(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setSeriesId(+value);
     };
 
     const getData = (type: string, postInfo?: any, isDeleted?: boolean) => {

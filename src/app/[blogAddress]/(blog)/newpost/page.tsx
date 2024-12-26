@@ -94,8 +94,8 @@ export default function NewPostPage() {
         }
     }, [blogId, blogInfo]);
 
-    const handleItemsPerValueChange = (value: number) => {
-        setSeriesId(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setSeriesId(+value);
     };
 
     const getData = (type: string, postInfo?: any) => {
