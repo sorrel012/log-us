@@ -369,7 +369,7 @@ export default function NewPostEditPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post: Post, isDeleted) => {
+    const handleSavePost = async (post: Post, isDeleted: boolean) => {
         const data = getData(post.status, post, isDeleted);
         try {
             const result = await customFetch(`/posts/${editPostId}`, {
