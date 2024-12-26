@@ -29,7 +29,7 @@ export default function SavePostPopup({
 }: {
     show: boolean;
     onClose: () => void;
-    onPostSave: (post: Post[], isDeleted: boolean) => void;
+    onPostSave: (post: Post, isDeleted: boolean) => void;
     content: Partial<PostPayload>;
 }) {
     const { blogInfo } = useBlogStore();
