@@ -80,10 +80,10 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
         const memberInfo = res.data;
         setAuthInfo(
-            memberInfo.memberId,
-            memberInfo.nickname,
-            memberInfo.imgUrl,
-            memberInfo.blogAddress,
+            memberInfo?.memberId,
+            memberInfo?.nickname,
+            memberInfo?.imgUrl,
+            memberInfo?.blogAddress,
         );
 
         if (saveId) {
