@@ -16,7 +16,7 @@ interface LoginModalProps {
 interface MemberInfo {
     memberId: number;
     nickname: string;
-    imgUrl?: string;
+    imgUrl?: string | null;
     blogAddress: string;
 }
 
@@ -90,8 +90,8 @@ const LoginModal: React.FC<LoginModalProps> = ({
             setAuthInfo(
                 memberInfo.memberId,
                 memberInfo.nickname,
-                memberInfo.imgUrl,
                 memberInfo.blogAddress,
+                memberInfo.imgUrl,
             );
         }
 
