@@ -20,7 +20,7 @@ interface FindModal {
 const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
     const router = useRouter();
 
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState<number>(1);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
