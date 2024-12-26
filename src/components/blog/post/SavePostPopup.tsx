@@ -30,7 +30,7 @@ export default function SavePostPopup({
     show: boolean;
     onClose: () => void;
     onPostSave: (post: Post, isDeleted: boolean) => void;
-    content: Partial<PostPayload>;
+    content?: Partial<PostPayload>;
 }) {
     const { blogInfo } = useBlogStore();
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);

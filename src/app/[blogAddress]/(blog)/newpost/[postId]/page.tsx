@@ -71,7 +71,7 @@ export default function NewPostEditPage() {
     const [content, setContent] = useState('');
     const [seriesId, setSeriesId] = useState<number | null>(null);
     const [postId, setPostId] = useState<number | null>(null);
-    const [popupData, setPopupData] = useState<Partial<PostPayload>>();
+    const [popupData, setPopupData] = useState<Partial<PostPayload>>({});
 
     const [showPopup, setShowPopup] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
