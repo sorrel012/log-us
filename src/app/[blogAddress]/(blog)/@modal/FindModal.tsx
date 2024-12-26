@@ -116,7 +116,7 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
                     try {
                         await emailjs.send(
                             process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID!,
-                            process.env.NEXT_PUBLIC_EMAIL_CODE_TEMPLATE_ID,
+                            process.env.NEXT_PUBLIC_EMAIL_CODE_TEMPLATE_ID!,
                             {
                                 to_email: email,
                                 to_name: name,

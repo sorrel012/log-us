@@ -171,8 +171,8 @@ export default function OurLogSetting() {
             for (const newMember of newMembers) {
                 if (newMember.memberId !== loginUser) {
                     await emailjs.send(
-                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
-                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
+                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID!,
+                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID!,
                         {
                             to_email: newMember.email,
                             to_name: newMember.nickname,

@@ -176,8 +176,8 @@ export default function NewBlogPage() {
             for (const member of members) {
                 if (member.memberId !== loginUser) {
                     await emailjs.send(
-                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
-                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID,
+                        process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID!,
+                        process.env.NEXT_PUBLIC_EMAIL_INVITATION_TEMPLATE_ID!,
                         {
                             to_email: member.email,
                             to_name: member.nickname,
