@@ -16,6 +16,7 @@ import {
 import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { useSeries } from '@/hooks/useSeries';
 import ConfirmPopup from '@/components/ConfirmPopup';
+import { Post } from '@/components/blog/post/PostCard';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
@@ -368,7 +369,7 @@ export default function NewPostEditPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post, isDeleted) => {
+    const handleSavePost = async (post: Post, isDeleted) => {
         const data = getData(post.status, post, isDeleted);
         try {
             const result = await customFetch(`/posts/${editPostId}`, {
