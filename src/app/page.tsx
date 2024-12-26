@@ -81,7 +81,7 @@ export default function Home() {
             };
 
             (async () => {
-                const res = await customFetch('/main/search', {
+                const res = await customFetch<any>('/main/search', {
                     queryKey: ['search', keyword],
                     params: params,
                 });

@@ -34,7 +34,7 @@ export default function BlogMain() {
             };
 
             (async () => {
-                const res = await customFetch('/posts/search', {
+                const res = await customFetch<any>('/posts/search', {
                     queryKey: ['search', blogKeyword],
                     params: params,
                 });

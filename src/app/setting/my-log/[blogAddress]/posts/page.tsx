@@ -76,7 +76,7 @@ export default function PostsManagePage() {
     const handleSearch = async (value: number, keyword: string) => {
         setSearchKeyword(keyword);
 
-        const res = await customFetch('/blog/posts', {
+        const res = await customFetch<any>('/blog/posts', {
             queryKey: ['search', 'posts', keyword, value, size, page],
             params: {
                 blogId,
