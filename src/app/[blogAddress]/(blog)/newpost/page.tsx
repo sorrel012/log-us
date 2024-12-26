@@ -108,7 +108,7 @@ export default function NewPostPage() {
                 title: escapeSpecialChars(title),
                 content: content,
                 status: 'TEMPORARY',
-                ...(seriesId > 0 && { seriesId }),
+                ...(seriesId && seriesId > 0 && { seriesId }),
             };
         } else {
             formData.append('thumbImg', postInfo?.thumbImg);
@@ -117,7 +117,7 @@ export default function NewPostPage() {
                 title: escapeSpecialChars(title),
                 content: content,
                 status: postInfo?.status || 'PUBLIC',
-                ...(seriesId > 0 && { seriesId }),
+                ...(seriesId && seriesId > 0 && { seriesId }),
                 ...(postInfo?.parentId > 0 && { parentId: postInfo?.parentId }),
                 ...(postInfo?.categoryId > 0 && {
                     categoryId: postInfo?.categoryId,
