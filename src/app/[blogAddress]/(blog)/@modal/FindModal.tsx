@@ -245,11 +245,11 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
                                             <button
                                                 className={`inline-block h-8 w-full rounded-t-lg py-2 text-sm leading-4 ${activeTab === 2 ? 'border-2 border-b-0' : 'border-b-2 bg-gray-200/70'}`}
                                                 onClick={() =>
-                                                    handleTabClick(2)
+                                                    handleTabClick(3)
                                                 }
                                                 type="button"
                                                 role="tab"
-                                                aria-selected={activeTab === 2}
+                                                aria-selected={activeTab === 3}
                                             >
                                                 비밀번호 찾기
                                             </button>
