@@ -53,8 +53,8 @@ export default function BlogMain() {
         }
     }, [isBlogOpen, blogKeyword, page, size]);
 
-    const handleItemsPerValueChange = (value: number) => {
-        setSize(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setSize(+value);
         setPage(1);
     };
 
