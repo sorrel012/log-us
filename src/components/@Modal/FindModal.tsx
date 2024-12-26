@@ -7,7 +7,9 @@ import Image from 'next/image';
 import { customFetch } from '@/utils/customFetch';
 import { Member } from '@/components/sidebar/UserProfile';
 import { FcCancel, FcOk } from 'react-icons/fc';
-import { validatePassword } from '@/utils/commonUtil';
+import { generateCode, validatePassword } from '@/utils/commonUtil';
+import emailjs from 'emailjs-com';
+import { useRouter } from 'next/navigation';
 
 interface FindModal {
     isOpen: boolean;
@@ -16,6 +18,8 @@ interface FindModal {
 }
 
 const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
+    const router = useRouter();
+
     const [activeTab, setActiveTab] = useState(1);
 
     const [name, setName] = useState('');
@@ -36,6 +40,7 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
     const [isUsablePwd, setIsUsablePwd] = useState(false);
     const [newPwdMessage, setNewPwdMessage] = useState('');
     const [checkPwdMessage, setCheckPwdMessage] = useState('');
+    const [pwdChangeResult, setPwdChangeResult] = useState('');
 
     useEffect(() => {
         if (!isOpen) {
@@ -131,7 +136,19 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
                 setPwdResult('일치하는 회원이 존재하지 않습니다.');
             }
         } else {
-            const res = await customFetch('/');
+            const res = await customFetch('/user/pwd', {
+                queryKey: ['pwd', newPwd],
+                method: 'PUT',
+                body: { loginId, email, newPassword: newPwd },
+            });
+
+            if (res.isError) {
+                setPwdChangeResult('비밀번호를 변경하지 못했습니다.');
+                return;
+            }
+
+            const query = new URLSearchParams({ login: 'true' });
+            router.push(`/?${query.toString()}`);
         }
     };
 
@@ -438,7 +455,14 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
                                     </div>
                                 )}
                                 {activeTab === 2 && pwdResult !== '' && (
-                                    <div className="mb-6">{pwdResult}</div>
+                                    <div className="mb-6 text-red-600">
+                                        {pwdResult}
+                                    </div>
+                                )}
+                                {activeTab === 3 && pwdChangeResult !== '' && (
+                                    <div className="mb-6 text-red-600">
+                                        {pwdChangeResult}
+                                    </div>
                                 )}
                             </div>
                         </form>
