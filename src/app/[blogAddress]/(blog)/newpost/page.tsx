@@ -66,8 +66,8 @@ export default function NewPostPage() {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [seriesId, setSeriesId] = useState<number>(null);
-    const [postId, setPostId] = useState<number>(null);
+    const [seriesId, setSeriesId] = useState<number | null>(null);
+    const [postId, setPostId] = useState<number | null>(null);
 
     const [showPopup, setShowPopup] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
