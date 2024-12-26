@@ -89,7 +89,7 @@ export default function SelectBox({
                 >
                     {items.map((item) => (
                         <li
-                            key={item.value}
+                            key={item.value + ''}
                             className="option"
                             onClick={() => handleOptionClick(item)}
                         >
