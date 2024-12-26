@@ -13,6 +13,13 @@ interface LoginModalProps {
     openFindModal: (type: string) => void;
 }
 
+interface MemberInfo {
+    memberId: number;
+    nickname: string;
+    imgUrl?: string;
+    blogAddress: string;
+}
+
 const LoginModal: React.FC<LoginModalProps> = ({
     isOpen,
     closeModal,
@@ -63,7 +70,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const res = await customFetch('/login', {
+        const res = await customFetch<MemberInfo>('/login', {
             queryKey: ['login', id, password],
             method: 'POST',
             body: { loginId: id, password },

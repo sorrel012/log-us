@@ -9,8 +9,8 @@ interface AuthState {
     setAuthInfo: (
         loginUser: number | null,
         loginUserNickname: string | null,
-        loginImgUrl: string | null,
         loginBlogAddress: string | null,
+        loginImgUrl?: string | null,
     ) => void;
     clearAuthInfo: () => void;
 }
@@ -25,21 +25,21 @@ export const useAuthStore = create<AuthState>()(
             setAuthInfo: (
                 loginUser,
                 loginUserNickname,
-                loginImgUrl,
                 loginBlogAddress,
+                loginImgUrl,
             ) =>
                 set({
                     loginUser,
                     loginUserNickname,
-                    loginImgUrl,
                     loginBlogAddress,
+                    loginImgUrl,
                 }),
             clearAuthInfo: () =>
                 set({
                     loginUser: null,
                     loginUserNickname: null,
-                    loginImgUrl: null,
                     loginBlogAddress: null,
+                    loginImgUrl: null,
                 }),
         }),
         {
