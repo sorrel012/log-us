@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { customFetch } from '@/utils/customFetch';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
-import { Member } from '@/components/sidebar/UserProfile';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -64,7 +63,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const res = await customFetch<Member>('/login', {
+        const res = await customFetch('/login', {
             queryKey: ['login', id, password],
             method: 'POST',
             body: { loginId: id, password },
@@ -80,12 +79,14 @@ const LoginModal: React.FC<LoginModalProps> = ({
         setShowError(false);
 
         const memberInfo = res.data;
-        setAuthInfo(
-            memberInfo?.memberId,
-            memberInfo?.nickname,
-            memberInfo?.imgUrl,
-            memberInfo?.blogAddress,
-        );
+        if (memberInfo) {
+            setAuthInfo(
+                memberInfo.memberId,
+                memberInfo.nickname,
+                memberInfo.imgUrl,
+                memberInfo.blogAddress,
+            );
+        }
 
         if (saveId) {
             localStorage.setItem('saveId', id);
