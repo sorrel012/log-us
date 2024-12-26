@@ -65,8 +65,8 @@ export default function TagList() {
         })();
     }, [blogId, page, tagName, size, params]);
 
-    const handleItemsPerValueChange = (value: number) => {
-        setSize(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setSize(+value);
         setPage(1);
     };
 

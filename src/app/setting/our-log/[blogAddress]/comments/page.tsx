@@ -94,8 +94,8 @@ export default function OurLogCommentsManagePage() {
         setTotalComments(res.data.totalElements);
     };
 
-    const handleItemsPerValueChange = (value: number) => {
-        setSize(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setSize(+value);
     };
 
     const handleSelect = (comments: Comment[]) => {
