@@ -23,7 +23,7 @@ export default function OurLogCommentsManagePage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalComments, setTotalComments] = useState(0);
-    const [comments, setComments] = useState<Comment[]>(null);
+    const [comments, setComments] = useState<Comment[]>([]);
     const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
     const [isSearch, setIsSearch] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
