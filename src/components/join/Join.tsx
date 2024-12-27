@@ -171,7 +171,9 @@ export default function Join() {
         }
     };
 
-    const handleBlogAddressChange = (e) => {
+    const handleBlogAddressChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         setIsDuplicateChecked(false);
         setBlogAddress(e.target.value);
     };

@@ -36,7 +36,9 @@ export default function BlogInfoForm({
         }
     }, [blogInfo]);
 
-    const handleBlogAddressChange = (e) => {
+    const handleBlogAddressChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         setIsDuplicateChecked(false);
         setBlogAddress(e.target.value);
     };

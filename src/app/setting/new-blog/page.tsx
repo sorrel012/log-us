@@ -38,7 +38,9 @@ export default function NewBlogPage() {
         return name.length >= 2 && name.length <= 20 && regex.test(name);
     };
 
-    const handleBlogAddressChange = (e) => {
+    const handleBlogAddressChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         setIsDuplicateChecked(false);
         setBlogAddress(e.target.value);
     };
