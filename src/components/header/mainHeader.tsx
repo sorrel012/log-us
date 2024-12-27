@@ -13,8 +13,8 @@ import { Blog } from '@/components/UserGrid';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import Search from '@/components/search/Search';
 import { FiSettings } from 'react-icons/fi';
-import LoginModal from '@/app/[blogAddress]/(blog)/@modal/LoginModal';
-import FindModal from '@/app/[blogAddress]/(blog)/@modal/FindModal';
+import LoginModal from '@/components/modal/LoginModal';
+import FindModal from '@/components/modal/FindModal';
 import { useStore } from '@/store/useStore';
 import { usePathname } from 'next/dist/client/components/navigation';
 

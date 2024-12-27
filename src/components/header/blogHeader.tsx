@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
-import LoginModal from '@/app/[blogAddress]/(blog)/@modal/LoginModal';
+import LoginModal from '@/components/modal/LoginModal';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useStore } from '@/store/useStore';
 import { useState } from 'react';
