@@ -81,7 +81,7 @@ export async function customFetch<T>(
 
         clearTimeout(timeoutId);
 
-        const resultData = (await response.json()) as T;
+        const resultData: any = (await response.json()) as T;
 
         if (!response.ok) {
             state.isError = true;
