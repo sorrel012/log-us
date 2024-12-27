@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 export interface SaveFetchData {
     url: string;
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    body: {};
+    body: { formData: FormData; requestDto: any };
 }
 
 export default function SeriesManagePage() {
