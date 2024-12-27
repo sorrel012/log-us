@@ -42,25 +42,25 @@ export default function TagList() {
     useEffect(() => {
         (async () => {
             if (blogId) {
-                try {
-                    const response = await customFetch<any>(
-                        '/posts/tag-search',
-                        {
-                            queryKey: ['posts', blogId, tagName, page, size],
-                            params,
-                        },
-                    );
+                const response = await customFetch<any>('/posts/tag-search', {
+                    queryKey: ['posts', blogId, tagName, page, size],
+                    params,
+                });
 
-                    setPosts(response.data.content);
-                    setTotalPages(response.data.totalPages || 1);
-                    setTotalPosts(response.data.totalElements || 0);
-                    setIsLoading(false);
-                } catch (error) {
+                if (response.isError) {
                     setIsError(true);
                     setShowPopup(true);
-                    setPopupMessage(error || '게시글을 불러올 수 없습니다.');
+                    setPopupMessage(
+                        response.error || '게시글을 불러올 수 없습니다.',
+                    );
                     setIsLoading(false);
+                    return;
                 }
+
+                setPosts(response.data.content);
+                setTotalPages(response.data.totalPages || 1);
+                setTotalPosts(response.data.totalElements || 0);
+                setIsLoading(false);
             }
         })();
     }, [blogId, page, tagName, size, params]);
