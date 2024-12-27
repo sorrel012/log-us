@@ -97,8 +97,8 @@ export default function Home() {
         }
     }, [isOpen, keyword, page, size]);
 
-    const handleItemsPerValueChange = (value: DateType) => {
-        setDate(value);
+    const handleItemsPerValueChange = (value: number | string) => {
+        setDate(value as DateType);
     };
 
     return (
