@@ -12,7 +12,7 @@ export default function FollowerPage() {
 
     const [size, setSize] = useState(30);
     const [page, setPage] = useState(1);
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState<any[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
 
