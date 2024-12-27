@@ -188,7 +188,7 @@ export default function NewBlogPage() {
                                 invitation && invitation.trim().length > 0
                                     ? invitation
                                     : '이 공간에 특별한 추억을 남겨보세요.',
-                            link: `https://logus-blog.store/${blogAddress}`,
+                            link: `https://logus-blog.vercel.app/${blogAddress}`,
                         },
                         process.env.NEXT_PUBLIC_EMAIL_USER_ID,
                     );
