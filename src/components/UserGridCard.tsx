@@ -10,7 +10,7 @@ export default function UserGridCard({
     blogList,
     type,
     onButtonClick,
-}: UserGridProps & {
+}: Omit<UserGridProps, 'type'> & {
     onButtonClick: (followId: number) => void;
 }) {
     return (
