@@ -20,7 +20,7 @@ export default function FollowingPage() {
     useEffect(() => {
         (async () => {
             setIsLoading(true);
-            const res = await customFetch('/follow', {
+            const res = await customFetch<any>('/follow', {
                 queryKey: ['follow', page, size],
                 params: { page: page - 1, size },
             });
