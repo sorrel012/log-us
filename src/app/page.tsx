@@ -32,7 +32,7 @@ export default function Home() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
-    const [posts, setPosts] = useState<ExtendedPost[]>(null);
+    const [posts, setPosts] = useState<ExtendedPost[]>([]);
 
     useEffect(() => {
         (async () => {
