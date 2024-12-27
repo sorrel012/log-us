@@ -2,14 +2,16 @@ import { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 
 export default function BarChart({ chartData, chartOptions }) {
-    const chartRef = useRef(null);
+    const chartRef = useRef<HTMLCanvasElement | null>(null);
     let chartInstance = null;
 
     useEffect(() => {
         if (!chartRef.current) return;
 
-        const ctx = chartRef.current.getContext('2d');
-        if (!ctx) return;
+        let ctx;
+        if ('getContext' in chartRef.current) {
+            ctx = chartRef.current.getContext('2d');
+        }
 
         const createChart = () => {
             Chart.register(...registerables);
