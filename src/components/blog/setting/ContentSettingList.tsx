@@ -9,7 +9,7 @@ export default function ContentSettingList({
     onSelect,
     type,
 }: {
-    contents: Post[] | Comment[];
+    contents: any[];
     onSelect: (contents: Post[] | Comment[]) => void;
     type: 'POST' | 'COMMENT';
 }) {

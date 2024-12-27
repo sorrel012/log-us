@@ -98,7 +98,7 @@ export default function CommentsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (comments: Comment[]) => {
+    const handleSelect = (comments) => {
         setSelectedComments(comments);
     };
 
