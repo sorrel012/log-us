@@ -10,6 +10,12 @@ import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter } from 'next/navigation';
 
+export interface SaveFetchData {
+    url: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    body: {};
+}
+
 export default function SeriesManagePage() {
     const router = useRouter();
     const { data, isLoading } = useSeries();
@@ -50,7 +56,7 @@ export default function SeriesManagePage() {
     const handleSave = async (
         newSeriesId: number,
         mode: string,
-        fetchData: {},
+        fetchData: SaveFetchData,
     ) => {
         const { url, method, body } = fetchData;
         const { formData, requestDto } = body;
