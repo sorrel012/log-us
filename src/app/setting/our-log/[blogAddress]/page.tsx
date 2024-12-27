@@ -80,7 +80,7 @@ export default function OurLogSetting() {
     };
 
     const handleSaveBlogInfo = async (updatedInfo: BlogInfoUpdate) => {
-        const areArraysOfObjectsEqual = (arr1, arr2) => {
+        const areArraysOfObjectsEqual = (arr1: Member[], arr2: Member[]) => {
             if (arr1.length !== arr2.length) return false;
             return arr1.every((obj1, index) => {
                 const obj2 = arr2[index];

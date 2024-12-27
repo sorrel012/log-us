@@ -7,12 +7,14 @@ import AlertPopup from '@/components/AlertPopup';
 import { useRouter } from 'next/navigation';
 import DeleteBlog from '@/components/blog/setting/DeleteBlog';
 import BlogInfoForm from '@/components/blog/setting/BlogInfoForm';
+import { Member } from '@/components/sidebar/UserProfile';
 
 export interface BlogInfoUpdate {
     blogName: string;
     blogAddress: string;
     introduce: string;
     isDuplicateChecked: boolean;
+    members: Member[];
 }
 
 export default function BlogInfo() {
