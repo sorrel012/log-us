@@ -14,8 +14,8 @@ export interface BlogInfoUpdate {
     blogAddress: string;
     introduce: string;
     isDuplicateChecked: boolean;
-    invitation: string;
-    members: Member[];
+    invitation?: string;
+    members?: Member[];
 }
 
 export default function BlogInfo() {
@@ -120,7 +120,7 @@ export default function BlogInfo() {
             shareYn: blogInfo.shareYn,
         };
 
-        const res = await customFetch(`/blog/setting?blogId=${blogId}`, {
+        const res = await customFetch<any>(`/blog/setting?blogId=${blogId}`, {
             queryKey: [
                 'edit-blog-info',
                 updatedInfo.blogAddress,

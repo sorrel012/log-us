@@ -83,7 +83,7 @@ export default function PermissionManagePage() {
     };
 
     const handleSave = async () => {
-        const res = await customFetch(`/blog/auth?blogId=${blogId}`, {
+        const res = await customFetch<any>(`/blog/auth?blogId=${blogId}`, {
             queryKey: ['blog-auth', JSON.stringify(members), blogId],
             method: 'PUT',
             body: members

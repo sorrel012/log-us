@@ -179,13 +179,13 @@ export default function NewPostPage() {
         const data = getData('TEMPORARY');
         try {
             if (popupId === 'EXIT') {
-                await customFetch('/posts', {
+                await customFetch<any>('/posts', {
                     queryKey: ['tmpPost'],
                     method: 'POST',
                     body: data,
                 });
             } else {
-                await customFetch(`/posts/${postId}`, {
+                await customFetch<any>(`/posts/${postId}`, {
                     queryKey: ['tmpPost', 'rewrite', postId],
                     method: 'PUT',
                     body: data,
@@ -315,7 +315,11 @@ export default function NewPostPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post: Post) => {
+    const handleSavePost = async (
+        post: Partial<Post> & { thumbImg: File } & { parentId: number } & {
+            categoryId: number;
+        },
+    ) => {
         const data = getData(post.status, post);
         let result;
         try {

@@ -2,7 +2,6 @@ import { BsList } from 'react-icons/bs';
 import UserProfile from '@/components/sidebar/UserProfile';
 import PanelModule from '@/components/sidebar/PanelModule';
 import { useSeries } from '@/hooks/useSeries';
-import AlertPopup from '@/components/AlertPopup';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoClose } from 'react-icons/io5';
@@ -10,6 +9,7 @@ import { useParams } from 'next/navigation';
 
 interface SidebarProps {
     isOpen: boolean;
+    isShow: boolean;
     handleSidebarClick: () => void;
 }
 
@@ -33,8 +33,7 @@ const sidebarVariants = {
 
 export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
     const { blogAddress } = useParams();
-    const { data, isLoading, showPopup, popupMessage, handleClosePopup } =
-        useSeries();
+    const { data, isLoading } = useSeries();
     const series = data
         ? [
               {
@@ -62,14 +61,17 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                             variants={sidebarVariants}
                             className="h-full overflow-y-auto border-r border-solid border-customLightBlue-100"
                         >
-                            <IoClose
+                            <motion.div
                                 key="closeIcon"
-                                className="absolute right-3 top-3 size-5 cursor-pointer text-customDarkBlue-100"
-                                onClick={handleSidebarClick}
                                 initial="initial"
                                 animate="animate"
+                                exit="exit"
                                 variants={sidebarVariants}
-                            />
+                                className="absolute right-3 top-3 size-5 cursor-pointer text-customDarkBlue-100"
+                                onClick={handleSidebarClick}
+                            >
+                                <IoClose />
+                            </motion.div>
                             <motion.section
                                 key="sidebar-content"
                                 className="flex h-full flex-col"
@@ -96,11 +98,6 @@ export default function Sidebar({ isOpen, handleSidebarClick }: SidebarProps) {
                                     )}
                                 </div>
                             </motion.section>
-                            <AlertPopup
-                                show={showPopup}
-                                title={popupMessage}
-                                onConfirm={handleClosePopup}
-                            />
                         </motion.section>
                     </>
                 ) : (

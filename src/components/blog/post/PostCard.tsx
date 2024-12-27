@@ -18,7 +18,7 @@ export interface Comment {
     content: string;
     status: string;
     reportStatus?: string;
-    createDate: Date;
+    createDate?: Date;
 }
 
 export interface Comments {
@@ -41,7 +41,7 @@ export interface Post {
     preTitle?: string;
     nextId?: 3;
     nextTitle?: string;
-    status: '';
+    status: string;
     reportStatus?: string;
     views: number;
     title: string;

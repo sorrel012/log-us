@@ -108,7 +108,7 @@ export default function SeriesManagePage() {
     };
 
     const handleDelete = async (newSeriesId: number) => {
-        const res = await customFetch('/series/' + newSeriesId, {
+        const res = await customFetch<any>('/series/' + newSeriesId, {
             method: 'DELETE',
             queryKey: ['series', 'delete', newSeriesId],
         });

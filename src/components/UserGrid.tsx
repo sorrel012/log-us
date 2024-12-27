@@ -8,6 +8,11 @@ export interface UserGridProps {
     blogList: Blog[];
 }
 
+export interface UserGridCardProps extends Omit<UserGridProps, 'type'> {
+    type: GridType;
+    onButtonClick: (followId: number) => void;
+}
+
 export interface Blog {
     blogId: number;
     blogName: string;
@@ -23,7 +28,7 @@ export default function UserGrid({
     type,
     onButtonClick,
 }: {
-    users: UserGridProps[];
+    users: UserGridCardProps[];
     type: GridType;
     onButtonClick: (followId: number) => void;
 }) {

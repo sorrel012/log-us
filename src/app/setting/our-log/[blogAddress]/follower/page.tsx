@@ -80,7 +80,7 @@ export default function FollowerPage() {
     };
 
     const handleFollowCancel = async (followId: number) => {
-        const res = await customFetch('/follower?followId=' + followId, {
+        const res = await customFetch<any>('/follower?followId=' + followId, {
             method: 'DELETE',
             queryKey: ['delete', 'follower', followId],
         });

@@ -81,7 +81,7 @@ export default function PostDetail({
         setPopupText('');
         setIsDropdownOpen(false);
         try {
-            const res = await customFetch(`/posts/${postId}`, {
+            const res = await customFetch<any>(`/posts/${postId}`, {
                 method: 'DELETE',
                 queryKey: ['deletePost', postId],
             });

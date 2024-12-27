@@ -41,7 +41,7 @@ export default function MainHeader() {
 
     const router = useRouter();
     const logRef = useRef<HTMLDivElement | null>(null);
-    const menuRef = useRef<HTMLDivElement | null>(null);
+    const menuRef = useRef<HTMLButtonElement | null>(null);
 
     const { modalType, openModal, closeModal } = useModal();
     const [findType, setFindType] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export default function MainHeader() {
     const handleLogout = async () => {
         clearAuthInfo();
         window.localStorage.removeItem('auth');
-        await customFetch('/logout', {
+        await customFetch<any>('/logout', {
             queryKey: ['logout'],
             method: 'POST',
         });

@@ -136,7 +136,7 @@ const FindModal: React.FC<FindModal> = ({ isOpen, closeModal, findType }) => {
                 setPwdResult('일치하는 회원이 존재하지 않습니다.');
             }
         } else {
-            const res = await customFetch('/user/pwd', {
+            const res = await customFetch<any>('/user/pwd', {
                 queryKey: ['pwd', newPwd],
                 method: 'PUT',
                 body: { loginId, email, newPassword: newPwd },

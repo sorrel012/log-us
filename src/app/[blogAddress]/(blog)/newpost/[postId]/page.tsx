@@ -82,10 +82,13 @@ export default function NewPostEditPage() {
     useEffect(() => {
         (async () => {
             if (editPostId) {
-                const response = await customFetch(`/posts/${editPostId}`, {
-                    queryKey: ['postEdit', editPostId],
-                    invalidateCache: true,
-                });
+                const response = await customFetch<any>(
+                    `/posts/${editPostId}`,
+                    {
+                        queryKey: ['postEdit', editPostId],
+                        invalidateCache: true,
+                    },
+                );
 
                 if (response.isError) {
                     setPopupTitle(
@@ -369,7 +372,12 @@ export default function NewPostEditPage() {
         setShowSavePopup(true);
     };
 
-    const handleSavePost = async (post: Post, isDeleted: boolean) => {
+    const handleSavePost = async (
+        post: Partial<Post> & { thumbImg: File } & { parentId: number } & {
+            categoryId: number;
+        },
+        isDeleted: boolean,
+    ) => {
         const data = getData(post.status, post, isDeleted);
         try {
             const result = await customFetch(`/posts/${editPostId}`, {

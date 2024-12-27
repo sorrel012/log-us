@@ -23,7 +23,7 @@ export const useSeries = () => {
 
                 if (response.isError) {
                     setIsError(true);
-                    setError(error || '시리즈를 불러올 수 없습니다.');
+                    setError(response.error || '시리즈를 불러올 수 없습니다.');
                     setIsLoading(false);
                 }
 

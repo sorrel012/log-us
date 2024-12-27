@@ -23,7 +23,7 @@ export default function BlogLayout({
     useEffect(() => {
         (async () => {
             try {
-                const response = await customFetch('/blog-id', {
+                const response = await customFetch<any>('/blog-id', {
                     params: { blogAddress },
                     queryKey: ['blogId', blogAddress],
                 });

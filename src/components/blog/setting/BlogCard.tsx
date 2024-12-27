@@ -1,16 +1,7 @@
 import Link from 'next/link';
 import { Blog } from '@/components/UserGrid';
 
-export default function BlogCard({
-    blogId,
-    blogName,
-    blogAddress,
-    introduce,
-    shareYn,
-    memberId,
-    nickname,
-    imgUrl,
-}: Blog) {
+export default function BlogCard({ blogName, blogAddress, introduce }: Partial<Blog>) {
     return (
         <article className="w-[320px] rounded-md border border-solid border-customGray-100 px-5 py-6">
             <div

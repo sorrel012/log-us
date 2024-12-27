@@ -29,7 +29,13 @@ export default function SavePostPopup({
 }: {
     show: boolean;
     onClose: () => void;
-    onPostSave: (post: Post, isDeleted: boolean) => void;
+    onPostSave: (
+        post: Partial<Post> & { thumbImg: File } & { parentId: number } & {
+            categoryId: number;
+        },
+        isDeleted: boolean,
+    ) => void;
+
     content?: Partial<PostPayload>;
 }) {
     const { blogInfo } = useBlogStore();
@@ -78,7 +84,7 @@ export default function SavePostPopup({
     useEffect(() => {
         (async () => {
             try {
-                const res = await customFetch('/category', {
+                const res = await customFetch<any>('/category', {
                     queryKey: ['parent', 'category'],
                 });
 
@@ -104,7 +110,7 @@ export default function SavePostPopup({
         if (parentId) {
             setCategoryId(0);
 
-            customFetch('/category', {
+            customFetch<any>('/category', {
                 queryKey: ['category', parentId],
                 params: { parentId },
             }).then((res) => {

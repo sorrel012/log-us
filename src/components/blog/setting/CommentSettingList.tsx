@@ -1,34 +1,35 @@
 'use client';
 
+import { Comment } from '@/components/blog/post/PostCard';
 import { useEffect, useState } from 'react';
-import ContentSettingCard, {
-    Notice,
-} from '@/components/admin/ContentSettingCard';
+import CommentSettingCard from '@/components/blog/setting/CommentSettingCard';
 
-export default function ContentsSettingList({
+export default function CommentSettingList({
     contents,
     onSelect,
 }: {
-    contents: Notice[];
-    onSelect: (noticeList: Notice[]) => void;
+    contents: Comment[];
+    onSelect: (contents: Comment[]) => void;
 }) {
-    const [selectedContents, setSelectedContents] = useState<Notice[]>([]);
+    const [selectedContents, setSelectedContents] = useState<Comment[]>([]);
 
     useEffect(() => {
         onSelect(selectedContents);
     }, [selectedContents]);
 
     const handleCheckboxChange = (
-        newSelectedNotice: Notice,
+        newSelectedContents: Comment,
         isChecked: boolean,
     ) => {
         if (isChecked) {
-            setSelectedContents((prev) => [...prev, newSelectedNotice]);
+            setSelectedContents((prev) => [...prev, newSelectedContents]);
         } else {
-            const index = selectedContents.findIndex(
-                (notice) =>
-                    notice.noticeIndex === newSelectedNotice.noticeIndex,
+            const index = (selectedContents as Comment[]).findIndex(
+                (comment) =>
+                    comment.commentId ===
+                    (newSelectedContents as Comment).commentId,
             );
+
             setSelectedContents((prev) => [
                 ...prev.slice(0, index),
                 ...prev.slice(index + 1),
@@ -40,9 +41,9 @@ export default function ContentsSettingList({
         <section className="font-default mb-14 rounded-md border border-solid border-customLightBlue-100">
             {contents &&
                 contents.map((content, index) => (
-                    <ContentSettingCard
-                        key={content.noticeIndex}
-                        notice={content}
+                    <CommentSettingCard
+                        key={content.commentId + ''}
+                        content={content}
                         isLast={index === contents.length - 1}
                         onSelect={handleCheckboxChange}
                     />

@@ -37,7 +37,9 @@ export default function MemberInfoForm() {
 
     useEffect(() => {
         (async () => {
-            const res = await customFetch('/user', { queryKey: ['user-info'] });
+            const res = await customFetch<any>('/user', {
+                queryKey: ['user-info'],
+            });
 
             if (res.isError) {
                 setPopupTitle('회원정보를 불러오지 못했습니다.');

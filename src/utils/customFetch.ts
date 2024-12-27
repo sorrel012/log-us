@@ -30,7 +30,7 @@ export function getCacheData(key: string) {
         : null;
 }
 
-export async function customFetch<T>(
+export async function customFetch<T = any>(
     url: string,
     config: Partial<FetchConfig> & { queryKey: any[] },
 ): Promise<FetchState<T>> {

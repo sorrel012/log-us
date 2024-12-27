@@ -5,7 +5,7 @@ import MainGridItem from '@/components/main/MainGridItem';
 export interface ExtendedPost {
     postId: number;
     blogId: number;
-    imgUrl?: string | null;
+    imgUrl?: string;
     title: string;
     content: string;
     views: number;

@@ -33,7 +33,7 @@ export default function FollowingCard({
             method = 'POST';
         }
 
-        const res = await customFetch(url, {
+        const res = await customFetch<any>(url, {
             queryKey: ['follow', method],
             method,
         });

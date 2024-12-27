@@ -1,10 +1,7 @@
 import LightButton from '@/components/ui/LightButton';
-import { Comment, Post } from '@/components/blog/post/PostCard';
+import { Comment } from '@/components/blog/post/PostCard';
 import { dateFormatter, unescapeSpecialChars } from '@/utils/commonUtil';
 import SubText from '@/components/SubText';
-import ViewIcon from '@/components/icons/ViewIcon';
-import CommentIcon from '@/components/icons/CommentIcon';
-import LikeIcon from '@/components/icons/LikeIcon';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
 import React, { useEffect, useState } from 'react';
@@ -12,16 +9,14 @@ import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 
-export default function ContentSettingCard({
+export default function CommentSettingCard({
     content,
     isLast,
     onSelect,
-    type,
 }: {
-    content: Post | Comment;
+    content: Comment;
     isLast: boolean;
-    onSelect: (content: Post | Comment, isChecked: boolean) => void;
-    type: 'POST' | 'COMMENT';
+    onSelect: (content: Comment, isChecked: boolean) => void;
 }) {
     //TODO zustand 로 수정
     const loginUser = 6;
@@ -32,17 +27,11 @@ export default function ContentSettingCard({
     const { userBlogAuth } = useBlogStore();
 
     const [postWriterId, setPostWriterId] = useState();
-    const [commentWriterId, setCommentWriterId] = useState();
 
     const {
         postId,
         title,
-        seriesName,
-        categoryName,
         createDate,
-        views,
-        commentCount,
-        likeCount,
         nickname,
         memberId,
         parentId,
@@ -58,9 +47,9 @@ export default function ContentSettingCard({
     const [popupId, setPopupId] = useState('');
 
     useEffect(() => {
-        if (isOurLog && type === 'COMMENT' && postId) {
+        if (isOurLog && postId) {
             (async () => {
-                const res = await customFetch(`/posts/${postId}`, {
+                const res = await customFetch<any>(`/posts/${postId}`, {
                     queryKey: ['posts', 'comment'],
                 });
 
@@ -78,7 +67,7 @@ export default function ContentSettingCard({
                 }
             })();
         }
-    }, [isOurLog, postId, type]);
+    }, [isOurLog, postId]);
 
     const handleConfirm = () => {
         if (popupId === 'CLOSE') {
@@ -89,13 +78,7 @@ export default function ContentSettingCard({
     };
 
     const handlePostClick = () => {
-        if (type === 'POST') {
-            router.push(`/${blogAddress}/posts/${postId}`);
-        } else {
-            router.push(
-                `/${blogAddress}/posts/${postId}?commentId=${commentId}`,
-            );
-        }
+        router.push(`/${blogAddress}/posts/${postId}?commentId=${commentId}`);
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,24 +90,14 @@ export default function ContentSettingCard({
     };
 
     const handleDeleteConfirm = async () => {
-        let url;
-        if (type === 'POST') {
-            url = `/posts/${postId}`;
-        } else {
-            url = `/comments/${commentId}`;
-        }
-
         try {
-            const res = await customFetch(url, {
+            const res = await customFetch(`/comments/${commentId}`, {
                 method: 'DELETE',
                 queryKey: ['deletePost', postId],
             });
 
             if (res.isError) {
-                throw new Error(
-                    res.error ||
-                        `${type === 'POST' ? '게시글' : '댓글'}을 삭제할 수 없습니다.`,
-                );
+                throw new Error(res.error || '댓글을 삭제할 수 없습니다.');
             }
 
             setShowConfirmPopup(false);
@@ -134,9 +107,7 @@ export default function ContentSettingCard({
             setShowPopup(true);
         } catch (e) {
             setShowConfirmPopup(false);
-            setPopupTitle(
-                `${type === 'POST' ? '게시글' : '댓글'}을 삭제할 수 없습니다.`,
-            );
+            setPopupTitle('댓글을 삭제할 수 없습니다.');
             setPopupText('잠시 후 다시 시도해 주세요.');
             setPopupId('CLOSE');
             setShowPopup(true);
@@ -165,66 +136,28 @@ export default function ContentSettingCard({
                     className="flex flex-1 cursor-pointer flex-col"
                     onClick={handlePostClick}
                 >
-                    {type === 'POST' ? (
-                        <>
-                            <div className="mb-0.5 w-[40vw] truncate text-lg font-bold">
-                                {unescapeSpecialChars(title!)}
-                            </div>
-                            <div className="flex flex-wrap text-customLightBlue-200">
-                                <SubText
-                                    text={
-                                        seriesName ? seriesName : '시리즈 없음'
-                                    }
-                                />
-                                <SubText
-                                    text={
-                                        categoryName
-                                            ? categoryName
-                                            : '카테고리 없음'
-                                    }
-                                />
-                                {createDate && (
-                                    <SubText text={dateFormatter(createDate)} />
-                                )}
-                                <div className="flex gap-2">
-                                    <ViewIcon views={views!} />
-                                    <CommentIcon comments={commentCount!} />
-                                    <LikeIcon likes={likeCount!} />
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className="mb-0.5 w-[40vw] truncate text-lg font-bold">
-                                {unescapeSpecialChars(comment!)}
-                            </div>
-                            <div className="flex flex-wrap text-customLightBlue-200">
-                                <SubText text={nickname} />
-                                <SubText text={unescapeSpecialChars(title!)} />
-                                <SubText
-                                    text={dateFormatter(createDate)}
-                                    isLast={true}
-                                />
-                            </div>
-                        </>
-                    )}
+                    <>
+                        <div className="mb-0.5 w-[40vw] truncate text-lg font-bold">
+                            {unescapeSpecialChars(comment!)}
+                        </div>
+                        <div className="flex flex-wrap text-customLightBlue-200">
+                            <SubText text={nickname} />
+                            <SubText text={unescapeSpecialChars(title!)} />
+                            <SubText
+                                text={dateFormatter(createDate)}
+                                isLast={true}
+                            />
+                        </div>
+                    </>
                 </div>
             </div>
             <div className="mt-2 shrink-0 text-customLightBlue-200 md:mt-0">
                 {isOurLog && (
                     <>
-                        {type === 'POST' && loginUser === memberId && (
-                            <LightButton
-                                className="mr-1"
-                                text="수정"
-                                onClick={handleEdit}
-                            />
-                        )}
                         {(loginUser === postWriterId ||
                             loginUser === memberId ||
                             userBlogAuth === 'OWNER' ||
-                            (type === 'COMMENT' &&
-                                userBlogAuth === 'ADMIN')) && (
+                            userBlogAuth === 'ADMIN') && (
                             <LightButton
                                 className="mr-1"
                                 text="삭제"

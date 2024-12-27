@@ -6,16 +6,28 @@ import CommentIcon from '@/components/icons/CommentIcon';
 import LikeIcon from '@/components/icons/LikeIcon';
 import { unescapeSpecialChars } from '@/utils/commonUtil';
 
+interface MainGridItemProps {
+    postId: number;
+    blogId: number;
+    imgUrl?: string;
+    title: string;
+    content: string;
+    views: number;
+    commentCount: number;
+    likeCount: number;
+    blogAddress: string;
+}
+
 const MainGridItem = ({
-    blogAddress,
-    postId,
+    imgUrl,
     title,
     content,
-    imgUrl,
     views,
     commentCount,
     likeCount,
-}) => {
+    blogAddress,
+    postId,
+}: MainGridItemProps) => {
     return (
         <Link
             href={`/${blogAddress}/posts/${postId}`}

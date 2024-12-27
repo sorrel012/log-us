@@ -24,7 +24,7 @@ export default function MemberWithdrawalForm() {
     };
 
     const handleWithdrawal = async () => {
-        const res = await customFetch(`/user/${loginUser}`, {
+        const res = await customFetch<any>(`/user/${loginUser}`, {
             queryKey: ['withdrawal'],
             method: 'DELETE',
         });

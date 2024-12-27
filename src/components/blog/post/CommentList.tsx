@@ -1,4 +1,3 @@
-import { Post } from '@/components/blog/post/PostCard';
 import { AiOutlineUser } from 'react-icons/ai';
 import { useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
@@ -10,6 +9,7 @@ import ReplyList from '@/components/blog/post/ReplyList';
 import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { IoLockClosedOutline } from 'react-icons/io5';
+import { Comment, Post } from '@/components/blog/post/PostCard';
 
 export default function CommentList({
     postId,
@@ -26,9 +26,9 @@ export default function CommentList({
 
     const [commentText, setCommentText] = useState('');
     const [isPrivateComment, setIsPrivateComment] = useState(false);
-    const [parentCommentsState, setParentCommentsState] = useState(
-        comments?.parents,
-    );
+    const [parentCommentsState, setParentCommentsState] = useState<
+        Partial<Comment>[]
+    >(comments?.parents || []);
 
     const [replyVisibility, setReplyVisibility] = useState<
         Record<number, boolean>
@@ -99,7 +99,7 @@ export default function CommentList({
         };
 
         try {
-            const res = await customFetch('/comments', {
+            const res = await customFetch<any>('/comments', {
                 method: 'POST',
                 queryKey: ['comment', 'save', commentText],
                 body,
@@ -110,6 +110,8 @@ export default function CommentList({
             }
 
             comments?.parents.push({
+                postId,
+                depth: 0,
                 commentId: res.data.commentId,
                 content: commentText,
                 createDate: new Date(),
@@ -240,9 +242,6 @@ export default function CommentList({
                                             <section>
                                                 <div className="px-4">
                                                     <CommentCard
-                                                        isHighlighted={
-                                                            isHighlighted
-                                                        }
                                                         nickname={nickname}
                                                         parentId={parentId}
                                                         content={content}

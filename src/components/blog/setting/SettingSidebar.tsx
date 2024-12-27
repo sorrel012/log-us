@@ -51,13 +51,18 @@ export default function SettingSidebar({
             setBlogInfo(null);
             if (isOurLogPath) {
                 setBlogInfo(null);
-                const response = await customFetch('/blog-id', {
+                const response = await customFetch<any>('/blog-id', {
                     params: { blogAddress },
                     queryKey: ['blogId', blogAddress, 'share'],
                 });
 
-                if (response?.data?.blogId) {
-                    setBlogId(response.data.blogId);
+                if (
+                    response.data &&
+                    typeof response.data === 'object' &&
+                    'blogId' in response.data
+                ) {
+                    const blogId = (response.data as { blogId: string }).blogId;
+                    setBlogId(blogId);
 
                     const blogInfoRes = await customFetch<BlogInfo>(
                         '/blog-info',

@@ -52,7 +52,7 @@ export default function SeriesList({
             seriesOrder: series.seriesOrder,
         }));
 
-        const res = await customFetch('/series/order', {
+        const res = await customFetch<any>('/series/order', {
             method: 'POST',
             queryKey: ['series', 'order'],
             body: { seriesList: body },
@@ -87,8 +87,9 @@ export default function SeriesList({
         onResetSeries(clickedSeriesId, 'DELETE');
     };
 
-    const handleDelete = async (e) => {
+    const handleDelete = async (e, seriesId) => {
         e.stopPropagation();
+        setClickedSeriesId(seriesId);
         setPopupTitle('시리즈를 삭제하시겠습니까?');
         setPopupText('삭제 후 복구할 수 없습니다.');
         setShowConfirmPopup(true);

@@ -51,7 +51,7 @@ export default function BlogInfoForm({
             return;
         }
 
-        const res = await customFetch('/blog/address-dupl', {
+        const res = await customFetch<any>('/blog/address-dupl', {
             queryKey: ['address-dupl', blogAddress],
             params: { blogAddress },
         });

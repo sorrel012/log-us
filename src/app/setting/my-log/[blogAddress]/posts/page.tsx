@@ -4,15 +4,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useBlogStore } from '@/store/useBlogStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
-import { Comment, Post } from '@/components/blog/post/PostCard';
+import { Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
-import ContentSettingList from '@/components/blog/setting/ContentSettingList';
 import Pagination from '@/components/Pagination';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { useRouter } from 'next/navigation';
 import SearchContent from '@/components/blog/setting/SearchContent';
 import SearchNothing from '@/components/blog/setting/SearchNothing';
+import PostSettingList from '@/components/blog/setting/PostSettingList';
 
 export default function PostsManagePage() {
     const router = useRouter();
@@ -105,8 +105,8 @@ export default function PostsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (posts: Post[] | Comment[]) => {
-        setSelectedPosts(posts as Post[]);
+    const handleSelect = (posts: Post[]) => {
+        setSelectedPosts(posts);
     };
 
     const handlePageChange = (page: number) => {
@@ -125,7 +125,7 @@ export default function PostsManagePage() {
     const handleDeleteConfirm = async () => {
         for (const post of selectedPosts) {
             try {
-                const res = await customFetch(`/posts/${post.postId}`, {
+                const res = await customFetch<any>(`/posts/${post.postId}`, {
                     method: 'DELETE',
                     queryKey: ['deletePost', post.postId],
                 });
@@ -189,11 +189,7 @@ export default function PostsManagePage() {
                             containerWidth="w-30"
                         />
                     </div>
-                    <ContentSettingList
-                        contents={posts}
-                        onSelect={handleSelect}
-                        type="POST"
-                    />
+                    <PostSettingList contents={posts} onSelect={handleSelect} />
                     <Pagination
                         currentPage={page}
                         totalPages={totalPages}

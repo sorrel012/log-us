@@ -76,7 +76,7 @@ export default function ReplyList({
         };
 
         try {
-            const res = await customFetch('/comments', {
+            const res = await customFetch<any>('/comments', {
                 method: 'POST',
                 queryKey: ['reply', 'save', replyText],
                 body,

@@ -37,7 +37,7 @@ export default function MemberPwdForm() {
         setCurrPwd(e.target.value);
 
         //TODO 현재 비밀번호 api
-        const res = await customFetch('/user/pwd', {
+        const res = await customFetch<any>('/user/pwd', {
             method: 'POST',
             queryKey: ['password', e.target.value],
             body: { password: e.target.value },

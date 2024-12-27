@@ -1,40 +1,32 @@
 'use client';
 
-import { Comment, Post } from '@/components/blog/post/PostCard';
+import { Post } from '@/components/blog/post/PostCard';
 import { useEffect, useState } from 'react';
-import ContentSettingCard from '@/components/blog/setting/ContentSettingCard';
+import PostSettingCard from '@/components/blog/setting/PostSettingCard';
 
-export default function ContentSettingList({
+export default function PostSettingList({
     contents,
     onSelect,
-    type,
 }: {
-    contents: Post[] | Comment[];
-    onSelect: (contents: Post[] | Comment[]) => void;
-    type: 'POST' | 'COMMENT';
+    contents: Post[];
+    onSelect: (contents: Post[]) => void;
 }) {
-    const [selectedContents, setSelectedContents] = useState<
-        Post[] | Comment[]
-    >([]);
+    const [selectedContents, setSelectedContents] = useState<Post[]>([]);
+
     useEffect(() => {
         onSelect(selectedContents);
     }, [selectedContents]);
 
-    const handleCheckboxChange = (newSelectedContents, isChecked: boolean) => {
+    const handleCheckboxChange = (
+        newSelectedContents: Post,
+        isChecked: boolean,
+    ) => {
         if (isChecked) {
             setSelectedContents((prev) => [...prev, newSelectedContents]);
         } else {
-            let index;
-            if (type === 'POST') {
-                index = selectedContents.findIndex(
-                    (post: Post) => post.postId === newSelectedContents.postId,
-                );
-            } else {
-                index = selectedContents.findIndex(
-                    (comment: Comment) =>
-                        comment.commentId === newSelectedContents.commentId,
-                );
-            }
+            const index = (selectedContents as Post[]).findIndex(
+                (post) => post.postId === (newSelectedContents as Post).postId,
+            );
 
             setSelectedContents((prev) => [
                 ...prev.slice(0, index),
@@ -47,7 +39,7 @@ export default function ContentSettingList({
         <section className="font-default mb-14 rounded-md border border-solid border-customLightBlue-100">
             {contents &&
                 contents.map((content, index) => (
-                    <ContentSettingCard
+                    <PostSettingCard
                         key={
                             'commentId' in content
                                 ? content.commentId + ''
@@ -56,7 +48,6 @@ export default function ContentSettingList({
                         content={content}
                         isLast={index === contents.length - 1}
                         onSelect={handleCheckboxChange}
-                        type={type}
                     />
                 ))}
         </section>

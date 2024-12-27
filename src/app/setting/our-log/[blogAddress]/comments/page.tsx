@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
 import React, { useEffect, useState } from 'react';
-import { Comment, Post } from '@/components/blog/post/PostCard';
+import { Comment } from '@/components/blog/post/PostCard';
 import { customFetch } from '@/utils/customFetch';
 import SearchContent from '@/components/blog/setting/SearchContent';
 import SelectBox from '@/components/SelectBox';
@@ -12,7 +12,7 @@ import Pagination from '@/components/Pagination';
 import SearchNothing from '@/components/blog/setting/SearchNothing';
 import AlertPopup from '@/components/AlertPopup';
 import ConfirmPopup from '@/components/ConfirmPopup';
-import ContentSettingList from '@/components/blog/setting/ContentSettingList';
+import ContentSettingList from '@/components/blog/setting/CommentSettingList';
 
 export default function OurLogCommentsManagePage() {
     const router = useRouter();
@@ -98,8 +98,8 @@ export default function OurLogCommentsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (comments: Post[] | Comment[]) => {
-        setSelectedComments(comments as Comment[]);
+    const handleSelect = (comments: Comment[]) => {
+        setSelectedComments(comments);
     };
 
     const handlePageChange = (page: number) => {
@@ -116,7 +116,7 @@ export default function OurLogCommentsManagePage() {
     const handleDeleteConfirm = async () => {
         for (const comment of selectedComments) {
             try {
-                const res = await customFetch(
+                const res = await customFetch<any>(
                     `/comments/${comment.commentId}`,
                     {
                         method: 'DELETE',
@@ -186,7 +186,6 @@ export default function OurLogCommentsManagePage() {
                     <ContentSettingList
                         contents={comments}
                         onSelect={handleSelect}
-                        type="COMMENT"
                     />
                     <Pagination
                         currentPage={page}

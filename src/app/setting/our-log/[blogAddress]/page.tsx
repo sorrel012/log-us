@@ -139,7 +139,7 @@ export default function OurLogSetting() {
             ],
         };
 
-        const res = await customFetch(`/blog/setting?blogId=${blogId}`, {
+        const res = await customFetch<any>(`/blog/setting?blogId=${blogId}`, {
             queryKey: [
                 'edit-blog-info',
                 updatedInfo.blogAddress,

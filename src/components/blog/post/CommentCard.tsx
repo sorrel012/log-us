@@ -73,7 +73,7 @@ export default function CommentCard({
         }
 
         try {
-            const response = await customFetch(`/comments/${commentId}`, {
+            const response = await customFetch<any>(`/comments/${commentId}`, {
                 method: 'PUT',
                 queryKey: ['comment', 'edit', commentId],
                 body: {

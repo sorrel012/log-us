@@ -24,7 +24,7 @@ export default function SearchContent({
 
     const handleOptionClick = (item: SelectType) => {
         setSelectedText(item.text);
-        setSelectedValue(item.value);
+        setSelectedValue(+item.value);
         setIsOpen(false);
     };
 
