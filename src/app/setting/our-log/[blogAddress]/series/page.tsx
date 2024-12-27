@@ -141,7 +141,7 @@ export default function SeriesManagePage() {
     const handleResetSeries = async (
         newSeriesId: number,
         mode: string,
-        body: SaveFetchData,
+        body?: SaveFetchData,
     ) => {
         if (mode === 'DELETE') {
             await handleDelete(newSeriesId);
