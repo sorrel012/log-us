@@ -14,6 +14,7 @@ export interface BlogInfoUpdate {
     blogAddress: string;
     introduce: string;
     isDuplicateChecked: boolean;
+    invitation: string;
     members: Member[];
 }
 
