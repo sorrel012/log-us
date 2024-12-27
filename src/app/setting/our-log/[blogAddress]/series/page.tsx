@@ -26,7 +26,7 @@ export default function SeriesManagePage() {
     useEffect(() => {
         if (userBlogAuth === 'EDITOR') {
             router.push('/setting');
-            setSeriesList(null);
+            setSeriesList([]);
         } else {
             if (data) {
                 setSeriesList(data);
