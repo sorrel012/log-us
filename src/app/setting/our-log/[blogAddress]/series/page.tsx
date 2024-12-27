@@ -61,7 +61,7 @@ export default function SeriesManagePage() {
         const { url, method, body } = fetchData;
         const { formData, requestDto } = body;
 
-        const res = await customFetch(url, {
+        const res = await customFetch<any>(url, {
             method,
             queryKey: ['series', mode],
             body: formData,
