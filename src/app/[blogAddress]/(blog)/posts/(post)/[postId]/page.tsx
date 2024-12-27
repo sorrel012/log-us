@@ -2,11 +2,16 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import AlertPopup from '@/components/AlertPopup';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import PostDetail from '@/components/blog/post/PostDetail';
 import { customFetch } from '@/utils/customFetch';
 import { Post } from '@/components/blog/post/PostCard';
-import CommentList from '@/components/blog/post/CommentList';
+import dynamic from 'next/dynamic';
+
+const CommentList = dynamic(
+    () => import('@/components/blog/post/CommentList'),
+    { ssr: false },
+);
 
 export default function PostDetailPage() {
     const router = useRouter();
@@ -54,18 +59,20 @@ export default function PostDetailPage() {
     };
 
     return (
-        <section className={`${commentIdParam && 'pt-8'}`}>
-            {post && (
-                <>
-                    <PostDetail {...post} />
-                    <CommentList {...post} />
-                </>
-            )}
-            <AlertPopup
-                show={showPopup}
-                title={popupMessage}
-                onConfirm={handleClosePopup}
-            />
-        </section>
+        <Suspense>
+            <section className={`${commentIdParam && 'pt-8'}`}>
+                {post && (
+                    <>
+                        <PostDetail {...post} />
+                        <CommentList {...post} />
+                    </>
+                )}
+                <AlertPopup
+                    show={showPopup}
+                    title={popupMessage}
+                    onConfirm={handleClosePopup}
+                />
+            </section>
+        </Suspense>
     );
 }

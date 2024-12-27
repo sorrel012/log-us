@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useModal } from '@/hooks/useModal';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
@@ -113,146 +113,161 @@ export default function MainHeader() {
     };
 
     return (
-        <header>
-            <div className="mx-auto flex h-[70px] items-center justify-between p-5">
-                {/* 메인 헤더 공통 구역 */}
-                <Link href="/" className="">
-                    <Image
-                        src="/logo.png"
-                        width={150}
-                        height={150}
-                        alt="Logo"
-                    />
-                </Link>
-                {/* 로그인여부에 따라 달라지는 구역 */}
-                <div className="relative flex items-center justify-between">
-                    {loginUser && !isSetting && (
-                        <>
-                            <div className="mr-8 flex items-center justify-between gap-6">
-                                <Link
-                                    href={`/${loginBlogAddress}`}
-                                    className="cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
-                                >
-                                    My-log
-                                </Link>
-                                <div className="h-3 w-0.5 border bg-customLightBlue-200"></div>
-                                <div>
-                                    <button
-                                        ref={menuRef}
-                                        onClick={handleOurLog}
-                                        className="relative mr-2 cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
+        <Suspense>
+            <header>
+                <div className="mx-auto flex h-[70px] items-center justify-between p-5">
+                    {/* 메인 헤더 공통 구역 */}
+                    <Link href="/" className="">
+                        <Image
+                            src="/logo.png"
+                            width={150}
+                            height={150}
+                            alt="Logo"
+                        />
+                    </Link>
+                    {/* 로그인여부에 따라 달라지는 구역 */}
+                    <div className="relative flex items-center justify-between">
+                        {loginUser && !isSetting && (
+                            <>
+                                <div className="mr-8 flex items-center justify-between gap-6">
+                                    <Link
+                                        href={`/${loginBlogAddress}`}
+                                        className="cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
                                     >
-                                        Our-log
-                                    </button>
-                                    {viewOurLog && (
-                                        <div
-                                            ref={logRef}
-                                            className="font-default absolute z-50 w-72 rounded-lg bg-white p-4 pb-2 shadow-md"
-                                            style={{
-                                                top: menuRef.current
-                                                    ? menuRef.current
-                                                          .offsetHeight + 15
-                                                    : '50',
-                                                left: 0,
-                                            }}
+                                        My-log
+                                    </Link>
+                                    <div className="h-3 w-0.5 border bg-customLightBlue-200"></div>
+                                    <div>
+                                        <button
+                                            ref={menuRef}
+                                            onClick={handleOurLog}
+                                            className="relative mr-2 cursor-pointer text-md text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200"
                                         >
-                                            <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3">
-                                                <div className="font-bold">
-                                                    Our-log 목록
+                                            Our-log
+                                        </button>
+                                        {viewOurLog && (
+                                            <div
+                                                ref={logRef}
+                                                className="font-default absolute z-50 w-72 rounded-lg bg-white p-4 pb-2 shadow-md"
+                                                style={{
+                                                    top: menuRef.current
+                                                        ? menuRef.current
+                                                              .offsetHeight + 15
+                                                        : '50',
+                                                    left: 0,
+                                                }}
+                                            >
+                                                <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3">
+                                                    <div className="font-bold">
+                                                        Our-log 목록
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <button
+                                                            onClick={
+                                                                handlePrevPage
+                                                            }
+                                                            disabled={
+                                                                currentPage ===
+                                                                1
+                                                            }
+                                                        >
+                                                            <IoChevronBackOutline
+                                                                className={`${currentPage === 1 ? 'text-gray-400' : 'text-black'}`}
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            onClick={
+                                                                handleNextPage
+                                                            }
+                                                            disabled={
+                                                                currentPage ===
+                                                                totalPages
+                                                            }
+                                                        >
+                                                            <IoChevronForwardOutline
+                                                                className={`${currentPage === totalPages ? 'text-gray-400' : 'text-black'}`}
+                                                            />
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-3">
-                                                    <button
-                                                        onClick={handlePrevPage}
-                                                        disabled={
-                                                            currentPage === 1
-                                                        }
-                                                    >
-                                                        <IoChevronBackOutline
-                                                            className={`${currentPage === 1 ? 'text-gray-400' : 'text-black'}`}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        onClick={handleNextPage}
-                                                        disabled={
-                                                            currentPage ===
-                                                            totalPages
-                                                        }
-                                                    >
-                                                        <IoChevronForwardOutline
-                                                            className={`${currentPage === totalPages ? 'text-gray-400' : 'text-black'}`}
-                                                        />
-                                                    </button>
-                                                </div>
+                                                <ul>
+                                                    {itemsToDisplay.map(
+                                                        (item) => (
+                                                            <li
+                                                                onClick={() => {
+                                                                    router.push(
+                                                                        `/${item.blogAddress}`,
+                                                                    );
+                                                                }}
+                                                                key={
+                                                                    item.blogId
+                                                                }
+                                                                className="w-full truncate border-b-2 py-2 text-sm text-gray-700 hover:cursor-pointer"
+                                                            >
+                                                                [{item.nickname}
+                                                                ]
+                                                                {' ' +
+                                                                    item.blogName}
+                                                            </li>
+                                                        ),
+                                                    )}
+                                                </ul>
                                             </div>
-                                            <ul>
-                                                {itemsToDisplay.map((item) => (
-                                                    <li
-                                                        onClick={() => {
-                                                            router.push(
-                                                                `/${item.blogAddress}`,
-                                                            );
-                                                        }}
-                                                        key={item.blogId}
-                                                        className="w-full truncate border-b-2 py-2 text-sm text-gray-700 hover:cursor-pointer"
-                                                    >
-                                                        [{item.nickname}]
-                                                        {' ' + item.blogName}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="mr-5 flex items-center justify-between gap-4">
-                                <Search />
-                                <Link href="/setting">
-                                    <FiSettings className="text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
-                                </Link>
-                            </div>
-                        </>
-                    )}
+                                <div className="mr-5 flex items-center justify-between gap-4">
+                                    <Search />
+                                    <Link href="/setting">
+                                        <FiSettings className="text-xl text-customLightBlue-200 duration-200 hover:text-customDarkBlue-200" />
+                                    </Link>
+                                </div>
+                            </>
+                        )}
 
-                    {!loginUser && !isJoin && (
-                        <div className="mr-5">
-                            <Search />
-                        </div>
-                    )}
-                    {!isJoin && !isSetting && (
-                        <div>
-                            <button
-                                onClick={
-                                    loginUser
-                                        ? handleLogout
-                                        : () => openModal('login')
-                                }
-                                className="mr-2 rounded-lg bg-customDarkBlue-200 px-8 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
-                            >
-                                {loginUser ? '로그아웃' : '로그인'}
-                            </button>
-                        </div>
-                    )}
+                        {!loginUser && !isJoin && (
+                            <div className="mr-5">
+                                <Search />
+                            </div>
+                        )}
+                        {!isJoin && !isSetting && (
+                            <div>
+                                <button
+                                    onClick={
+                                        loginUser
+                                            ? handleLogout
+                                            : () => openModal('login')
+                                    }
+                                    className="mr-2 rounded-lg bg-customDarkBlue-200 px-8 py-2 text-md tracking-wide text-white transition-colors duration-300 hover:bg-customDarkBlue-100"
+                                >
+                                    {loginUser ? '로그아웃' : '로그인'}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    <LoginModal
+                        isOpen={modalType === 'login'}
+                        closeModal={() => {
+                            closeModal();
+                            router.push('/');
+                        }}
+                        openFindModal={(type: string) =>
+                            handleOpenFindModal(type)
+                        }
+                    />
+                    <FindModal
+                        isOpen={modalType == 'find'}
+                        closeModal={closeModal}
+                        findType={findType}
+                    />
+                    <AlertPopup
+                        show={showPopup}
+                        onConfirm={() => setShowPopup(false)}
+                        title={popupTitle}
+                        text={popupText}
+                    />
                 </div>
-                <LoginModal
-                    isOpen={modalType === 'login'}
-                    closeModal={() => {
-                        closeModal();
-                        router.push('/');
-                    }}
-                    openFindModal={(type: string) => handleOpenFindModal(type)}
-                />
-                <FindModal
-                    isOpen={modalType == 'find'}
-                    closeModal={closeModal}
-                    findType={findType}
-                />
-                <AlertPopup
-                    show={showPopup}
-                    onConfirm={() => setShowPopup(false)}
-                    title={popupTitle}
-                    text={popupText}
-                />
-            </div>
-        </header>
+            </header>
+        </Suspense>
     );
 }
