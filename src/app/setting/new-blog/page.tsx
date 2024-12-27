@@ -207,7 +207,7 @@ export default function NewBlogPage() {
         setIsLoading(false);
     };
 
-    const handleInvitation = (invitation) => {
+    const handleInvitation = (invitation: string) => {
         setInvitation(invitation);
     };
 

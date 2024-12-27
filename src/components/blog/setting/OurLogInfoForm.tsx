@@ -110,7 +110,7 @@ export default function OurLogInfoForm({
         });
     };
 
-    const handleInvitation = (invitation) => {
+    const handleInvitation = (invitation: string) => {
         setInvitation(invitation);
     };
 
