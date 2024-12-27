@@ -6,7 +6,10 @@ export default function BarChart({ chartData, chartOptions }) {
     let chartInstance = null;
 
     useEffect(() => {
+        if (!chartRef.current) return;
+
         const ctx = chartRef.current.getContext('2d');
+        if (!ctx) return;
 
         const createChart = () => {
             Chart.register(...registerables);
