@@ -69,7 +69,7 @@ export default function OurLogCommentsManagePage() {
     const handleSearch = async (value: number, keyword: string) => {
         setSearchKeyword(keyword);
 
-        const res = await customFetch('/blog/comments', {
+        const res = await customFetch<any>('/blog/comments', {
             queryKey: ['search', 'comments', keyword, value, size, page],
             params: {
                 blogId,
