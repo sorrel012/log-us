@@ -285,6 +285,7 @@ export default function NewBlogPage() {
                     onAdd={handleAddMember}
                     onDelete={handleDeleteMember}
                     onChangeInvitation={handleInvitation}
+                    type="NEW"
                 />
                 <div className="-mt-2 text-right">
                     <button
