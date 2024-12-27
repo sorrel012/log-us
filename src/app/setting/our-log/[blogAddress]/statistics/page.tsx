@@ -95,11 +95,14 @@ export default function OurLogStatisticsPage() {
                     queryKey: ['statistics', blogId],
                     params: { blogId },
                 });
-                const postRes = await customFetch('/blog/statistics/member', {
-                    queryKey: ['statistics', 'post', blogId],
-                    params: { blogId, type: 'post' },
-                });
-                const commentRes = await customFetch(
+                const postRes = await customFetch<MemberStatistics[]>(
+                    '/blog/statistics/member',
+                    {
+                        queryKey: ['statistics', 'post', blogId],
+                        params: { blogId, type: 'post' },
+                    },
+                );
+                const commentRes = await customFetch<MemberStatistics[]>(
                     '/blog/statistics/member',
                     {
                         queryKey: ['statistics', 'comment', blogId],
@@ -120,21 +123,25 @@ export default function OurLogStatisticsPage() {
                 setTotalCnt(res.data?.total || 0);
 
                 setPostStatistics(
-                    postRes.data?.map((post) => ({
-                        memberInfo: post.memberInfo,
-                        today: post.today,
-                        total: post.total,
-                        dateCount: post.dateCount,
-                    })),
+                    Array.isArray(postRes.data)
+                        ? postRes.data.map((post) => ({
+                              memberInfo: post.memberInfo,
+                              today: post.today,
+                              total: post.total,
+                              dateCount: post.dateCount,
+                          }))
+                        : [],
                 );
 
                 setCommentStatistics(
-                    commentRes.data?.map((comment) => ({
-                        memberInfo: comment.memberInfo,
-                        today: comment.today,
-                        total: comment.total,
-                        dateCount: comment.dateCount,
-                    })),
+                    Array.isArray(commentRes.data)
+                        ? commentRes.data.map((comment) => ({
+                              memberInfo: comment.memberInfo,
+                              today: comment.today,
+                              total: comment.total,
+                              dateCount: comment.dateCount,
+                          }))
+                        : [],
                 );
             })();
         }
