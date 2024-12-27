@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
 import React, { useEffect, useState } from 'react';
-import { Comment } from '@/components/blog/post/PostCard';
+import { Comment, Post } from '@/components/blog/post/PostCard';
 import { customFetch } from '@/utils/customFetch';
 import SearchContent from '@/components/blog/setting/SearchContent';
 import SelectBox from '@/components/SelectBox';
@@ -98,7 +98,7 @@ export default function CommentsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (comments) => {
+    const handleSelect = (comments: Post[] | Comment[]) => {
         setSelectedComments(comments as Comment[]);
     };
 

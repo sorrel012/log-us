@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useBlogStore } from '@/store/useBlogStore';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
-import { Post } from '@/components/blog/post/PostCard';
+import { Comment, Post } from '@/components/blog/post/PostCard';
 import SelectBox from '@/components/SelectBox';
 import { PAGE_SIZE_OPTIONS } from '@/constants/constant';
 import ContentSettingList from '@/components/blog/setting/ContentSettingList';
@@ -105,7 +105,7 @@ export default function PostsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (posts) => {
+    const handleSelect = (posts: Post[] | Comment[]) => {
         setSelectedPosts(posts as Post[]);
     };
 
