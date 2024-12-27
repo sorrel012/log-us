@@ -37,7 +37,7 @@ export default function FollowerPage() {
                     page: page - 1,
                 };
 
-                const res = await customFetch('/follower', {
+                const res = await customFetch<any>('/follower', {
                     queryKey: ['follower', blogId, size, page],
                     params: params,
                 });
