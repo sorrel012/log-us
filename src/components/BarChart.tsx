@@ -3,7 +3,7 @@ import { Chart, registerables } from 'chart.js';
 
 export default function BarChart({ chartData, chartOptions }) {
     const chartRef = useRef<HTMLCanvasElement | null>(null);
-    let chartInstance = null;
+    let chartInstance: Chart<'line'> | null = null;
 
     useEffect(() => {
         if (!chartRef.current) return;
