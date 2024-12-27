@@ -55,7 +55,7 @@ export default function Home() {
                 };
             }
 
-            const res = await customFetch<[]>(url, {
+            const res = await customFetch<any>(url, {
                 queryKey: ['main', grid, date],
                 params,
             });
