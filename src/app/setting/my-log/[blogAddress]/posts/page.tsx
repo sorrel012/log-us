@@ -105,8 +105,8 @@ export default function PostsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (posts: Post[]) => {
-        setSelectedPosts(posts);
+    const handleSelect = (posts) => {
+        setSelectedPosts(posts as Post[]);
     };
 
     const handlePageChange = (page: number) => {

@@ -99,7 +99,7 @@ export default function CommentsManagePage() {
     };
 
     const handleSelect = (comments) => {
-        setSelectedComments(comments);
+        setSelectedComments(comments as Comment[]);
     };
 
     const handlePageChange = (page: number) => {

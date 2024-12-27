@@ -98,8 +98,8 @@ export default function OurLogCommentsManagePage() {
         setSize(+value);
     };
 
-    const handleSelect = (comments: Comment[]) => {
-        setSelectedComments(comments);
+    const handleSelect = (comments) => {
+        setSelectedComments(comments as Comment[]);
     };
 
     const handlePageChange = (page: number) => {
