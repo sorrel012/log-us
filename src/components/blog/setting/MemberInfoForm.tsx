@@ -9,7 +9,6 @@ import imageCompression from 'browser-image-compression';
 import { generateCode } from '@/utils/commonUtil';
 
 export default function MemberInfoForm() {
-    // TODO zustand로 변경
     const [orgData, setOrgData] = useState({
         email: '',
         nickname: '',

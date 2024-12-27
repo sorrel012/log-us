@@ -17,6 +17,7 @@ import SavePostPopup from '@/components/blog/post/SavePostPopup';
 import { useSeries } from '@/hooks/useSeries';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { Post } from '@/components/blog/post/PostCard';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type PostStatus = 'PUBLIC' | 'SECRET' | 'TEMPORARY';
 
@@ -45,8 +46,7 @@ export default function NewPostPage() {
     const router = useRouter();
     const { blogAddress } = useParams();
     const { blogId, blogInfo } = useBlogStore();
-    // TODO zustand로 수정
-    const loginUser = 1;
+    const { loginUser } = useAuthStore();
     const { data } = useSeries();
     const series = data
         ? [

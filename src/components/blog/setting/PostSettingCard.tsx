@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function PostSettingCard({
     content,
@@ -21,8 +22,7 @@ export default function PostSettingCard({
     isLast: boolean;
     onSelect: (content: Post, isChecked: boolean) => void;
 }) {
-    //TODO zustand 로 수정
-    const loginUser = 6;
+    const { loginUser } = useAuthStore();
     const router = useRouter();
     const { blogAddress } = useParams();
     const pathname = usePathname();

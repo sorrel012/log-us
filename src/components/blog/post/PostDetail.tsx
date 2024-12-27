@@ -13,6 +13,7 @@ import ConfirmPopup from '@/components/ConfirmPopup';
 import LikeIcon from '@/components/icons/LikeIcon';
 import CommentIcon from '@/components/icons/CommentIcon';
 import { useBlogStore } from '@/store/useBlogStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function PostDetail({
     postId,
@@ -39,8 +40,7 @@ export default function PostDetail({
     const { blogAddress } = useParams();
     const { isMember, userBlogAuth } = useBlogStore();
 
-    //TODO zustand에서 받아오기
-    const loginUser = 1;
+    const { loginUser } = useAuthStore();
     const isWriter = memberId === loginUser;
 
     const [likesCnt, setLikesCnt] = useState(likeCount);

@@ -4,12 +4,14 @@ import { persist } from 'zustand/middleware';
 interface AuthState {
     loginUser: number | null;
     loginUserNickname: string | null;
-    loginImgUrl: string | null;
     loginBlogAddress: string | null;
+    loginEmail: string | null;
+    loginImgUrl: string | null;
     setAuthInfo: (
         loginUser: number | null,
         loginUserNickname: string | null,
         loginBlogAddress: string | null,
+        loginEmail: string | null,
         loginImgUrl?: string | null,
     ) => void;
     clearAuthInfo: () => void;
@@ -20,18 +22,21 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             loginUser: null,
             loginUserNickname: null,
-            loginImgUrl: null,
             loginBlogAddress: null,
+            loginEmail: null,
+            loginImgUrl: null,
             setAuthInfo: (
                 loginUser,
                 loginUserNickname,
                 loginBlogAddress,
+                loginEmail,
                 loginImgUrl,
             ) =>
                 set({
                     loginUser,
                     loginUserNickname,
                     loginBlogAddress,
+                    loginEmail,
                     loginImgUrl,
                 }),
             clearAuthInfo: () =>
@@ -39,6 +44,7 @@ export const useAuthStore = create<AuthState>()(
                     loginUser: null,
                     loginUserNickname: null,
                     loginBlogAddress: null,
+                    loginEmail: null,
                     loginImgUrl: null,
                 }),
         }),

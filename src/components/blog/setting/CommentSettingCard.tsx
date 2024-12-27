@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function CommentSettingCard({
     content,
@@ -18,8 +19,7 @@ export default function CommentSettingCard({
     isLast: boolean;
     onSelect: (content: Comment, isChecked: boolean) => void;
 }) {
-    //TODO zustand 로 수정
-    const loginUser = 6;
+    const { loginUser } = useAuthStore();
     const router = useRouter();
     const { blogAddress } = useParams();
     const pathname = usePathname();

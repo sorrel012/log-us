@@ -18,6 +18,7 @@ interface MemberInfo {
     nickname: string;
     imgUrl?: string | null;
     blogAddress: string;
+    email: string;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
@@ -91,6 +92,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
                 memberInfo.memberId,
                 memberInfo.nickname,
                 memberInfo.blogAddress,
+                memberInfo.email,
                 memberInfo.imgUrl,
             );
         }

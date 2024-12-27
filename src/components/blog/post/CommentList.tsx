@@ -1,6 +1,5 @@
 'use client';
 
-import { AiOutlineUser } from 'react-icons/ai';
 import { Suspense, useEffect, useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
@@ -12,6 +11,9 @@ import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { IoLockClosedOutline } from 'react-icons/io5';
 import { Comment, Post } from '@/components/blog/post/PostCard';
+import { useAuthStore } from '@/store/useAuthStore';
+import Image from 'next/image';
+import PersonIcon from '@/components/icons/PersonIcon';
 
 export default function CommentList({
     postId,
@@ -21,9 +23,7 @@ export default function CommentList({
     const router = useRouter();
     const searchParams = useSearchParams();
     const commentIdParam = searchParams.get('commentId');
-    //TODO zustand로 수정 필요
-    const loginUser = 6;
-    const loginUserNickname = '유저1';
+    const { loginUser, loginUserNickname, loginImgUrl } = useAuthStore();
     const { isMember } = useBlogStore();
 
     const [commentText, setCommentText] = useState('');
@@ -163,13 +163,17 @@ export default function CommentList({
             <section className="mx-auto mt-5 max-w-screen-2xl">
                 <div className="mb-5">
                     <div className="flex items-start gap-3">
-                        {/* TODO 사용자 프로필 사진 추가 필요*/}
-                        {loginUser && (
-                            <AiOutlineUser
-                                className={
-                                    'size-16 rounded-full bg-fuchsia-100 p-1'
-                                }
-                            />
+                        {loginImgUrl ? (
+                            <div className="relative size-12">
+                                <Image
+                                    src={loginImgUrl}
+                                    alt="image"
+                                    fill
+                                    className="rounded-full"
+                                />
+                            </div>
+                        ) : (
+                            <PersonIcon size="size-12 " />
                         )}
                         <div className="flex w-full flex-col gap-2 text-md">
                             {loginUser && (

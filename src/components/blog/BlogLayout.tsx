@@ -5,14 +5,14 @@ import { BlogInfo, useBlogStore } from '@/store/useBlogStore';
 import { useParams, usePathname } from 'next/navigation';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { customFetch } from '@/utils/customFetch';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function BlogLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    // TODO zustand로 수정
-    const loginUser = 6;
+    const { loginUser } = useAuthStore();
     const { setBlogId, setBlogInfo, setIsMember, setUserBlogAuth } =
         useBlogStore();
     const pathname = usePathname();

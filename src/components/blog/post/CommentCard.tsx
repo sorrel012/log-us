@@ -9,6 +9,7 @@ import { customFetch } from '@/utils/customFetch';
 import ConfirmPopup from '@/components/ConfirmPopup';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { useBlogStore } from '@/store/useBlogStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function CommentCard({
     memberId,
@@ -33,8 +34,7 @@ export default function CommentCard({
     onDeleteSuccess: (commentId: number) => void;
 }) {
     const { isMember, userBlogAuth } = useBlogStore();
-    //TODO zustand 현재 로그인 유저 정보
-    const loginUser = 6;
+    const { loginUser } = useAuthStore();
     const isWriter = memberId === loginUser;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);

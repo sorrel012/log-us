@@ -23,8 +23,7 @@ export default function MemberInvitation({
     const [popupTitle, setPopupTitle] = useState('');
     const [popupText, setPopupText] = useState('');
 
-    //TODO 블로그 도메인 수정
-    const defaultInvitation = `${loginUserNickname}님이 새로운 Our-log에 초대하였습니다.\r\n - 블로그명: ${blogName}\r\n - 블로그 주소: https://logus.com/${blogAddress}`;
+    const defaultInvitation = `${loginUserNickname}님이 새로운 Our-log에 초대하였습니다.\r\n - 블로그명: ${blogName}\r\n - 블로그 주소: https://logus-blog.store/${blogAddress}`;
 
     const handleAddMember = (newMember: Member) => {
         const dupCnt = members.findIndex(

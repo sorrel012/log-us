@@ -8,12 +8,11 @@ import AlertPopup from '@/components/AlertPopup';
 import { useRouter } from 'next/navigation';
 import emailjs from 'emailjs-com';
 import MemberInvitation from '@/components/blog/setting/MemberInvitation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function NewBlogPage() {
     const router = useRouter();
-    // TODO zustand로 수정
-    const loginUser = 1;
-    const loginUserNickname = 'hana';
+    const { loginUser, loginUserNickname } = useAuthStore();
 
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
@@ -189,7 +188,7 @@ export default function NewBlogPage() {
                                 invitation && invitation.trim().length > 0
                                     ? invitation
                                     : '이 공간에 특별한 추억을 남겨보세요.',
-                            link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
+                            link: `https://logus-blog.store/${blogAddress}`,
                         },
                         process.env.NEXT_PUBLIC_EMAIL_USER_ID,
                     );

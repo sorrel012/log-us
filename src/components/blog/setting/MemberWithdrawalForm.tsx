@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function MemberWithdrawalForm() {
     const router = useRouter();
-    //TODO zustand에서 받아오는 것으로 수정
-    const loginUser = 4;
+    const { loginUser } = useAuthStore();
 
     const [wantWithdrawal, setWantWithdrawal] = useState(false);
 

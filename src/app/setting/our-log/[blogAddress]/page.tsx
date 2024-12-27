@@ -184,7 +184,7 @@ export default function OurLogSetting() {
                                 updatedInfo.invitation.trim().length > 0
                                     ? updatedInfo.invitation
                                     : '이 공간에 특별한 추억을 남겨보세요.',
-                            link: `https://logus.com/${blogAddress}`, //TODO 블로그 도메인 수정
+                            link: `https://logus-blog.store/${blogAddress}`,
                         },
                         process.env.NEXT_PUBLIC_EMAIL_USER_ID,
                     );

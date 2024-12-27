@@ -1,7 +1,6 @@
 import { Comment } from '@/components/blog/post/PostCard';
 import { BsArrowReturnRight } from 'react-icons/bs';
 import CommentCard from '@/components/blog/post/CommentCard';
-import { AiOutlineUser } from 'react-icons/ai';
 import { BiLock, BiLockOpen } from 'react-icons/bi';
 import { useEffect, useState } from 'react';
 import { escapeSpecialChars } from '@/utils/commonUtil';
@@ -9,6 +8,9 @@ import { customFetch } from '@/utils/customFetch';
 import AlertPopup from '@/components/AlertPopup';
 import { IoLockClosedOutline } from 'react-icons/io5';
 import { useBlogStore } from '@/store/useBlogStore';
+import Image from 'next/image';
+import PersonIcon from '@/components/icons/PersonIcon';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function ReplyList({
     loginUser,
@@ -21,6 +23,7 @@ export default function ReplyList({
     highlightedCommentId,
 }) {
     const { isMember } = useBlogStore();
+    const { loginImgUrl } = useAuthStore();
 
     const [childCommentsState, setChildCommentsState] = useState(childComments);
     const [replyText, setReplyText] = useState('');
@@ -199,13 +202,17 @@ export default function ReplyList({
                     <BsArrowReturnRight className="size-6 text-customLightBlue-200" />
                     <div className="w-full">
                         <div className="flex items-start gap-3">
-                            {/* TODO 사용자 프로필 사진 추가 필요*/}
-                            {loginUser && (
-                                <AiOutlineUser
-                                    className={
-                                        'size-12 rounded-full bg-fuchsia-100 p-1'
-                                    }
-                                />
+                            {loginImgUrl ? (
+                                <div className="relative size-12">
+                                    <Image
+                                        src={loginImgUrl}
+                                        alt="image"
+                                        fill
+                                        className="rounded-full"
+                                    />
+                                </div>
+                            ) : (
+                                <PersonIcon size="size-12 " />
                             )}
                             <div className="flex w-full flex-col gap-2 text-md">
                                 {loginUser && (

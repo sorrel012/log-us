@@ -6,6 +6,7 @@ import { customFetch } from '@/utils/customFetch';
 import { useParams } from 'next/navigation';
 import MemberInvitation from '@/components/blog/setting/MemberInvitation';
 import { Member } from '@/components/sidebar/UserProfile';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function OurLogInfoForm({
     blogInfo,
@@ -17,9 +18,7 @@ export default function OurLogInfoForm({
     isLoading: boolean;
 }) {
     const { blogAddress: orgBlogAddress } = useParams();
-    //TODO zustand로 수정
-    const loginUser = 1;
-    const loginUserNickname = 'hana';
+    const { loginUser, loginUserNickname } = useAuthStore();
 
     const [blogName, setBlogName] = useState('');
     const [blogAddress, setBlogAddress] = useState('');
