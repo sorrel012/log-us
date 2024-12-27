@@ -5,6 +5,7 @@ import { FcCancel, FcOk } from 'react-icons/fc';
 import { customFetch } from '@/utils/customFetch';
 import { useParams } from 'next/navigation';
 import { validateBlogAddress } from '@/utils/commonUtil';
+import { BlogInfoUpdate } from '@/app/setting/my-log/[blogAddress]/page';
 
 export default function BlogInfoForm({
     blogInfo,
@@ -12,7 +13,7 @@ export default function BlogInfoForm({
     isLoading,
 }: {
     blogInfo: any;
-    onSave: (data: any) => void;
+    onSave: (data: BlogInfoUpdate) => void;
     isLoading: boolean;
 }) {
     const { blogAddress: orgBlogAddress } = useParams();

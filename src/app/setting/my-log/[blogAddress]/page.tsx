@@ -8,6 +8,13 @@ import { useRouter } from 'next/navigation';
 import DeleteBlog from '@/components/blog/setting/DeleteBlog';
 import BlogInfoForm from '@/components/blog/setting/BlogInfoForm';
 
+export interface BlogInfoUpdate {
+    blogName: string;
+    blogAddress: string;
+    introduce: string;
+    isDuplicateChecked: boolean;
+}
+
 export default function BlogInfo() {
     const router = useRouter();
     const { blogId, blogInfo } = useBlogStore();
@@ -67,7 +74,7 @@ export default function BlogInfo() {
         return true;
     };
 
-    const handleSaveBlogInfo = async (updatedInfo) => {
+    const handleSaveBlogInfo = async (updatedInfo: BlogInfoUpdate) => {
         const isSameData =
             updatedInfo.blogName === blogName &&
             updatedInfo.blogAddress === blogAddress &&
@@ -157,7 +164,9 @@ export default function BlogInfo() {
         <section>
             <BlogInfoForm
                 blogInfo={blogInfo}
-                onSave={(updatedInfo) => handleSaveBlogInfo(updatedInfo)}
+                onSave={(updatedInfo: BlogInfoUpdate) =>
+                    handleSaveBlogInfo(updatedInfo)
+                }
                 isLoading={isLoading}
             />
             <DeleteBlog
