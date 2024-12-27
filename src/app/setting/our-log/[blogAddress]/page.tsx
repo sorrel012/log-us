@@ -10,6 +10,7 @@ import OurLogInfoForm from '@/components/blog/setting/OurLogInfoForm';
 import { Member } from '@/components/sidebar/UserProfile';
 import emailjs from 'emailjs-com';
 import { useAuthStore } from '@/store/useAuthStore';
+import { BlogInfoUpdate } from '@/app/setting/my-log/[blogAddress]/page';
 
 export default function OurLogSetting() {
     const router = useRouter();
@@ -78,7 +79,7 @@ export default function OurLogSetting() {
         return true;
     };
 
-    const handleSaveBlogInfo = async (updatedInfo) => {
+    const handleSaveBlogInfo = async (updatedInfo: BlogInfoUpdate) => {
         const areArraysOfObjectsEqual = (arr1, arr2) => {
             if (arr1.length !== arr2.length) return false;
             return arr1.every((obj1, index) => {
