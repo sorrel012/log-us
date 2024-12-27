@@ -10,12 +10,6 @@ import { customFetch } from '@/utils/customFetch';
 import { useBlogStore } from '@/store/useBlogStore';
 import { useRouter } from 'next/navigation';
 
-export interface SaveFetchData {
-    url: string;
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    body: { formData: FormData; requestDto: any };
-}
-
 export default function SeriesManagePage() {
     const router = useRouter();
     const { data, isLoading } = useSeries();
@@ -56,7 +50,7 @@ export default function SeriesManagePage() {
     const handleSave = async (
         newSeriesId: number,
         mode: string,
-        fetchData: SaveFetchData,
+        fetchData: any,
     ) => {
         const { url, method, body } = fetchData;
         const { formData, requestDto } = body;
@@ -141,7 +135,7 @@ export default function SeriesManagePage() {
     const handleResetSeries = async (
         newSeriesId: number,
         mode: string,
-        body?: SaveFetchData,
+        body: any,
     ) => {
         if (mode === 'DELETE') {
             await handleDelete(newSeriesId);

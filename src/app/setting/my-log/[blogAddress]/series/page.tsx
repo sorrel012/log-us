@@ -7,7 +7,6 @@ import { SeriesGridProps } from '@/components/blog/series/SeriesCard';
 import { useSeries } from '@/hooks/useSeries';
 import AlertPopup from '@/components/AlertPopup';
 import { customFetch } from '@/utils/customFetch';
-import { SaveFetchData } from '@/app/setting/our-log/[blogAddress]/series/page';
 
 export default function SeriesManagePage() {
     const { data, isLoading } = useSeries();
@@ -41,7 +40,7 @@ export default function SeriesManagePage() {
     const handleSave = async (
         newSeriesId: number,
         mode: string,
-        fetchData: SaveFetchData,
+        fetchData: any,
     ) => {
         const { url, method, body } = fetchData;
         const { formData, requestDto } = body;
@@ -126,7 +125,7 @@ export default function SeriesManagePage() {
     const handleResetSeries = async (
         newSeriesId: number,
         mode: string,
-        body?: SaveFetchData,
+        body: any,
     ) => {
         if (mode === 'DELETE') {
             await handleDelete(newSeriesId);
