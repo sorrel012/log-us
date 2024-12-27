@@ -51,7 +51,7 @@ export default function PostListPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
-    const [posts, setPosts] = useState<Post[]>(null);
+    const [posts, setPosts] = useState<Post[]>([]);
 
     const seriesValue = Array.isArray(series) ? series[0] : series || '';
     const [seriesId, seriesName] = seriesValue
