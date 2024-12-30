@@ -330,7 +330,7 @@ export default function Join() {
                         type="text"
                         id="nickname"
                         className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                        placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해 주세요.(1-ssss20자)"
+                        placeholder="한글, 영문, 숫자, 특수문자(-,_)를 사용하여 입력해 주세요.(1-20자)"
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                     />
@@ -348,7 +348,7 @@ export default function Join() {
                                 type="email"
                                 id="email"
                                 className="flex-1 rounded-l border border-solid border-customLightBlue-100 px-2 py-1 text-sm outline-none"
-                                placeholder="변경할 이메일 주소를 입력해 주세요."
+                                placeholder="이메일 주소를 입력해 주세요."
                                 value={email}
                                 onChange={handleSetEmail}
                             />
