@@ -33,7 +33,7 @@ export default function NewBlogPage() {
     const [popupText, setPopupText] = useState('');
 
     const validateBlogName = (name: string) => {
-        const regex = /^[a-zA-Z가-힣0-9-_]+$/;
+        const regex = /^[a-zA-Z가-힣0-9-_\s]+$/;
         return name.length >= 2 && name.length <= 20 && regex.test(name);
     };
 

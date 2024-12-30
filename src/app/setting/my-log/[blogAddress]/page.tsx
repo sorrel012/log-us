@@ -63,7 +63,7 @@ export default function BlogInfo() {
             return false;
         }
 
-        const regex = /^[a-zA-Z0-9가-힣-_ ]+$/;
+        const regex = /^[a-zA-Z가-힣0-9-_\s]+$/;
         if (!regex.test(name)) {
             setPopupTitle('블로그 이름을 다시 입력해 주세요.');
             setPopupText(

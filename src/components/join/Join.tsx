@@ -223,7 +223,7 @@ export default function Join() {
             return;
         }
 
-        const blogNameRegex = /^[가-힣a-zA-Z0-9-_]{2,20}$/;
+        const blogNameRegex = /^[가-힣a-zA-Z0-9-_\s]{2,20}$/;
         if (!blogNameRegex.test(blogName)) {
             setPopupTitle('유효하지 않은 블로그명입니다.');
             setPopupText('블로그명을 다시 입력해 주세요.');
