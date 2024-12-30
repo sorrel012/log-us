@@ -594,14 +594,6 @@ export default function Join() {
             >
                 회원가입
             </button>
-            <button
-                onClick={() => {
-                    const query = new URLSearchParams({ login: 'true' });
-                    router.push(`/?${query.toString()}`);
-                }}
-            >
-                임시
-            </button>
             <AlertPopup
                 show={showPopup}
                 onConfirm={() => setShowPopup(false)}
