@@ -211,6 +211,9 @@ export default function NewPostEditPage() {
         setPopupTitle('');
         setPopupMessage('');
         setPopupId('');
+        if (popupId === 'EXIT') {
+            router.back();
+        }
     };
 
     const handleAlertConfirm = async () => {
@@ -454,7 +457,6 @@ export default function NewPostEditPage() {
                 title={popupTitle}
                 text={popupMessage}
                 onConfirm={handleAlertConfirm}
-                onCancel={handleClosePopup}
             />
 
             <ConfirmPopup
@@ -462,6 +464,7 @@ export default function NewPostEditPage() {
                 onConfirm={handleConfirm}
                 title={popupTitle}
                 text={popupMessage}
+                onCancel={handleClosePopup}
             />
 
             <SavePostPopup
