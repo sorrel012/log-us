@@ -37,10 +37,8 @@ export default function BlogHeader() {
         <header className="p-2 shadow-md">
             <div className="flex items-center justify-between">
                 {/* 블로그 헤더 공통 구역 */}
-                <Link
-                    className="flex items-center"
-                    href={`/${blogInfo?.blogAddress}`}
-                >
+
+                <Link className="ml-1 mt-1 flex items-center text-2xl" href="/">
                     <Image
                         src="/logo_icon.png"
                         className="ml-3"
@@ -48,7 +46,12 @@ export default function BlogHeader() {
                         height={10}
                         alt="Logo"
                     />
-                    <p className="ml-1 mt-1 text-2xl">{blogInfo?.blogName}</p>
+                </Link>
+                <Link
+                    className="ml-1 mt-1 flex items-center text-2xl"
+                    href={`/${blogInfo?.blogAddress}`}
+                >
+                    {blogInfo?.blogName}
                 </Link>
 
                 {/* 로그인여부에 따라 달라지는 구역 */}
