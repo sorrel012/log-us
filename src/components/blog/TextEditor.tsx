@@ -5,6 +5,8 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import { Editor } from '@toast-ui/react-editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import { HookCallback } from '@toast-ui/editor/types/editor';
+import { customFetch } from '@/utils/customFetch';
 
 const toolbarItems = [
     ['heading', 'bold', 'italic', 'strike'],
@@ -43,6 +45,31 @@ export default function TextEditor({
         }
     }, [isEmpty]);
 
+    const handleImageUpload = async (
+        image: File | Blob,
+        callback: HookCallback,
+    ) => {
+        const formData = new FormData();
+        formData.append('file', image);
+
+        try {
+            const res = await customFetch('/temporary-image', {
+                queryKey: ['temporary-image'],
+                method: 'POST',
+                body: formData,
+            });
+
+            const imageUrl = res.data?.filepath;
+            const imageName = res.data?.orgFilename;
+
+            if (imageUrl) {
+                callback(imageUrl, imageName);
+            }
+        } catch (error) {
+            console.log('error');
+        }
+    };
+
     const handleChange = () => {
         const content = editorRef.current?.getInstance().getHTML();
         if (content) {
@@ -62,6 +89,7 @@ export default function TextEditor({
             toolbarItems={toolbarItems}
             language="ko-KR"
             onChange={handleChange}
+            hooks={{ addImageBlobHook: handleImageUpload }}
         />
     );
 }
