@@ -304,13 +304,13 @@ export default function NewPostPage() {
             return;
         }
 
-        if (content.length > 60000) {
-            setPopupId('CONTENT_FOCUS');
-            setPopupTitle('내용을 10,000자 이내로 작성해 주세요.');
-            setShowPopup(true);
-
-            return;
-        }
+        // if (content.length > 60000) {
+        //     setPopupId('CONTENT_FOCUS');
+        //     setPopupTitle('내용을 10,000자 이내로 작성해 주세요.');
+        //     setShowPopup(true);
+        //
+        //     return;
+        // }
 
         setShowSavePopup(true);
     };
