@@ -41,7 +41,7 @@ export default function UserProfile() {
                 <p className="font-default mt-2 px-2 text-sm leading-4">
                     {blogInfo?.introduce}
                 </p>
-                {isContain && (
+                {isContain ? (
                     <div className="text-center">
                         <button
                             className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
@@ -50,6 +50,17 @@ export default function UserProfile() {
                             글쓰기
                         </button>
                     </div>
+                ) : (
+                    loginUser && (
+                        <div className="text-center">
+                            <button
+                                className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
+                                onClick={handleButtonClick}
+                            >
+                                구독
+                            </button>
+                        </div>
+                    )
                 )}
             </section>
         </>
