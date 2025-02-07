@@ -1,9 +1,12 @@
+'use client';
+
 import OurLogsUserProfile from '@/components/sidebar/OurLogsUserProfile';
 import MyLogUserProfile from '@/components/sidebar/MyLogUserProfile';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBlogStore } from '@/store/useBlogStore';
 import { useAuthStore } from '@/store/useAuthStore';
+import { customFetch } from '@/utils/customFetch';
 
 export interface Member {
     memberId: number;
@@ -18,15 +21,58 @@ export interface Member {
 
 export default function UserProfile() {
     const { loginUser } = useAuthStore();
-    const { blogInfo } = useBlogStore();
+    const { blogId, blogInfo } = useBlogStore();
+
     const router = useRouter();
+
+    const [isSubscribe, setIsSubscribe] = useState(false);
+    const [followId, setFollowId] = useState(0);
 
     const isContain =
         blogInfo?.members?.some((member) => member.memberId === loginUser) ||
         false;
 
+    useEffect(() => {
+        (async () => {
+            const res = await customFetch<any>('/follow', {
+                queryKey: ['follow', blogId],
+                params: { page: 0, size: 1000 },
+            });
+
+            const followings = res?.data.content || [];
+            followings.forEach((following) => {
+                if (following.blogId === blogId) {
+                    setIsSubscribe(true);
+                    setFollowId(following.followId);
+                }
+            });
+        })();
+    }, []);
+
     const handleButtonClick = () => {
         router.push(`/${blogInfo?.blogAddress}/newpost`);
+    };
+
+    const handleSubscribe = async () => {
+        let url;
+        let method;
+
+        if (isSubscribe) {
+            url = '/follow?followId=' + followId;
+            method = 'DELETE';
+        } else {
+            url = '/follow?blogId=' + blogId;
+            method = 'POST';
+        }
+
+        const res = await customFetch<any>(url, {
+            queryKey: ['follow', method],
+            method,
+        });
+
+        if (!res.isError) {
+            setIsSubscribe((prevState) => !prevState);
+        }
     };
 
     return (
@@ -51,16 +97,26 @@ export default function UserProfile() {
                         </button>
                     </div>
                 ) : (
-                    loginUser && (
+                    loginUser &&
+                    (isSubscribe ? (
                         <div className="text-center">
                             <button
                                 className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
-                                onClick={handleButtonClick}
+                                onClick={handleSubscribe}
+                            >
+                                구독 취소
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="text-center">
+                            <button
+                                className="font-default mt-4 rounded-md bg-customLightBlue-200 px-3 py-1.5 text-white outline-none hover:bg-customLightBlue-200/85"
+                                onClick={handleSubscribe}
                             >
                                 구독
                             </button>
                         </div>
-                    )
+                    ))
                 )}
             </section>
         </>
